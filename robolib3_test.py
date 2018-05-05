@@ -128,12 +128,16 @@ print("\n6. Inverse kinematik")
 #xyzrpyTest = np.array([-295.4, -110.4, 445.05, np.deg2rad(0),np.deg2rad(90),np.deg2rad(-90)])
 #q = np.array([np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45)])
 xyzrpyTest = np.array([68.272, -170.257, -249.514, np.deg2rad(163.675),np.deg2rad(58.6),np.deg2rad(118.175)])
+#xyzrpyTest = np.array([68.272, -170.257, -249.514, np.deg2rad(0),np.deg2rad(0),np.deg2rad(0)])
+#q = np.array([0,np.deg2rad(0),np.deg2rad(0),0,np.deg2rad(0),0])
+#xyzrpyTest = np.array([-456.65, -192.8, 34.6, np.deg2rad(90),np.deg2rad(0),np.deg2rad(0)])
+
 #q = np.array([0,0,0,0,0,0])
 #xyzrpyTest = np.array([-457, -193, 35, np.deg2rad(90),np.deg2rad(0),np.deg2rad(0)])
 print(xyzrpyTest)
 
 qIk = np.array([0,0,0,0,0,0])
-sol = 4
+sol = 0
 qIK = rl.ik_ur(dhParaUR3, xyzrpyTest, sol)
 
 #if FK correct

@@ -8,6 +8,9 @@ Created on Tue Apr 24 14:13:50 2018
 import numpy as np
 import math
 
+np.set_printoptions(precision=3,suppress=True)
+
+
 def rotx(a):
     """
     Rotation about x axis
@@ -301,24 +304,30 @@ def ik_ur(dh_para, tcp, sol):
     #R = math.sqrt(O5_in_0[0,3]**2 + O5_in_0[1,3]**2)
     alpha1 = math.atan2(O5_in_0[1],O5_in_0[0])
     R = math.sqrt(O5_in_0[0]**2 + O5_in_0[1]**2)
-    l6 = abs(dh_para[5, 2])
-    alpha2 = math.acos(l6 / R)
+    l4 = abs(dh_para[3, 2])
+    alpha2 = math.acos(l4 / R)
         
     if (sol & 4 == 0):
         q1 = alpha1 + alpha2 + np.pi / 2
     else:
         q1 = alpha1 - alpha2 + np.pi / 2
-    print("\nq1: ", q1)
+    print("\nq1+: ", alpha1 + alpha2 + np.pi / 2)
+    print("q1-: ", alpha1 - alpha2 + np.pi / 2)
     
     # Winkel q5
     s1 = math.sin(q1)
     c1 = math.cos(q1)
-    l4 = abs(dh_para[3,2])
+    l6 = abs(dh_para[5,2])
     x = T_0_6[0,3]
     y = T_0_6[1,3]
     
-    print((x*s1 - y*c1 - l4) / l6)
-    q5 = math.acos((x*s1 - y*c1 - l4) / l6)
+    z = (x*s1 - y*c1 - l4) / l6
+    if(z > 1):
+        print("(x*s1 - y*c1 - l4) / l6 = ", z)
+        z = 0.9999
+        print("--> q5 = acos(1) = 0")
+        
+    q5 = math.acos(z)
     if sol & 1:
         q5 = -q5
     
@@ -334,6 +343,7 @@ def ik_ur(dh_para, tcp, sol):
         
     q6 = math.atan2((-r21*s1 + r22*c1) / s5, (r11*s1 - r12*c1) / s5)
     print("\nq6: ", q6)
+    #q6 = np.deg2rad(45)
     
     # Ebenes Problem mit drei parallelen Achsen
     T_0_1 = dh(dh_para[0, 0], dh_para[0, 1], dh_para[0, 2], q1)
@@ -354,10 +364,9 @@ def ik_ur(dh_para, tcp, sol):
     l2 = abs(dh_para[2, 1])
     
     # Winkel q3
-    #q3 = math.acos((x_S**2 + y_S**2 - l1**2 - l2**2) / (2 * l1 * l2))
     test = (x_S**2 + y_S**2 - l1**2 - l2**2) / (2 * l1 * l2)
     print("Value: ", test )
-    q3 = 0.5
+    q3 = math.acos((x_S**2 + y_S**2 - l1**2 - l2**2) / (2 * l1 * l2))
     
     if (sol & 2 == 0):
         q3 = q3
