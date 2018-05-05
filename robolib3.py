@@ -55,7 +55,7 @@ def Tinv(T):
 
 def T_2_rpy(T):
     """
-    Matrix to roll pitch yaw
+    Matrix to roll pitch yaw (KUKA)
     X-Y-Z Darstellung
     1. Rotation um x-Achse um Winkel gamma == roll
     2. Rotation um y-Achse um Winkel beta == pitch
@@ -77,7 +77,7 @@ def T_2_rpy(T):
 
 def rpy_2_T(xyzrpy):
     """
-    roll pitch yaw to matrix
+    roll pitch yaw to matrix (KUKA)
     X-Y-Z Darstellung
     1. Rotation um x-Achse um Winkel gamma == roll
     2. Rotation um y-Achse um Winkel beta == pitch
@@ -101,6 +101,59 @@ def rpy_2_T(xyzrpy):
     R = np.eye(3)
     #3. rz == alpha == yaw 2. ry == beta == pitch 1. rx == gamma == roll
     R = np.dot(rotz(yaw), np.dot(roty(pitch), rotx(roll)))
+    T[0:3,0:3] = R[0:3, 0:3]
+    
+    return T
+
+def T_2_zyx(T):
+    """
+    Matrix to rx ry rz (UR)
+    Z-Y-X-Darstellung
+    1. Rotation um z-Achse um Winkel gamma == rz
+    2. Rotation um y-Achse um Winkel beta == ry
+    3. Rotation um x-Achse um Winkel alpha == rx
+    """
+    #Translation
+    x = T[0,3]
+    y = T[1,3]
+    z = T[2,3]
+    
+    #Rotation
+    R = T[0:3,0:3]
+    #Singularität bei ry == 90deg!
+    ry = np.arctan2(R[0,2], math.sqrt(R[1,2]*R[1,2] + R[2,2]*R[2,2]))  
+    rx = np.arctan2((-R[1,2]/math.cos(ry)), (R[2,2]/math.cos(ry))) 
+    rz = np.arctan2((-R[0,1]/math.cos(ry)), (R[0,0]/math.cos(ry)))
+    
+    return np.array([x,y,z,rx,ry,rz])
+
+def zyx_2_T(xyzrpy):
+    """
+    rx ry rz to Matrix (UR)
+    Z-Y-X-Darstellung
+    1. Rotation um z-Achse um Winkel gamma == rz
+    2. Rotation um y-Achse um Winkel beta == ry
+    3. Rotation um x-Achse um Winkel alpha == rx
+    """
+    x = xyzrpy[0]
+    y = xyzrpy[1]
+    z = xyzrpy[2]   
+    rx = xyzrpy[3]
+    ry = xyzrpy[4]
+    rz = xyzrpy[5]
+    
+    T = np.eye(4)
+    
+    #Translation
+    T[0,3] = x
+    T[1,3] = y
+    T[2,3] = z   
+    
+    #Rotation
+    R = np.eye(3)
+
+    #3. rx == alpha 2. ry == beta 1. rz == gamma
+    R = np.dot(np.dot(rotx(rx), roty(ry)), rotz(rz))
     T[0:3,0:3] = R[0:3, 0:3]
     
     return T
@@ -234,7 +287,8 @@ def ik_ur(dh_para, tcp, sol):
     """
     Inverse Kinematics for UR type robots
     """
-    T_0_6 = rotvec_2_T(tcp)
+    #T_0_6 = rotvec_2_T(tcp)
+    T_0_6 = zyx_2_T(tcp)
     
     # Achse 5 in 0
     #O5_in_0 = np.dot(T_0_6, transl(0, 0, -dh_para[5, 2]))

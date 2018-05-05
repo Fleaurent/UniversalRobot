@@ -13,14 +13,24 @@ np.set_printoptions(precision=3,suppress=True)
 xyzrpyTest = np.array([10, 20, 30, np.deg2rad(45),np.deg2rad(45),np.deg2rad(45)])
 print(xyzrpyTest)
 
+
+#1. RPY == XYZ
 TTest = rl.rpy_2_T(xyzrpyTest)
 print(TTest)
 
-#RPY
 xyzrpyTest = rl.T_2_rpy(TTest)
 print(xyzrpyTest)
 
-#Rotation Vector
+
+#2. ZYX
+TTest = rl.zyx_2_T(xyzrpyTest)
+print(TTest)
+
+xyzrpyTest = rl.T_2_zyx(TTest)
+print(xyzrpyTest)
+
+
+#3. Rotation Vector
 rotvecTest = rl.T_2_rotvec(TTest)
 print(rotvecTest)
 
