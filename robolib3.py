@@ -121,9 +121,9 @@ def T_2_zyx(T):
     #Rotation
     R = T[0:3,0:3]
     #Singularität bei ry == 90deg!
-    ry = np.arctan2(R[0,2], math.sqrt(R[1,2]*R[1,2] + R[2,2]*R[2,2]))  
-    rx = np.arctan2((-R[1,2]/math.cos(ry)), (R[2,2]/math.cos(ry))) 
-    rz = np.arctan2((-R[0,1]/math.cos(ry)), (R[0,0]/math.cos(ry)))
+    ry = math.atan2(R[0,2], math.sqrt(R[1,2]*R[1,2] + R[2,2]*R[2,2]))  
+    rx = math.atan2((-R[1,2]/math.cos(ry)), (R[2,2]/math.cos(ry))) 
+    rz = math.atan2((-R[0,1]/math.cos(ry)), (R[0,0]/math.cos(ry)))
     
     return np.array([x,y,z,rx,ry,rz])
 
@@ -317,6 +317,7 @@ def ik_ur(dh_para, tcp, sol):
     x = T_0_6[0,3]
     y = T_0_6[1,3]
     
+    print((x*s1 - y*c1 - l4) / l6)
     q5 = math.acos((x*s1 - y*c1 - l4) / l6)
     if sol & 1:
         q5 = -q5
