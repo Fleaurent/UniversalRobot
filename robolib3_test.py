@@ -81,6 +81,7 @@ sol = 4
 qIK = rl.ik_ur(dhParaUR3, xyzrxryrzTCP, sol)
 print(qIK)
 
+
 theta = 1
 alpha = 1
 d = 1
