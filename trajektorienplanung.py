@@ -9,108 +9,87 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-#Tajektorienplanung Funktionen
 
-#5.1.1. linear
-def linear(q0, q1, t0, t1):
-    
-    #1. Winkelgeschwindigkeit = Winkeländerung/delta_zeit
-    a1 = (q1 - q0)/(t1-t0)
-    #2. Winkel zum Zeitpunkt t=0
-    a0 = q0 - a1*t0
-    
-    a = np.array([a0, a1])
-    return a
-    
-#5.1.2. kubisch    
-def kubisch(q0, q1, t0, t1):
-    M = np.array([[1,  t0, t0**2,   t0**3],
-                  [1, t1, t1**2,   t1**3],
-                  [0,  1,   2*t0, 3*t0**2],
-                  [0,  1,  2*t1, 3*t1**2]])
-    
-    q = np.array([q0,q1,0,0])
-    
-    a = np.linalg.solve(M,q)      
-    return a
-    
-#5.1.3. ordnung5
-def ordnung5(q0, q1, v0, v1, a0, a1, t0, t1):
-    M = np.array([(1, t0, t0**2,   t0**3,    t0**4,   t0**5),
-                  (1, t1, t1**2,   t1**3,    t1**4,    t1**5),
-                  (0,   1,  2*t0, 3*t0**2,  4*t0**3,  5*t0**4),
-                  (0,   1,  2*t1, 3*t1**2,  4*t1**3,  5*t1**4),
-                  (0,   0,      2,    6*t0, 12*t0**2, 20*t0**3),
-                  (0,   0,      2,    6*t1, 12*t1**2, 20*t1**3)])
-    
-    q = np.array([q0, q1, v0, v1, a0, a1])
-    
-    a = np.linalg.solve(M,q)
-    return a
-    
-#5.1.4. kubisch2
-def kubisch2(q0, q1, q2, q3, t0, t1, t2):    
-    #LGS aufstellen + lösen: M * a = q    
-    M = np.array([(1, t0, t0**2,   t0**3, 0,  0,     0,        0),
-                  (1, t1, t1**2,   t1**3, 0,  0,     0,        0),
-                  (0,  0,     0,       0, 1, t1, t1**2,    t1**3),
-                  (0,  0,     0,       0, 1, t2, t2**2,    t2**3),
-                  (0,  1,  2*t0, 3*t0**2, 0,  0,     0,        0),
-                  (0,  0,     0,       0, 0,  1,  2*t2,  3*t2**2),
-                  (0,  1,  2*t1, 3*t1**2, 0, -1, -2*t1, -3*t1**2),
-                  (0,  0,     2,    6*t1, 0,  0,    -2,    -6*t1)])
-    
-    q = np.array([q0,q1,q2,q3,0,0,0,0])
-    
-    a = np.linalg.solve(M,q)   
-    return a
+#1. Berechnung t Achse für vMax, aMax, qDiff
+def trajektorieQVAtoT(q0, q1, vMax, aMax, ):    
 
-#5.1.5. trapez
-def trapez(q0, q1, a, t0, t1):
-    q_d = abs(q1 - q0)
-    t_d = t1 - t0
+    qGrenz = (vMax * vMax) / aMax
+    print("qGrenz Rad: ", qGrenz)
+    print("qGrenz Grad: ", qGrenz * 360 / (2 * np.pi))
+    qDiff = abs(q1 - q0)
     
-    #0. Bedingung für a:
-    a_min = ((4*q_d)/t_d**2)
-    if a < a_min:
-        #a zu klein um q1 bis t1 zu erreichen
-        s = np.array([0,0,0,0])
-        return s
-        
-    #1. ts berechnen
-    ts = t_d/2 - ((math.sqrt(a**2 * t_d**2 - 4*a * q_d))/(2*a))
-    ts1 = t0 + ts
-    ts2 = t1 - ts
-    
-    #2. qs aus ts
-    qs = 0.5*a*ts**2
-    qs1 = q0 + qs
-    qs2 = q1 - qs
-    
-    s = np.array([ts1, ts2, qs1, qs2])
-    return s
-
-
-#5.2.1. trajektorzeit
-def trajektorzeit(v_max, a_max, q0, q1):    
-    #maximaler Winkel für Dreieckverlauf
-    q_max = v_max**2 / a_max
-    
-    #Dreick oder Trapez?
-    q_d = abs(q1 - q0)
-    if q_d <= q_max:
+    if qDiff <= qGrenz:
         #Dreieck
-        t_ges = math.sqrt(4*q_d / a_max)
-        ts1 = t_ges/2
-        ts2 = t_ges/2
+        tGes = math.sqrt((4 * qDiff) / aMax)
+        tS1 = tGes/2
+        tS2 = tGes/2
     else:
         #Trapez
-        t_ges = (v_max / a_max) + (q_d / v_max)
-        ts1 = v_max/a_max
-        ts2 = t_ges - ts1
+        tGes = (vMax / aMax) + (qDiff / vMax)
+        tS1 = vMax / aMax
+        tS2 = tGes - tS1
+     
+    return np.array([tS1, tS2, tGes])
+
+def trajektorieQVATtoQT(q0 , q1, vMax, aMax, tS1, tS2, tGes):
     
-    tq = np.array([t_ges, ts1, ts2])
-    return tq
+    tDelta = 1 / 125
+    
+    qT = tGes / tDelta
+    
+    return qT
+
+#2. Berechnung t Achse für a, tGes wenn Vorgabe Trapez
+def trajektorieTrapez(q0, q1, a, tGes):
+    
+    qDiff = abs(q1 - q0)
+    
+    #0. Bedingung für a:
+    aMin = ((4 * qDiff) / (tGes * tGes))
+    
+    if a < aMin:
+        #a zu klein um q1 bis t1 zu erreichen
+        return np.array([0,0,0,0])
+        
+    #1. ts berechnen
+    tS1 = tGes/2 - ((math.sqrt(a**2 * tGes**2 - 4*a * qDiff))/(2*a))
+    tS2 = tGes - tS1
+    
+    #2. qs aus ts
+    qS = 0.5 * a * tS1**2
+    qS1 = q0 + qS
+    qS2 = q1 - qS
+    
+    s = np.array([tS1, tS2, qS1, qS2])
+    return s
+
+def trajektorieFolgeachse(q0, q1, tS1, tS2, tGes):
+    
+    qDiff = q1 - q0
+    
+    
+    #2. a Folgeachse berechnen: Dreick oder Trapez?
+    if tS1 == tS2:
+        #Dreieck
+        a = (qDiff)/tS1**2
+
+        qS1 = q0 + (qDiff/2)
+        qS2 = qS1
+        
+    else:
+        #Trapez
+        a = qDiff/(tS1 * tGes - tS1**2)
+    
+        qS1 = q0 + 0.5*a*tS1**2
+        qS2 = q1 - 0.5*a*tS1**2
+     
+    return np.array([tS1, tS2 , qS1, qS2, a]) 
+
+"""
+#Tajektorienplanung Funktionen
+
+
+
 
 #5.2.2. trapez_folgeachse
 def trapez_folgeachse(q0, q1, t_dom, ts1_dom, ts2_dom):
@@ -138,3 +117,4 @@ def trapez_folgeachse(q0, q1, t_dom, ts1_dom, ts2_dom):
     
     s = np.array([ts1, ts2 , qs1, qs2, a]) 
     return s
+"""

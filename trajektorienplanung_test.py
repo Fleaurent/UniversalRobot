@@ -5,17 +5,48 @@ Created on Wed Dec 28 12:03:04 2016
 @author: Florens Fraidling
 """
 
-
-import trajektorienplanung as tp
 import numpy as np
 import matplotlib.pyplot as plt
-import robo
+import trajektorienplanung as tp
+import robolib3 as rl
 
 #Ausgabe (mit 2 Stellen + folgene 0 unterdrückt)
 np.set_printoptions(precision=2, suppress=True)
 
 
 #Trajektiorien Verlauf berechnen und Plotten
+
+#Achse1
+vMax = 1.04
+aMax = 1.4
+q0 = np.deg2rad(0)
+#q1 = np.deg2rad(90)
+q1 = np.deg2rad(44.2)
+
+tQ =  tp.trajektorieQVAtoT(q0, q1, vMax, aMax) 
+print("tq: ",tQ)
+
+
+if(tQ[0] == tQ[1]):
+    #Dreieck
+    print("Dreieck")
+    qT = tp.trajektorieQVATtoQT(q0, q1, vMax, aMax, tQ)
+    print("qT: ", qT)
+else:
+    #Trapez
+    print("Trapez")
+    qT = tp.trajektorieQVATtoQT(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
+    print("qT: ", qT)
+
+    
+#Interpolationstakt
+tDelta = 1 / 125
+
+
+
+
+
+"""
 
 #1. Auswahl der zu berechnenden Trajektorien über die status Variable
 #0bX0000 linear | 0b0X000 kubisch | 0b00X00 ordnung5 | 0b0000 kubisch2 | 0b0000X trapez
@@ -70,269 +101,6 @@ td[(tt01.size):(tt01.size + tt02.size),0] = tt02
 
 #1. Funktionsaufrufe: mit Rückgabewerten Trajektorien berechnen
 #2. Verlauf plotten
-
-#5.1.1. linear
-if(status & 0b10000):
-    a_lin = tp.linear(q_t0, q_t1, t0, t1)
-    print("linear: q(t) = a0 + a1*t\na_lin:",a_lin, "\n")
-    
-    #linear plotten
-    #Gelenkwinkel
-    q1 = np.zeros([tt01.size , 6])
-    q1[:,0] = a_lin[0] + a_lin[1]*tt01
-    q1[:,1] = q_2 
-    q1[:,2] = q_3
-    q1[:,3] = q_4
-    q1[:,4] = q_5
-    q1[:,5] = q_6
-    
-    plt.figure()
-    plt.plot(tt01,q1)
-    plt.grid(True)
-    plt.title("Gelenkwinkel linear")
-    plt.ylabel('Gelenkwinkel in Grad')
-    plt.xlabel('Zeit in s')
-    
-    #xyz Koordinaten KUKA KR30HA 
-    q_k = np.zeros([1 , 6])
-    T = np.zeros([tt01.size])
-    i = 0
-    xyzrpy = 0
-    xyzrpy_lin = np.zeros([tt01.size , 6])
-    for q_k in q1 :       
-        T = robo.fk_k(q_k)
-        xyzrpy_lin[i,:] = robo.T_2_xyzrpy(T)
-        i = i+1
-    
-    plt.figure()
-    for i, color in enumerate(['red', 'green', 'blue', 'cyan', 'pink','yellow']):
-        plt.plot(tt01,xyzrpy_lin[:,i], color = color)
-    plt.grid(True)
-    plt.title("Koordinaten KUKA KR30HA linear")
-    plt.ylabel('xyz in mm     rpy in grad')
-    plt.xlabel('Zeit in s')
-
-#5.1.2. kubisch
-if(status & 0b01000):
-    a_kub = tp.kubisch(q_t0, q_t1, t0, t1)
-    print("kubisch: q(t) = a0 + a1*t + a2*t**2 + a3*t**3 \n a_kub:\n", a_kub, "\n")
-    
-    #kubisch plotten
-    #1.Winkel
-    q2 = np.zeros([tt01.size , 6])
-    q2[:,0] = a_kub[0] + a_kub[1]*(tt01) + a_kub[2]*(tt01)**2 + a_kub[3]*(tt01)**3
-    q2[:,1] = q_2 
-    q2[:,2] = q_3
-    q2[:,3] = q_4
-    q2[:,4] = q_5
-    q2[:,5] = q_6
-    
-    plt.figure()
-    plt.plot(tt01,q2)
-    plt.grid(True)
-    plt.title("Gelenkwinkel kubisch")
-    plt.ylabel('Gelenkwinkel')
-    plt.xlabel('Time')
-    
-    #xyz Koordinaten KUKA KR30HA
-    q_k = np.zeros([1 , 6])
-    T = np.zeros([tt01.size])
-    i = 0
-    xyzrpy = 0
-    xyzrpy_kub = np.zeros([tt01.size , 6])
-    for q_k in q2 :       
-        T = robo.fk_k(q_k)
-        xyzrpy_kub[i,:] = robo.T_2_xyzrpy(T)
-        i = i+1
-       
-    plt.figure()
-    for i, color in enumerate(['red', 'green', 'blue', 'cyan', 'pink','yellow']):
-        plt.plot(tt01,xyzrpy_kub[:,i], color = color)
-    plt.grid(True)
-    plt.title("Koordinaten KUKA KR30HA kubisch")
-    plt.ylabel('xyz in mm     rpy in Grad')
-    plt.xlabel('Zeit in s')
-    
-    #2. Winkelgeschwindigkeit
-    v2 = np.zeros([tt01.size , 6])
-    v2[:,0] = a_kub[1] + 2*a_kub[2]*(tt01) + 3*a_kub[3]*(tt01)**2
-    v2[:,1] = 0 
-    v2[:,2] = 0
-    v2[:,3] = 0
-    v2[:,4] = 0
-    v2[:,5] = 0
-    
-    plt.figure()
-    plt.plot(tt01,v2)
-    plt.grid(True)
-    plt.title("Winkelgeschwindigkeit kubisch")
-    plt.ylabel('Winkelgeschwindigkeit in Grad/s')
-    plt.xlabel('Zeit in s')
-    
-    #2. Winkelbeschleunigung
-    a2 = np.zeros([tt01.size , 6])
-    a2[:,0] = 2*a_kub[2] + 6*a_kub[3]*(tt01)
-    a2[:,1] = 0 
-    a2[:,2] = 0
-    a2[:,3] = 0
-    a2[:,4] = 0
-    a2[:,5] = 0
-    
-    plt.figure()
-    plt.plot(tt01,a2)
-    plt.grid(True)
-    plt.title("Winkelbeschleunigung kubisch")
-    plt.ylabel('Winkelbeschleunigung in Grad/s**2')
-    plt.xlabel('Zeit in s')
-
-#5.1.3. ordnung5
-if(status & 0b00100):
-    a_ordnung5 = tp.ordnung5(q_t0, q_t1, v_t0, v_t1, a_t0, a_t1, t0, t1)
-    print("Ordnung5: q(t) = a0 + a1*t + ... + a5*t**5\n a_ordung5:\n", a_ordnung5, "\n")
-    
-    #ordnung5 plotten
-    #1. Gelenkwinkel
-    q3 = np.zeros([tt01.size , 6])
-    q3[:,0] = a_ordnung5[0] + a_ordnung5[1]*tt01 + a_ordnung5[2]*tt01**2 + a_ordnung5[3]*tt01**3 + a_ordnung5[4]*tt01**4 + a_ordnung5[5]*tt01**5 
-    q3[:,1] = q_2 
-    q3[:,2] = q_3
-    q3[:,3] = q_4
-    q3[:,4] = q_5
-    q3[:,5] = q_6
-
-    plt.figure()
-    plt.plot(tt01,q3)
-    plt.grid(True)
-    plt.title("Gelenkwinkel ordnung5")
-    plt.ylabel('Gelenkwinkel in Grad')
-    plt.xlabel('Zeit in s')
-    
-    #xyz KUKA KR30HA
-    q_k = np.zeros([1 , 6])
-    T = np.zeros([tt01.size])
-    i = 0
-    xyzrpy = 0
-    xyzrpy_ord5 = np.zeros([tt01.size , 6])
-    for q_k in q3:       
-        T = robo.fk_k(q_k)
-        xyzrpy_ord5[i,:] = robo.T_2_xyzrpy(T)
-        i = i+1
-           
-    plt.figure()
-    for j, color in enumerate(['red', 'green', 'blue', 'cyan', 'pink','yellow']):
-        plt.plot(tt01,xyzrpy_ord5[:,j], color = color)
-    plt.grid(True)
-    plt.title("Koordinaten KUKA KR30HA ordnung5")
-    plt.ylabel('xyz in mm     rpy in Grad')
-    plt.xlabel('Zeit in s')
-    
-    #2. Winkelgeschwindigkeit
-    v3 = np.zeros([tt01.size , 6])
-    v3[:,0] = a_ordnung5[1] + 2*a_ordnung5[2]*tt01 + 3*a_ordnung5[3]*tt01**2 + 4*a_ordnung5[4]*tt01**3 + 5*a_ordnung5[5]*tt01**4 
-    v3[:,1] = 0 
-    v3[:,2] = 0
-    v3[:,3] = 0
-    v3[:,4] = 0
-    v3[:,5] = 0
-
-    plt.figure()
-    plt.plot(tt01,v3)
-    plt.grid(True)
-    plt.title("Winkelgeschwindigkeit ordnung5")
-    plt.ylabel('Winkelgeschwindigkeit in Grad/s')
-    plt.xlabel('Zeit in s')
-    
-    #3. Winkelbeschleunigung
-    a3 = np.zeros([tt01.size , 6])
-    a3[:,0] = 2*a_ordnung5[2] + 6*a_ordnung5[3]*tt01 + 12*a_ordnung5[4]*tt01**2 + 20*a_ordnung5[5]*tt01**3 
-    a3[:,1] = 0 
-    a3[:,2] = 0
-    a3[:,3] = 0
-    a3[:,4] = 0
-    a3[:,5] = 0
-
-    plt.figure()
-    plt.plot(tt01,a3)
-    plt.grid(True)
-    plt.title("Winkelbeschleunigung ordnung5")
-    plt.ylabel('Winkelbeschleunigung in Grad/s**2')
-    plt.xlabel('Zeit in s')
-
-#5.1.4. kubisch2
-if(status & 0b00010):
-    a_kub2 = tp.kubisch2(q_t0, q_t1, q_t1, q_t2, t0, t1, t2)
-    print("doppelt kubisch: A(t = [t0, t1]), B(t = [t1, t2])\nq_A(t) = a0 + a1*t + a2*t**2 + a3*t**3\nq_B(t) = a4 + a5*t + a6*t**2 + a7*t**3\n a_kub2:\n", a_kub2, "\n") 
-  
-    #kubisch2 plotten
-    #1. Gelenkwinkel
-    q4 = np.zeros([tt01.size + tt02.size, 6])
-    q4[0:tt01.size,0] = a_kub2[0] + a_kub2[1]*tt01 + a_kub2[2]*tt01**2 + a_kub2[3]*tt01**3
-    q4[(tt01.size):(tt01.size + tt02.size),0] = a_kub2[4] + a_kub2[5]*tt02 + a_kub2[6]*tt02**2 + a_kub2[7]*tt02**3
-    q4[:,1] = q_2
-    q4[:,2] = q_3
-    q4[:,3] = q_4
-    q4[:,4] = q_5
-    q4[:,5] = q_6
-
-    plt.figure()
-    plt.plot(td,q4)
-    plt.grid(True)
-    plt.title("Gelenkwinkel kubisch2")
-    plt.ylabel('Gelenkwinkel in Grad')
-    plt.xlabel('Zeit in s')
-    
-    #xyz KUKA KR30HA
-    q_k = np.zeros([1 , 6])
-    T = np.zeros([td.size])
-    i = 0
-    xyzrpy = 0
-    xyzrpy_kub2 = np.zeros([td.size , 6])
-    for q_k in q4 :       
-        T = robo.fk_k(q_k)
-        xyzrpy_kub2[i,:] = robo.T_2_xyzrpy(T)
-        i = i+1
-      
-    plt.figure()
-    for i, color in enumerate(['red', 'green', 'blue', 'cyan', 'pink','yellow']):
-        plt.plot(td,xyzrpy_kub2[:,i], color = color)
-    plt.grid(True)
-    plt.title("Koordinaten KUKA KR30HA kubisch2")
-    plt.ylabel('xyz in mm     rpy in Grad')
-    plt.xlabel('Zeit in s')
-    
-    #2. Winkelgeschwindigkeit
-    v4 = np.zeros([tt01.size + tt02.size, 6])
-    v4[0:tt01.size,0] = a_kub2[1] + 2*a_kub2[2]*tt01 + 3*a_kub2[3]*tt01**2
-    v4[(tt01.size):(tt01.size + tt02.size),0] = a_kub2[5] + 2*a_kub2[6]*tt02 + 3*a_kub2[7]*tt02**2
-    v4[:,1] = 0
-    v4[:,2] = 0
-    v4[:,3] = 0
-    v4[:,4] = 0
-    v4[:,5] = 0
-
-    plt.figure()
-    plt.plot(td,v4)
-    plt.grid(True)
-    plt.title("Winkelgeschwindigkeit kubisch2")
-    plt.ylabel('Winkelgeschwindigkeit in Grad/s')
-    plt.xlabel('Zeit in s')
-    
-    #3. Winkelbeschleunigung
-    a4 = np.zeros([tt01.size + tt02.size, 6])
-    a4[0:tt01.size,0] = 2*a_kub2[2] + 6*a_kub2[3]*tt01
-    a4[(tt01.size):(tt01.size + tt02.size),0] = 2*a_kub2[6] + 6*a_kub2[7]*tt02
-    a4[:,1] = 0
-    a4[:,2] = 0
-    a4[:,3] = 0
-    a4[:,4] = 0
-    a4[:,5] = 0
-
-    plt.figure()
-    plt.plot(td,a4)
-    plt.grid(True)
-    plt.title("Winkelbeschleunigung kubisch2")
-    plt.ylabel('Winkelbeschleunigung in Grad/s**2')
-    plt.xlabel('Zeit in s')
 
 #5.1.5. trapez
 if(status & 0b00001):
@@ -453,5 +221,5 @@ if(status & 0b00001):
         plt.ylabel('Winkelbeschleunigung in Grad/s**2')
         plt.xlabel('Zeit in s')
 
-        
+"""
         
