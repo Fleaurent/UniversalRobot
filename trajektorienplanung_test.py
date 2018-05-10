@@ -13,6 +13,8 @@ import robolib3 as rl
 #Ausgabe (mit 2 Stellen + folgene 0 unterdrückt)
 np.set_printoptions(precision=2, suppress=True)
 
+#Interpolationstakt
+tDelta = 1 / 125
 
 #Trajektiorien Verlauf berechnen und Plotten
 
@@ -62,11 +64,52 @@ else:
     #qT = tp.trajektorieQVATtoQT(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
     print("qT: ", qT)
 
-#Interpolationstakt
-tDelta = 1 / 125
 
 
+q0 = np.deg2rad(0)
+#q1 = np.deg2rad(90)
+q1 = np.deg2rad(90)
 
+#Bsp: Vorgabe Schaltzeiten
+tS1 = 1
+tS2 = 2
+tGes = 3
+
+vaNeu = tp.trajektorieVANeu(q0, q1, vMax, aMax, tS1, tGes)
+
+if(tQ[0] == tQ[1]):
+    #Dreieck
+    print("Dreieck")
+    tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
+    #qT = tp.trajektorieQVATtoQT(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
+    
+else:
+    #Trapez
+    print("Trapez")
+    tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], tS1, tS2, tGes)
+    #qT = tp.trajektorieQVATtoQT(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
+
+
+q0 = np.deg2rad(0)
+#q1 = np.deg2rad(90)
+q1 = np.deg2rad(90)
+
+#Bsp: Vorgabe Schaltzeiten
+tGes = 4
+
+vaNeu = tp.trajektorie25aMax(q0, q1, vMax, aMax, tGes)
+
+if(tQ[0] == tQ[1]):
+    #Dreieck
+    print("Dreieck")
+    tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
+    #qT = tp.trajektorieQVATtoQT(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
+    
+else:
+    #Trapez
+    print("Trapez")
+    tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
+    #qT = tp.trajektorieQVATtoQT(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
 
 
 """

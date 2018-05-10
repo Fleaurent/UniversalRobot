@@ -31,6 +31,33 @@ def trajektorieGesamtzeit(q0, q1, vMax, aMax):
      
     return np.array([tS1, tS2, tGes])
 
+def trajektorie25aMax(q0, q1, vMax, aMax, tGes):
+    
+    qDiff = abs(q1 - q0)
+    
+    tS1 = tGes / 4
+    tS2 = tGes - tS1
+    
+    aMaxNeu = (qDiff * 16) / ( 3 * tGes**2)
+    vMaxNeu = aMaxNeu * tS1 
+    
+    if((aMaxNeu > aMax) or (vMaxNeu > vMax)):
+        return np.array([0, 0, 0, 0, 0])
+    
+    return np.array([vMaxNeu, aMaxNeu, tS1, tS2])
+
+def trajektorieVANeu(q0, q1, vMax, aMax, tS1, tGes):
+    #Schaltzeitpunkt tS1: aMaxNeu, vMaxNeu
+    qDiff = abs(q1 - q0)
+        
+    aMaxNeu = qDiff / (tS1 * tGes - tS1**2)
+    vMaxNeu = aMaxNeu * tS1
+    
+    if((aMaxNeu > aMax) or (vMaxNeu > vMax)):
+        return np.array[(0, 0)]
+    
+    return np.array([vMaxNeu, aMaxNeu])
+
 def trajektorieDreieck(q0, q1, vMax, aMax, tS, tGes):
     
     tDelta = 1 / 125
