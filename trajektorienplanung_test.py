@@ -23,14 +23,15 @@ q0 = np.deg2rad(0)
 #q1 = np.deg2rad(90)
 q1 = np.deg2rad(44.2)
 
-tQ =  tp.trajektorieQVAtoT(q0, q1, vMax, aMax) 
+tQ =  tp.trajektorieGesamtzeit(q0, q1, vMax, aMax) 
 print("tq: ",tQ)
 
 
 if(tQ[0] == tQ[1]):
     #Dreieck
     print("Dreieck")
-    qT = tp.trajektorieQVATtoQT(q0, q1, vMax, aMax, tQ)
+    tp.trajektorieDreieck(q0, q1, vMax, aMax, tQ[0], tQ[2])
+    #qT = tp.trajektorieQVATtoQT(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
     print("qT: ", qT)
 else:
     #Trapez
@@ -38,7 +39,29 @@ else:
     qT = tp.trajektorieQVATtoQT(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
     print("qT: ", qT)
 
-    
+
+
+q0 = np.deg2rad(0)
+#q1 = np.deg2rad(90)
+q1 = np.deg2rad(90)
+
+tQ =  tp.trajektorieGesamtzeit(q0, q1, vMax, aMax) 
+print("tq: ",tQ)
+
+
+if(tQ[0] == tQ[1]):
+    #Dreieck
+    print("Dreieck")
+    tp.trajektorieDreieck(q0, q1, vMax, aMax, tQ[0], tQ[2])
+    #qT = tp.trajektorieQVATtoQT(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
+    print("qT: ", qT)
+else:
+    #Trapez
+    print("Trapez")
+    tp.trajektorieTrapez(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
+    #qT = tp.trajektorieQVATtoQT(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
+    print("qT: ", qT)
+
 #Interpolationstakt
 tDelta = 1 / 125
 
