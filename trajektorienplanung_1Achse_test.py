@@ -34,12 +34,13 @@ print("tq: ",tQ)
 
 if(tQ[0] == tQ[1]):
     print("Dreieck")
-    tp.trajektorieDreieck(q0, q1, vMax, aMax, tQ[0], tQ[2])
+    qT, vT, t = tp.trajektorieDreieck(q0, q1, vMax, aMax, tQ[0], tQ[2])
 
 else:
     print("Trapez")
-    tp.trajektorieTrapez(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
-
+    qT, vT, t = tp.trajektorieTrapez(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
+    
+#tp.plotTrajektorie(qT, vT, t)
 
 
 """
@@ -54,20 +55,22 @@ print("tq: ",tQ)
 
 if(tQ[0] == tQ[1]):
     print("Dreieck")
-    tp.trajektorieDreieck(q0, q1, vMax, aMax, tQ[0], tQ[2])
+    qT, vT, t = tp.trajektorieDreieck(q0, q1, vMax, aMax, tQ[0], tQ[2])
 
 else:
     print("Trapez")
-    tp.trajektorieTrapez(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
+    qT, vT, t = tp.trajektorieTrapez(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
+    
+#tp.plotTrajektorie(qT, vT, t)
 
 """
 3. Trapez Trajektorie: Vorgabe Gesamtzeit Führungsachse #TODO
 """
 q0 = np.deg2rad(0)
-q1 = np.deg2rad(30)
+q1 = np.deg2rad(90)
 
 #Bsp: Vorgabe Schaltzeiten
-tGes = 2
+tGes = 5
 
 vaNeu = tp.trajektorieVANeutGes(q0, q1, vMax, aMax, tGes)
 
@@ -77,12 +80,13 @@ if((vaNeu[0] == 0) or (vaNeu[1] == 0)):
 else:
     if(tQ[0] == tQ[1]):
         print("Dreieck")
-        tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], tGes)
+        qT, vT, t = tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], tGes)
     
     else:
         print("Trapez")
-        tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
+        qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
 
+#tp.plotTrajektorie(qT, vT, t)
 
 """
 4. Trapez Trajektorie: Vorgabe Schaltzeiten von Führungsachse
@@ -103,12 +107,13 @@ if((vaNeu[0] == 0) or (vaNeu[1] == 0)):
 else:
     if(tQ[0] == tQ[1]):
         print("Dreieck")
-        tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
+        qT, vT, t = tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
     
     else:
         print("Trapez")
-        tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], tS1, tS2, tGes)
+        qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], tS1, tS2, tGes)
 
+#tp.plotTrajektorie(qT, vT, t)
 
 """
 4. Trapez Trajektorie Symmetrisch: Vorgabe Gesamtzeit Führungsache (25% tGes Beschleunigen)
@@ -127,12 +132,13 @@ if((vaNeu[0] == 0) or (vaNeu[1] == 0)):
 else:
     if(tQ[0] == tQ[1]):
         print("Dreieck")
-        tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
+        qT, vT, t = tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
     
     else:
         print("Trapez")
-        tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
+        qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
 
+#tp.plotTrajektorie(qT, vT, t)
 
 
 """
