@@ -13,11 +13,12 @@ import matplotlib.pyplot as plt
 #1. Berechnung t Achse für vMax, aMax, qDiff
 def trajektorieGesamtzeit(q0, q1, vMax, aMax):    
 
-    qGrenz = (vMax * vMax) / aMax
-    print("qGrenz Rad: ", qGrenz)
-    print("qGrenz Grad: ", qGrenz * 360 / (2 * np.pi))
     qDiff = abs(q1 - q0)
     
+    qGrenz = (vMax * vMax) / aMax
+    #print("qGrenz Rad: ", qGrenz)
+    #print("qGrenz Grad: ", qGrenz * 360 / (2 * np.pi))
+        
     if qDiff <= qGrenz:
         #Dreieck
         tGes = math.sqrt((4 * qDiff) / aMax)
@@ -42,7 +43,8 @@ def trajektorie25aMax(q0, q1, vMax, aMax, tGes):
     vMaxNeu = aMaxNeu * tS1 
     
     if((aMaxNeu > aMax) or (vMaxNeu > vMax)):
-        return np.array([0, 0, 0, 0, 0])
+        vMaxNeu = 0
+        aMaxNeu = 0
     
     return np.array([vMaxNeu, aMaxNeu, tS1, tS2])
 
@@ -54,7 +56,8 @@ def trajektorieVANeu(q0, q1, vMax, aMax, tS1, tGes):
     vMaxNeu = aMaxNeu * tS1
     
     if((aMaxNeu > aMax) or (vMaxNeu > vMax)):
-        return np.array[(0, 0)]
+        vMaxNeu = 0
+        aMaxNeu = 0
     
     return np.array([vMaxNeu, aMaxNeu])
 

@@ -18,11 +18,15 @@ tDelta = 1 / 125
 
 #Trajektiorien Verlauf berechnen und Plotten
 
-#Achse1
+#Achse1 Parameter
 vMax = 1.04
 aMax = 1.4
+
+
+"""
+1. Dreieck Trajektorie: deltaQ < qGrenz
+"""
 q0 = np.deg2rad(0)
-#q1 = np.deg2rad(90)
 q1 = np.deg2rad(44.2)
 
 tQ =  tp.trajektorieGesamtzeit(q0, q1, vMax, aMax) 
@@ -39,9 +43,10 @@ else:
 
 
 
-
+"""
+2. Trapez Trajektorie: deltaQ > qGrenz
+"""
 q0 = np.deg2rad(0)
-#q1 = np.deg2rad(90)
 q1 = np.deg2rad(90)
 
 tQ =  tp.trajektorieGesamtzeit(q0, q1, vMax, aMax) 
@@ -58,10 +63,11 @@ else:
 
 
 
-
+"""
+3. Trapez Trajektorie: Vorgabe Schaltzeiten von Führungsachse
+"""
 q0 = np.deg2rad(0)
-#q1 = np.deg2rad(90)
-q1 = np.deg2rad(90)
+q1 = np.deg2rad(30)
 
 #Bsp: Vorgabe Schaltzeiten
 tS1 = 1
@@ -70,31 +76,41 @@ tGes = 3
 
 vaNeu = tp.trajektorieVANeu(q0, q1, vMax, aMax, tS1, tGes)
 
-if(tQ[0] == tQ[1]):
-    print("Dreieck")
-    tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
-
+if((vaNeu[0] == 0) or (vaNeu[1] == 0)):
+    print("Winkel in vorgegebener Zeit nicht erreichbar")
+    
 else:
-    print("Trapez")
-    tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], tS1, tS2, tGes)
+    if(tQ[0] == tQ[1]):
+        print("Dreieck")
+        tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
+    
+    else:
+        print("Trapez")
+        tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], tS1, tS2, tGes)
 
 
+"""
+4. Trapez Trajektorie Symmetrisch: Vorgabe Gesamtzeit Führungsache (25% tGes Beschleunigen)
+"""
 q0 = np.deg2rad(0)
-#q1 = np.deg2rad(90)
-q1 = np.deg2rad(90)
+q1 = np.deg2rad(100)
 
 #Bsp: Vorgabe Schaltzeiten
 tGes = 4
 
 vaNeu = tp.trajektorie25aMax(q0, q1, vMax, aMax, tGes)
 
-if(tQ[0] == tQ[1]):
-    print("Dreieck")
-    tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
-
+if((vaNeu[0] == 0) or (vaNeu[1] == 0)):
+    print("Winkel in vorgegebener Zeit nicht erreichbar")
+    
 else:
-    print("Trapez")
-    tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
+    if(tQ[0] == tQ[1]):
+        print("Dreieck")
+        tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
+    
+    else:
+        print("Trapez")
+        tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
 
 
 
