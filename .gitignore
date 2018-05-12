@@ -1,2 +1,2 @@
 #ignore the _pycache_ directory
-_pycache_/
+__pycache__/
