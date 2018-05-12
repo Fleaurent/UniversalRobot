@@ -47,8 +47,6 @@ print(TTest)
 rotvecTest = rl.T_2_rotvec(TTest)
 print(rotvecTest)
 
-xyzrpyTest = rl.T_2_rpy(TTest)
-print(xyzrpyTest)
 
 #4. Denavit Hartenberg
 print("\n4. Denavit Hartenberg")

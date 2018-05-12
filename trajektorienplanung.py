@@ -182,13 +182,7 @@ def trajektorieTrapez(q0, q1, vMax, aMax, tS1, tS2, tGes):
     return data
 
 
-def trajektorieQVATtoQT(q0 , q1, vMax, aMax, tS1, tS2, tGes):
-    
-    tDelta = 1 / 125
-    
-    qT = tGes / tDelta
-    
-    return qT
+
 
 #2. Berechnung t Achse für a, tGes wenn Vorgabe Trapez
 def trajektorieTrapez2(q0, q1, a, tGes):

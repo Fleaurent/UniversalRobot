@@ -210,45 +210,28 @@ def rotvec_2_T(xyzrxryrz):
     T[2,3] = z 
     
     #Rotation
-    """
-    Z-Y-X-Darstellung
-    1. Rotation um z-Achse um Winkel gamma
-    2. Rotation um y-Achse um Winkel beta
-    3. Rotation um x-Achse um Winkel alpha
-    """
-    R = np.eye(4)
-    R = np.dot(rotx(rx), np.dot(roty(ry), rotz(rz)))
-    #R = np.dot(np.dot(rotz(rz), roty(ry)), rotx(rx))
+    theta = math.sqrt(rx**2 + ry**2 + rz**2)
     
-    T[0:3,0:3] = R[0:3, 0:3]
-#    theta = math.acos(((R[0, 0] + R[1, 1] + R[2, 2]) - 1) / 2)
-#    
-#    multi = 1 / (2 * math.sin(theta))
-#        
-#    kx = multi * (R[2, 1] - R[1, 2])
-#    ky = multi * (R[0, 2] - R[2, 0])
-#    kz = multi * (R[1, 0] - R[0, 1])
-#    
-#    #kx = rx / theta
-#    #ky = ry / theta
-#    #kz = rz / theta
-#    
-#    st = math.sin(theta)
-#    ct = math.cos(theta)
-#    vt = 1 - ct
-#        
-#    T[0,0] = kx * kx * vt + ct
-#    T[0,1] = kx * ky * vt - kz * st
-#    T[0,2] = kx * kz * vt + ky * st
-#    
-#    T[1,0] = kx * ky * vt + kz * st
-#    T[1,1] = ky * ky * vt + ct
-#    T[1,2] = ky * kz * vt - kx * st
-#    
-#    T[2,0] = kx * kz * vt -ky * st
-#    T[2,1] = ky * kz * vt + kx * st
-#    T[2,2] = kz * kz * vt + ct
-    
+    kx = rx / theta
+    ky = ry / theta 
+    kz = rz / theta
+
+    st = math.sin(theta)
+    ct = math.cos(theta)
+    vt = 1 - ct
+	   
+    T[0,0] = kx * kx * vt + ct
+    T[0,1] = kx * ky * vt - kz * st
+    T[0,2] = kx * kz * vt + ky * st
+
+    T[1,0] = kx * ky * vt + kz * st
+    T[1,1] = ky * ky * vt + ct
+    T[1,2] = ky * kz * vt - kx * st
+
+    T[2,0] = kx * kz * vt -ky * st
+    T[2,1] = ky * kz * vt + kx * st
+    T[2,2] = kz * kz * vt + ct
+
     return T
 
 def dh(alpha, a, d, theta):
