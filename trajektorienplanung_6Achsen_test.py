@@ -18,102 +18,51 @@ tDelta = 1 / 125
 
 #Trajektiorien Verlauf berechnen und Plotten
 
-#Achse1 Parameter
-vMax = 1.04
-aMax = 1.4
+#Achsen Parameter
+vMaxA1 = 1.04
+aMaxA1 = 1.4
+q0A1 = 0
+q1A1 = np.deg2rad(90)
+
+vMaxA2 = 1.0
+aMaxA2 = 1.5
+q0A2 = 0
+q1A2 = np.deg2rad(80)
+
+vMaxA3 = 1.5
+aMaxA3 = 1.0
+q0A3 = 0
+q1A3 = np.deg2rad(70)
+
+vMaxA4 = 1.0
+aMaxA4 = 1.0
+q0A4 = 0
+q1A4 = np.deg2rad(60)
+
+vMaxA5 = 1.5
+aMaxA5 = 1.5
+q0A5 = 0
+q1A5 = np.deg2rad(50)
+
+vMaxA6 = 1.2
+aMaxA6 = 1.2
+q0A6 = 0
+q1A6 = np.deg2rad(40)
+
+vMax = np.array([vMaxA1,vMaxA2,vMaxA3,vMaxA4,vMaxA5,vMaxA6])
+aMax = np.array([aMaxA1,aMaxA2,aMaxA3,aMaxA4,aMaxA5,aMaxA6])
+q0 = np.array([q0A1,q0A2,q0A3,q0A4,q0A5,q0A6])
+q1 = np.array([q1A1,q1A2,q1A3,q1A4,q1A5,q1A6])
 
 
 """
 1. Dreieck Trajektorie: deltaQ < qGrenz
 """
-q0 = np.deg2rad(0)
-q1 = np.deg2rad(44.2)
+tQFuehrung = tp.trajektorieGesamtzeitFuehrungsachse(q0, q1, vMax, aMax)
+print(tQFuehrung)
 
-tQ =  tp.trajektorieGesamtzeit(q0, q1, vMax, aMax) 
-print("tq: ",tQ)
-
-
-if(tQ[0] == tQ[1]):
-    print("Dreieck")
-    tp.trajektorieDreieck(q0, q1, vMax, aMax, tQ[0], tQ[2])
-
-else:
-    print("Trapez")
-    tp.trajektorieTrapez(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
-
-
-
-"""
-2. Trapez Trajektorie: deltaQ > qGrenz
-"""
-q0 = np.deg2rad(0)
-q1 = np.deg2rad(90)
-
-tQ =  tp.trajektorieGesamtzeit(q0, q1, vMax, aMax) 
-print("tq: ",tQ)
-
-
-if(tQ[0] == tQ[1]):
-    print("Dreieck")
-    tp.trajektorieDreieck(q0, q1, vMax, aMax, tQ[0], tQ[2])
-
-else:
-    print("Trapez")
-    tp.trajektorieTrapez(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
-
-
-
-"""
-3. Trapez Trajektorie: Vorgabe Schaltzeiten von Führungsachse
-"""
-q0 = np.deg2rad(0)
-q1 = np.deg2rad(30)
-
-#Bsp: Vorgabe Schaltzeiten
-tS1 = 1
-tS2 = 2
-tGes = 3
-
-vaNeu = tp.trajektorieVANeu(q0, q1, vMax, aMax, tS1, tGes)
-
-if((vaNeu[0] == 0) or (vaNeu[1] == 0)):
-    print("Winkel in vorgegebener Zeit nicht erreichbar")
-    
-else:
-    if(tQ[0] == tQ[1]):
-        print("Dreieck")
-        tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
-    
-    else:
-        print("Trapez")
-        tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], tS1, tS2, tGes)
-
-
-"""
-4. Trapez Trajektorie Symmetrisch: Vorgabe Gesamtzeit Führungsache (25% tGes Beschleunigen)
-"""
-q0 = np.deg2rad(0)
-q1 = np.deg2rad(100)
-
-#Bsp: Vorgabe Schaltzeiten
-tGes = 4
-
-vaNeu = tp.trajektorie25aMax(q0, q1, vMax, aMax, tGes)
-
-if((vaNeu[0] == 0) or (vaNeu[1] == 0)):
-    print("Winkel in vorgegebener Zeit nicht erreichbar")
-    
-else:
-    if(tQ[0] == tQ[1]):
-        print("Dreieck")
-        tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
-    
-    else:
-        print("Trapez")
-        tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
-
-
-
+tQGesamt = tp.trajektorieFuehrungsachseFolgen(q0, q1, vMax, aMax)
+print(tQGesamt)
 """
 
 #1. Auswahl der zu berechnenden Trajektorien über die status Variable

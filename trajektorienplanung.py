@@ -32,6 +32,7 @@ def trajektorieGesamtzeit(q0, q1, vMax, aMax):
      
     return np.array([tS1, tS2, tGes])
 
+
 def trajektorie25aMax(q0, q1, vMax, aMax, tGes):
     
     qDiff = abs(q1 - q0)
@@ -48,6 +49,26 @@ def trajektorie25aMax(q0, q1, vMax, aMax, tGes):
     
     return np.array([vMaxNeu, aMaxNeu, tS1, tS2])
 
+
+def trajektorieVANeutGes(q0, q1, vMax, aMax, tGes):
+    #tGesamt für Trapez vorgegeben
+    qDiff = abs(q1 - q0)
+    aMaxNeu = aMax
+        
+    #NAN check!
+    vMaxNeu = (tGes - np.sqrt(tGes*tGes - 4 * qDiff/aMax))/(2/aMax)
+    #print("vMaxNeu: ", vMaxNeu)
+    
+    [tS1, tS2, tGes] = trajektorieGesamtzeit(q0, q1, vMaxNeu, aMaxNeu)
+    
+    if(vMaxNeu > vMax):
+        vMaxNeu = 0
+        aMaxNeu = 0
+        #handle Error
+    
+    return np.array([vMaxNeu, aMaxNeu, tS1, tS2, tGes])
+
+
 def trajektorieVANeu(q0, q1, vMax, aMax, tS1, tGes):
     #Schaltzeitpunkt tS1: aMaxNeu, vMaxNeu
     qDiff = abs(q1 - q0)
@@ -58,8 +79,11 @@ def trajektorieVANeu(q0, q1, vMax, aMax, tS1, tGes):
     if((aMaxNeu > aMax) or (vMaxNeu > vMax)):
         vMaxNeu = 0
         aMaxNeu = 0
+        #handle Error
     
     return np.array([vMaxNeu, aMaxNeu])
+
+
 
 def trajektorieDreieck(q0, q1, vMax, aMax, tS, tGes):
     
@@ -186,7 +210,74 @@ def trajektorieTrapez(q0, q1, vMax, aMax, tS1, tS2, tGes):
 
 
 
+def trajektorieGesamtzeitFuehrungsachse(q0, q1, vMax, aMax):
+    
+    tQFuehrung = np.array([0,0,0])
+    Achse = 0
+    Fuehrungsachse = 0 
+    
+    for q in q0:
+        tQtemp = trajektorieGesamtzeit(q,q1[Achse],vMax[Achse],aMax[Achse])
+        #print(tQtemp)
+        Achse = Achse + 1
+        
+        if(tQtemp[2] > tQFuehrung[2]):
+            tQFuehrung = tQtemp
+            Fuehrungsachse = Achse
+    
+    tS1Fuehrung = tQFuehrung[0]
+    tS2Fuehrung = tQFuehrung[1]
+    tGesFuehrung = tQFuehrung[2]
+    
+    return np.array([tS1Fuehrung, tS2Fuehrung, tGesFuehrung, Fuehrungsachse])
 
+
+def trajektorieFuehrungsachseFolgen(q0, q1, vMax, aMax):
+    
+    tQ = np.zeros((q0.size,5))
+    
+    tQFuehrung = trajektorieGesamtzeitFuehrungsachse(q0, q1, vMax, aMax)
+    
+    FuehrungsAchse = int(tQFuehrung[3] - 1)
+    
+    tQ[FuehrungsAchse,0] =  vMax[FuehrungsAchse]
+    tQ[FuehrungsAchse,1] =  aMax[FuehrungsAchse]
+    tQ[FuehrungsAchse,2:5] =  tQFuehrung[0:3]
+    
+    
+    Achse = 0
+    
+    for q in q0:
+        
+        if(Achse != FuehrungsAchse):
+            
+            tQ[Achse,0:2] = trajektorieVANeu(q0[Achse], q1[Achse], vMax[Achse], aMax[Achse], tQFuehrung[0], tQFuehrung[2])
+            
+            if( (tQ[Achse,0] == 0) or (tQ[Achse,1] == 0) ):
+                #tQ[Achse,2:5] = np.array[(0,0,0)]
+                #calculate Trapez zu tges: ohne Ts1 Bedingung!
+                vaNeu = trajektorieVANeutGes(q0[Achse], q1[Achse], vMax[Achse], aMax[Achse], tQFuehrung[2])
+                print("vaNeu: ",vaNeu)
+                tQ[Achse,:] = vaNeu
+                
+            else:
+                #Zeitbedingung eingehalten
+                tQ[Achse,2:5] = tQFuehrung[0:3]
+            #print(tQ[Achse,3:5])
+
+            
+        Achse = Achse + 1
+    
+    return tQ
+
+
+def trajektorieFuehrungsachse25():
+    return 0
+
+
+
+
+"""
 #2. Berechnung t Achse für a, tGes wenn Vorgabe Trapez
 def trajektorieTrapez2(q0, q1, a, tGes):
     
@@ -231,7 +322,13 @@ def trajektorieFolgeachse(q0, q1, tS1, tS2, tGes):
         qS1 = q0 + 0.5*a*tS1**2
         qS2 = q1 - 0.5*a*tS1**2
      
-    return np.array([tS1, tS2 , qS1, qS2, a]) 
+    return np.array([tS1, tS2, qS1, qS2, a]) 
+
+"""
+
+
+
+
 
 """
 #Tajektorienplanung Funktionen
