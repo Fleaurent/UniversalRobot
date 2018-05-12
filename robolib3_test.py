@@ -8,6 +8,8 @@ Created on Tue Apr 24 18:21:09 2018
 import numpy as np
 import robolib3 as rl
 
+#test git
+
 np.set_printoptions(precision=3,suppress=True)
 
 xyzrpyTest = np.array([10, 20, 30, np.deg2rad(45),np.deg2rad(45),np.deg2rad(45)])
