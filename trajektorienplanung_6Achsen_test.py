@@ -59,7 +59,7 @@ q1 = np.array([q1A1,q1A2,q1A3,q1A4,q1A5,q1A6])
 """
 1. Führungsachse Trapez Trajektorie: qG > qGrenz
 """
-tQFuehrung = tp.trajektorieGesamtzeitFuehrungsachse(q0, q1, vMax, aMax)
+tQFuehrung = tp.trajektorieFuehrungsachseZeit(q0, q1, vMax, aMax)
 print(tQFuehrung)
 
 vMaxNeu, aMaxNeu, tS1, tS2, tGes = tp.trajektorieFuehrungsachseFolgen(q0, q1, vMax, aMax)
