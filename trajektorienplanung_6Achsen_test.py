@@ -47,7 +47,7 @@ q1A5 = np.deg2rad(50)
 
 vMaxA6 = 1.2
 aMaxA6 = 1.2
-q0A6 = 0
+q0A6 = np.deg2rad(80)
 q1A6 = np.deg2rad(40)
 
 vMax = np.array([vMaxA1,vMaxA2,vMaxA3,vMaxA4,vMaxA5,vMaxA6])
@@ -57,10 +57,20 @@ q1 = np.array([q1A1,q1A2,q1A3,q1A4,q1A5,q1A6])
 
 
 """
-1. Trapez Trajektorie: qG > qGrenz
+1. Führungsachse Trapez Trajektorie: qG > qGrenz
 """
 tQFuehrung = tp.trajektorieGesamtzeitFuehrungsachse(q0, q1, vMax, aMax)
 print(tQFuehrung)
+
+vMaxNeu, aMaxNeu, tS1, tS2, tGes = tp.trajektorieFuehrungsachseFolgen(q0, q1, vMax, aMax)
+print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+
+tp.plotTrajektorieAchsen(q0, q1, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+
+"""
+2. Führungsachse Dreieck Trajektorie: qG < qGrenz
+"""
+aMax[3] = 0.1
 
 vMaxNeu, aMaxNeu, tS1, tS2, tGes = tp.trajektorieFuehrungsachseFolgen(q0, q1, vMax, aMax)
 print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)

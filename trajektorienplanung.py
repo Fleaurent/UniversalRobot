@@ -98,9 +98,12 @@ def trajektorieDreieck(q0, q1, vMax, aMax, tS, tGes):
     qGrenz = (vMax * vMax) / aMax
     qDiff = abs(q1 - q0)
     
-    if(qDiff > qGrenz):
+    if(abs(qDiff) > qGrenz):
         #kein Dreieckverlauf
         return 0
+    
+    if(q1 < q0):
+        aMax = -aMax
     
     tA = np.arange(0, tS + tDelta, tDelta)
     tB = np.arange(tS + tDelta, tGes + tDelta, tDelta)
@@ -142,10 +145,13 @@ def trajektorieTrapez(q0, q1, vMax, aMax, tS1, tS2, tGes):
     
     tDelta = 1 / 125
     qGrenz = (vMax * vMax) / aMax
-    qDiff = abs(q1 - q0)
+    qDiff = q1 - q0
     
-    if(qDiff <= qGrenz):
+   
+    if(abs(qDiff) <= qGrenz):
         return 0
+    
+    
     
     tA = np.arange(0, tS1 + tDelta, tDelta)
     tB = np.arange(tS1 + tDelta, tS2 + tDelta, tDelta)
@@ -160,8 +166,17 @@ def trajektorieTrapez(q0, q1, vMax, aMax, tS1, tS2, tGes):
     qT = np.zeros([tAC.size, 1])
     vT = np.zeros([tAC.size, 1])
     
-    qTS1 = 0.5 * aMax * tS1**2
-    qTS2 = qDiff - vMax**2 / (2 * aMax)
+    #kurz: vorzeichen aMax nutzen
+    if(q0 > q1):
+        aMax = -aMax
+        vMax = -vMax
+        
+    qTS1 = q0 + 0.5 * aMax * tS1**2
+    qTS2 = q1 - vMax**2 / (2 * aMax)
+    
+    #print("qTS1: ", qTS1)
+    #print("qTS2: ", qTS2)
+    #qTS2 = qDiff - vMax**2 / (2 * aMax)
 
    
     #qtA = 0.5 * aMax * t**2
@@ -277,6 +292,18 @@ def trajektorieFuehrungsachseFolgen(q0, q1, vMax, aMax):
 
 
 def trajektorieFuehrungsachse25():
+    #1. Führungsachse = langsamste Achse
+    
+    #2. Zeit verlängern Führungsachse das 25% a
+    
+    #3 andere achsen Zeit anpassen für 25%a
+    
+    #4. plot
+    
+    return 0
+
+def plotTrajektorieAchsen25(q0, q1, vMax, aMax, tS1, tS2, tGes):
+    
     return 0
 
 
@@ -352,6 +379,8 @@ def plotTrajektorieAchsen(q0, q1, vMax, aMax, tS1, tS2, tGes):
                 vT[(tA.size + tB.size):tAC.size,Achse] = - aMax[Achse] * tC + vMax[Achse] + (aMax[Achse] * qDiff[Achse]) / vMax[Achse]
            
             else:
+                tCs = 0
+                print(tCs)
                 
                 tAs = np.arange(0, tS1[Achse] + tDelta, tDelta)
                 tBs = np.arange(tS1[Achse] + tDelta, tS2[Achse] + tDelta, tDelta)
@@ -361,8 +390,10 @@ def plotTrajektorieAchsen(q0, q1, vMax, aMax, tS1, tS2, tGes):
                 tACssize = tAs.size + tBs.size + tCs.size
                 print("TACs size: ", tAs.size, tBs.size, tCs.size, tACssize)
                 
-                if(tACsize != tACsize):
+                if(tACssize < tACsize):
                     tCs = np.arange(tS2[Achse] + tDelta, tGes[Achse] + tDelta, tDelta)
+                elif(tACssize > tACsize):
+                    tCs = np.arange(tS2[Achse] + tDelta, tGes[Achse] - tDelta, tDelta)
                     
                 qT[0:tAs.size,Achse] = q0[Achse] + 0.5 * aMax[Achse] * tAs**2
                 qT[tAs.size:(tAs.size + tBs.size),Achse] = qTS1[Achse] + (tBs - tS1[Achse]) * vMax[Achse]

@@ -25,8 +25,8 @@ aMax = 1.4
 """
 1. Dreieck Trajektorie: deltaQ < qGrenz
 """
-q0 = np.deg2rad(0)
-q1 = np.deg2rad(44.2)
+q0 = np.deg2rad(-44.2)
+q1 = np.deg2rad(0)
 
 tQ =  tp.trajektorieGesamtzeit(q0, q1, vMax, aMax) 
 print("tq: ",tQ)
@@ -46,7 +46,7 @@ else:
 """
 2. Trapez Trajektorie: deltaQ > qGrenz
 """
-q0 = np.deg2rad(0)
+q0 = np.deg2rad(-90)
 q1 = np.deg2rad(90)
 
 tQ =  tp.trajektorieGesamtzeit(q0, q1, vMax, aMax) 
@@ -80,11 +80,11 @@ if((vaNeu[0] == 0) or (vaNeu[1] == 0)):
 else:
     if(tQ[0] == tQ[1]):
         print("Dreieck")
-        qT, vT, t = tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], tGes)
+        #qT, vT, t = tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], tGes)
     
     else:
         print("Trapez")
-        qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
+        #qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
 
 #tp.plotTrajektorie(qT, vT, t)
 
@@ -107,11 +107,11 @@ if((vaNeu[0] == 0) or (vaNeu[1] == 0)):
 else:
     if(tQ[0] == tQ[1]):
         print("Dreieck")
-        qT, vT, t = tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
+        #qT, vT, t = tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
     
     else:
         print("Trapez")
-        qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], tS1, tS2, tGes)
+        #qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], tS1, tS2, tGes)
 
 #tp.plotTrajektorie(qT, vT, t)
 
@@ -132,11 +132,11 @@ if((vaNeu[0] == 0) or (vaNeu[1] == 0)):
 else:
     if(tQ[0] == tQ[1]):
         print("Dreieck")
-        qT, vT, t = tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
+        #qT, vT, t = tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
     
     else:
         print("Trapez")
-        qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
+        #qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
 
 #tp.plotTrajektorie(qT, vT, t)
 
