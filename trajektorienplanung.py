@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Dec 28 12:02:24 2016
 
-@author: Florens Fraidling
+toDO: keine Winkeländerung!
+
+
 """
 
 import numpy as np

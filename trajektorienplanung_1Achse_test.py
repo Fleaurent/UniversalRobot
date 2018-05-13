@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 28 12:03:04 2016
-
-@author: Florens Fraidling
-"""
 
 import numpy as np
 import trajektorienplanung as tp
@@ -116,7 +111,7 @@ else:
 #tp.plotTrajektorie(qT, vT, t)
 
 """
-4. Trapez Trajektorie Symmetrisch: Vorgabe Gesamtzeit Führungsache (25% tGes Beschleunigen)
+5. Trapez Trajektorie Symmetrisch: Vorgabe Gesamtzeit Führungsache (25% tGes Beschleunigen)
 """
 q0 = np.deg2rad(0)
 q1 = np.deg2rad(-100)
