@@ -86,6 +86,7 @@ print(q)
 #q_home_offset = [0, -1.570796327, 0, -1.570796327, 0, 0]
 #joint_direction = [1, 1, -1, 1, 1, 1]
 
+
 #Parameter UR
 dhParaUR3 = np.array([(np.deg2rad(90),  0,          151.9,  0),
                       (0,               -243.65,    0,      0),
@@ -94,23 +95,24 @@ dhParaUR3 = np.array([(np.deg2rad(90),  0,          151.9,  0),
                       (np.deg2rad(-90), 0,          85.35,  0),
                       (0,               0,          81.9,   0)])
 
-
 #Parameter Robodk
 #l_ur = np.array([118,243.65,213,110.4,83.4,82.4])
-dhParaUR3 = np.array([(np.deg2rad(-90),  0,         118,    np.deg2rad(180)),
+dhParaUR3 = np.array([(np.deg2rad(-90), 0,         118,     np.deg2rad(180)),
                       (0,               243.65,    0,       0),
                       (0,               213,       0,       0),
-                      (np.deg2rad(-90),  0,         110.4,  0),
-                      (np.deg2rad(90),   0,         83.4,   0),
-                      (0,                0,         82.4,   np.deg2rad(180))])
+                      (np.deg2rad(-90), 0,         110.4,   0),
+                      (np.deg2rad(90),  0,         83.4,    0),
+                      (0,               0,         82.4,    np.deg2rad(180))])
 
 #Parameter Kombiniert --> RoboDK
-dhParaUR3 = np.array([(np.deg2rad(90),  0,         118,    0),
+dhParaUR3 = np.array([(np.deg2rad(90),  0,          118,    0),
                       (0,               -243.65,    0,      0),
                       (0,               -213,       0,      0),
-                      (np.deg2rad(90),  0,         110.4,  0),
-                      (np.deg2rad(-90),   0,         83.4,   0),
-                      (0,                0,         82.4,   0)])
+                      (np.deg2rad(90),  0,          110.4,  0),
+                      (np.deg2rad(-90), 0,          83.4,   0),
+                      (0,               0,          82.4,   0)])
+
+
 
 
 #print("dhParaUR3: \n", dhParaUR3)
@@ -138,7 +140,12 @@ print(xyzrpyTest)
 
 qIk = np.array([0,0,0,0,0,0])
 sol = 0
-qIK = rl.ik_ur(dhParaUR3, xyzrpyTest, sol)
+print("\nsol: ",sol)
+
+for sol in range(8):
+    
+    qIK = rl.ik_ur(dhParaUR3, xyzrpyTest, sol)
+    print(qIK)
 
 #if FK correct
 #qIK = rl.ik_ur(dhParaUR3, xyzrxryrzTCP, sol)
