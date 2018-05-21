@@ -90,9 +90,9 @@ def trajektorieDreieck(q0, q1, vMax, aMax, tS, tGes):
     tA = np.arange(0, tS + tDelta, tDelta)
     tB = np.arange(tS + tDelta, tGes + tDelta, tDelta)
     
-    tAB = np.zeros([tA.size + tB.size, 1])
-    tAB[0:tA.size,0] = tA
-    tAB[tA.size:tAB.size,0] = tB
+    tAB = np.zeros([tA.size + tB.size])
+    tAB[0:tA.size] = tA
+    tAB[tA.size:tAB.size] = tB
     
     qT = np.zeros([tAB.size, 1])
     vT = np.zeros([tAB.size, 1])
@@ -104,8 +104,8 @@ def trajektorieDreieck(q0, q1, vMax, aMax, tS, tGes):
     qTS = q0 + 0.5 * aMax * tS**2
     vTS = aMax * tS
     
-    tAB[0:tA.size,0] = tA
-    tAB[tA.size:tAB.size,0] = tB
+    tAB[0:tA.size] = tA
+    tAB[tA.size:tAB.size] = tB
     
     #qtA = 0.5 * aMax * t**2
     #qBT = qTS + vTS * (t - tS) - 0.5 * aMax * (t - tS)**2
@@ -143,10 +143,10 @@ def trajektorieTrapez(q0, q1, vMax, aMax, tS1, tS2, tGes):
     tC = np.arange(tS2 + tDelta, tGes + tDelta, tDelta)
     
     
-    tAC = np.zeros([tA.size + tB.size + tC.size, 1])
-    tAC[0:tA.size,0] = tA
-    tAC[tA.size:(tA.size + tB.size),0] = tB
-    tAC[(tA.size + tB.size):tAC.size,0] = tC
+    tAC = np.zeros([tA.size + tB.size + tC.size])
+    tAC[0:tA.size] = tA
+    tAC[tA.size:(tA.size + tB.size)] = tB
+    tAC[(tA.size + tB.size):tAC.size] = tC
     
     qT = np.zeros([tAC.size, 1])
     vT = np.zeros([tAC.size, 1])
@@ -259,9 +259,9 @@ def plotTrajektorieAchsen(q0, q1, vMax, aMax, tS1, tS2, tGes):
         tA = np.arange(0, tS1[0] + tDelta, tDelta)
         tB = np.arange(tS1[0] + tDelta, tGes[0] + tDelta, tDelta)
         
-        tAB = np.zeros([tA.size + tB.size, 1])
-        tAB[0:tA.size,0] = tA
-        tAB[tA.size:tAB.size,0] = tB
+        tAB = np.zeros([tA.size + tB.size])
+        tAB[0:tA.size] = tA
+        tAB[tA.size:tAB.size] = tB
         
         qT = np.zeros([tAB.size, q0.size])
         vT = np.zeros([tAB.size, q0.size])
@@ -286,6 +286,7 @@ def plotTrajektorieAchsen(q0, q1, vMax, aMax, tS1, tS2, tGes):
             vT[tA.size:tAB.size,Achse] = vTS[Achse] - aMax[Achse] * (tB - tS1[Achse])
             
         plotTrajektorie(qT, vT, tAB)
+        
         return qT, vT, tAB
         
     else:
@@ -297,10 +298,10 @@ def plotTrajektorieAchsen(q0, q1, vMax, aMax, tS1, tS2, tGes):
         tACsize = tA.size + tB.size + tC.size
         print("TAC size: ", tA.size, tB.size, tC.size, tACsize)
                 
-        tAC = np.zeros([tA.size + tB.size + tC.size, 1])
-        tAC[0:tA.size,0] = tA
-        tAC[tA.size:(tA.size + tB.size),0] = tB
-        tAC[(tA.size + tB.size):tAC.size,0] = tC
+        tAC = np.zeros([tA.size + tB.size + tC.size])
+        tAC[0:tA.size] = tA
+        tAC[tA.size:(tA.size + tB.size)] = tB
+        tAC[(tA.size + tB.size):tAC.size] = tC
         
         qT = np.zeros([tAC.size, q0.size])
         vT = np.zeros([tAC.size, q0.size])
@@ -359,6 +360,7 @@ def plotTrajektorieAchsen(q0, q1, vMax, aMax, tS1, tS2, tGes):
                 vT[(tAs.size + tBs.size):tAC.size,Achse] = - aMax[Achse] * tCs + vMax[Achse] + (aMax[Achse] * qDiff[Achse]) / vMax[Achse]
             
         plotTrajektorie(qT, vT, tAC)
+       
         return qT, vT, tAC
     
     return 0, 0, 0
@@ -382,6 +384,7 @@ def plotTrajektorie(qT, vT, t):
     
     return 0
 
+#plotCSV nur python2.7
 import csv_reader
 def plotCSV(filenameCSV):
     #'robot_data.csv'
@@ -416,6 +419,7 @@ def plotCSV(filenameCSV):
     return 0
 
 
+
 def writeCSV(qT, vT, t, filenameCSV):
     #"exampleCsv.csv" # directory relative to script
     
@@ -426,14 +430,15 @@ def writeCSV(qT, vT, t, filenameCSV):
     for timestamp in range(t.size):
         
         #1. timestamp
-        csv.write(str(t[timestamp]) + " ")
+        time = np.float32(t[timestamp])
+        csv.write(str(time) + " ")
         
         #2. q_x
-        for achse in range(6):
+        for achse in range(np.size(qT,1)):
             csv.write(str(qT[timestamp,achse]) + " ")
         
         #3. qd_x
-        for achse in range(6):
+        for achse in range(np.size(vT,1)):
             csv.write(str(vT[timestamp,achse]) + " ")
             
         csv.write("\n")

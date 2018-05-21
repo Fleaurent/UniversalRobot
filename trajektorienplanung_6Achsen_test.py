@@ -6,7 +6,7 @@ import trajektorienplanung as tp
 import robolib3 as rl
 
 #Ausgabe (mit 2 Stellen + folgene 0 unterdrückt)
-np.set_printoptions(precision=2, suppress=True)
+#np.set_printoptions(precision=3, suppress=True)
 
 #Interpolationstakt
 tDelta = 1 / 125
@@ -67,7 +67,11 @@ vMaxNeu, aMaxNeu, tS1, tS2, tGes = tp.trajektorieFuehrungsachseFolgen(q0, q1, vM
 print("vMaxNeu \t\t\t aMaxNeu \t\t\t tS1 \t\t\t\t tS2 \t\t\t\t tGes")
 print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 
-tp.plotTrajektorieAchsen(q0, q1, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+qT, vT, t = tp.plotTrajektorieAchsen(q0, q1, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+
+filenameCSV = "csv/Achsen1Dreieck.csv"
+tp.writeCSV(qT, vT, t, filenameCSV)
+#tp.plotCSV(filenameCSV)
 
 """
 2. Führungsachse Trapez Trajektorie: qG > qGrenz
@@ -77,7 +81,10 @@ aMax[3] = 1.0
 vMaxNeu, aMaxNeu, tS1, tS2, tGes = tp.trajektorieFuehrungsachseFolgen(q0, q1, vMax, aMax)
 print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 
-tp.plotTrajektorieAchsen(q0, q1, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+qT, vT, t = tp.plotTrajektorieAchsen(q0, q1, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+filenameCSV = "csv/Achsen2Trapez.csv"
+tp.writeCSV(qT, vT, t, filenameCSV)
+#tp.plotCSV(filenameCSV)
 
 """
 3. Trajektorie 25% Trapezverlauf
@@ -87,4 +94,7 @@ aMax[3] = 1.0
 vMaxNeu, aMaxNeu, tS1, tS2, tGes = tp.trajektorieFuehrungsachse25(q0, q1, vMax, aMax)
 print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 
-tp.plotTrajektorieAchsen(q0, q1, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+qT, vT, t = tp.plotTrajektorieAchsen(q0, q1, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+filenameCSV = "csv/Achsen3Trapez25.csv"
+tp.writeCSV(qT, vT, t, filenameCSV)
+#tp.plotCSV(filenameCSV)

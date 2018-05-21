@@ -5,7 +5,7 @@ import trajektorienplanung as tp
 import robolib3 as rl
 
 #Ausgabe (mit 2 Stellen + folgene 0 unterdrückt)
-np.set_printoptions(precision=2, suppress=True)
+np.set_printoptions(precision=3, suppress=True)
 
 #Interpolationstakt
 tDelta = 1 / 125
@@ -35,7 +35,12 @@ else:
     print("Trapez")
     qT, vT, t = tp.trajektorieTrapez(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
     
+#qT, vT, t = tp.plotTrajektorieAchsen(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
+
 #tp.plotTrajektorie(qT, vT, t)
+#filenameCSV = "csv/achse1Dreieck.csv"
+#tp.writeCSV(qT, vT, t, filenameCSV)
+#tp.plotCSV(filenameCSV)
 
 
 """
@@ -57,6 +62,9 @@ else:
     qT, vT, t = tp.trajektorieTrapez(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
     
 #tp.plotTrajektorie(qT, vT, t)
+#filenameCSV = "csv/achse2Trapez.csv"
+#tp.writeCSV(qT, vT, t, filenameCSV)
+#tp.plotCSV(filenameCSV)
 
 """
 3. Trapez Trajektorie: Vorgabe Gesamtzeit Führungsachse #TODO
@@ -81,7 +89,10 @@ else:
         print("Trapez")
         qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
 
-#tp.plotTrajektorie(qT, vT, t)
+    #tp.plotTrajektorie(qT, vT, t)
+    #filenameCSV = "csv/achse3vaNeu.csv"
+    #tp.writeCSV(qT, vT, t, filenameCSV)
+    #tp.plotCSV(filenameCSV)
 
 """
 4. Trapez Trajektorie: Vorgabe Schaltzeiten von Führungsachse
@@ -108,7 +119,10 @@ else:
         print("Trapez")
         qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], tS1, tS2, tGes)
 
-#tp.plotTrajektorie(qT, vT, t)
+    #tp.plotTrajektorie(qT, vT, t)
+    filenameCSV = "csv/achse4vaNeu.csv"
+    tp.writeCSV(qT, vT, t, filenameCSV)
+    #tp.plotCSV(filenameCSV)
 
 """
 5. Trapez Trajektorie Symmetrisch: Vorgabe Gesamtzeit Führungsache (25% tGes Beschleunigen)
@@ -133,5 +147,8 @@ else:
         print("Trapez")
         qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
 
-#tp.plotTrajektorie(qT, vT, t)
+    #tp.plotTrajektorie(qT, vT, t)
+    #filenameCSV = "csv/achse5vaNeu.csv"
+    #tp.writeCSV(qT, vT, t, filenameCSV)
+    #tp.plotCSV(filenameCSV)
 
