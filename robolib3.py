@@ -356,7 +356,7 @@ def ik_ur(dh_para, tcp, sol):
     
     
     # Winkel q3
-    test = (x_S**2 + y_S**2 - l1**2 - l2**2) / (2 * l1 * l2)
+    #test = (x_S**2 + y_S**2 - l1**2 - l2**2) / (2 * l1 * l2)
     #print("Value: ", test )
     q3 = math.acos((x_S**2 + y_S**2 - l1**2 - l2**2) / (2 * l1 * l2))
     
@@ -384,11 +384,15 @@ def ik_ur(dh_para, tcp, sol):
     
     # Gesamtwinkel
     #rotvec = T_2_rotvec(T_1_4)
-    xyzrxryrz = T_2_zyx(np.dot(T_1_4,transl(0,0,1)))
-    print(xyzrxryrz)
-    q234 = np.arctan(xyzrxryrz[0]/xyzrxryrz[2])
-    print(q234)
+    #T_0_4 = np.dot(T_0_1,T_1_4)
+    #xyzrxryrz = T_2_zyx(np.dot(T_0_4,transl(0,0,1)))
+    #print(xyzrxryrz)
+    #q234 = np.arctan(xyzrxryrz[0]/xyzrxryrz[2])
     
+    xyzrxryrz = T_2_zyx(T_1_4)
+    #print(xyzrxryrz)
+    q234 = xyzrxryrz[5]
+        
     # Winkel q4
     q4 = q234 - q2 - q3
     

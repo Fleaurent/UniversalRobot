@@ -382,6 +382,64 @@ def plotTrajektorie(qT, vT, t):
     
     return 0
 
+import csv_reader
+def plotCSV(filenameCSV):
+    #'robot_data.csv'
+    with open(filenameCSV) as csvfile:
+        r = csv_reader.CSVReader(csvfile)
+
+    # plot
+    plt.figure()
+    plt.plot(r.timestamp, r.target_q_0)
+    plt.plot(r.timestamp, r.target_q_1)
+    plt.plot(r.timestamp, r.target_q_2)
+    plt.plot(r.timestamp, r.target_q_3)
+    plt.plot(r.timestamp, r.target_q_4)
+    plt.plot(r.timestamp, r.target_q_5)
+    plt.grid(True)
+    plt.title("Gelenkwinkel")
+    plt.ylabel('Gelenkwinkel in Rad')
+    plt.xlabel('Zeit in s')
+    
+    plt.figure()
+    plt.plot(r.timestamp, r.target_qd_0)
+    plt.plot(r.timestamp, r.target_qd_1)
+    plt.plot(r.timestamp, r.target_qd_2)
+    plt.plot(r.timestamp, r.target_qd_3)
+    plt.plot(r.timestamp, r.target_qd_4)
+    plt.plot(r.timestamp, r.target_qd_5)
+    plt.grid(True)
+    plt.title("Winkelgeschindigkeit")
+    plt.ylabel('Winkelgeschwindigkeit in Rad / s')
+    plt.xlabel('Zeit in s')
+    
+    return 0
+
+
+def writeCSV(qT, vT, t, filenameCSV):
+    #"exampleCsv.csv" # directory relative to script
+    
+    csv = open(filenameCSV, "w")  #open File in write mode
+    
+    csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_qd_0 target_qd_1 target_qd_2 target_qd_3 target_qd_4 target_qd_5\n")
+    
+    for timestamp in range(t.size):
+        
+        #1. timestamp
+        csv.write(str(t[timestamp]) + " ")
+        
+        #2. q_x
+        for achse in range(6):
+            csv.write(str(qT[timestamp,achse]) + " ")
+        
+        #3. qd_x
+        for achse in range(6):
+            csv.write(str(vT[timestamp,achse]) + " ")
+            
+        csv.write("\n")
+        
+    return 0
+
 
 """
 Teil B: Trapezverlauf mit 25% tGes Beschleunigung
