@@ -38,8 +38,8 @@ else:
 #qT, vT, t = tp.plotTrajektorieAchsen(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
 
 #tp.plotTrajektorie(qT, vT, t)
-#filenameCSV = "csv/achse1Dreieck.csv"
-#tp.writeCSV(qT, vT, aT, t, filenameCSV)
+filenameCSV = "csv/achse1Dreieck.csv"
+tp.writeCSV(qT, vT, aT, t, filenameCSV)
 #tp.plotCSV(filenameCSV)
 
 
@@ -62,8 +62,8 @@ else:
     [qT, vT, aT, t] = tp.traj_sampleTrapez(q0, q1, vMax, aMax, tS1, tS2, tGes)
     
 #tp.plotTrajektorie(qT, vT, aT, t)
-#filenameCSV = "csv/achse2Trapez.csv"
-#tp.writeCSV(qT, vT, aT, t, filenameCSV)
+filenameCSV = "csv/achse2Trapez.csv"
+tp.writeCSV(qT, vT, aT, t, filenameCSV)
 #tp.plotCSV(filenameCSV)
 
 """
@@ -91,8 +91,8 @@ else:
         [qT, vT, aT, t] = tp.traj_sampleTrapez(q0, q1, vNeu, aNeu, tS1, tS2, tGes)
 
     #tp.plotTrajektorie(qT, vT, aT, t)
-    #filenameCSV = "csv/achse3vaNeu.csv"
-    #tp.writeCSV(qT, vT, aT, t, filenameCSV)
+    filenameCSV = "csv/achse3vaNeu.csv"
+    tp.writeCSV(qT, vT, aT, t, filenameCSV)
     #tp.plotCSV(filenameCSV)
 
 """
@@ -134,17 +134,17 @@ q1 = np.deg2rad(-100)
 #Bsp: Vorgabe Schaltzeiten
 tGes = 4
 
-vaNeu = tp.trajektorie25aMax(q0, q1, vMax, aMax, tGes)
+[vMaxNeu, aMaxNeu, tS1, tS2] = tp.trajektorie25aMax(q0, q1, vMax, aMax, tGes)
 
-if((vaNeu[0] == 0) or (vaNeu[1] == 0)):
+if((vMaxNeu == 0) or (aMaxNeu == 0)):
     print("Winkel in vorgegebener Zeit nicht erreichbar")
     
 else:
     print("Trapez25")
-    [qT, vT, aT, t] = tp.traj_sampleTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
+    [qT, vT, aT, t] = tp.traj_sampleTrapez(q0, q1, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 
     #tp.plotTrajektorie(qT, vT, aT, t)
-    #filenameCSV = "csv/achse5vaNeu.csv"
-    #tp.writeCSV(qT, vT, aT, t, filenameCSV)
+    filenameCSV = "csv/achse5vaNeu.csv"
+    tp.writeCSV(qT, vT, aT, t, filenameCSV)
     #tp.plotCSV(filenameCSV)
 

@@ -194,7 +194,7 @@ def traj_sampleTrapez(q0, q1, vMax, aMax, tS1, tS2, tGes):
 #    data[0:tAC.size,1] = vT[0:tAC.size,0]
 #    data[0:tAC.size,2] = tAC[0:tAC.size,0]
     
-    return [qT, vT, aT, tA]
+    return [qT, vT, aT, tAC]
 
 
 #4. Trajektorie direkt aus Vektor plotten
@@ -520,11 +520,15 @@ def plotCSV(filenameCSV):
     # plot
     plt.figure()
     plt.plot(r.timestamp, r.target_q_0)
-    plt.plot(r.timestamp, r.target_q_1)
-    plt.plot(r.timestamp, r.target_q_2)
-    plt.plot(r.timestamp, r.target_q_3)
-    plt.plot(r.timestamp, r.target_q_4)
-    plt.plot(r.timestamp, r.target_q_5)
+    try:
+        plt.plot(r.timestamp, r.target_q_1)
+        plt.plot(r.timestamp, r.target_q_2)
+        plt.plot(r.timestamp, r.target_q_3)
+        plt.plot(r.timestamp, r.target_q_4)
+        plt.plot(r.timestamp, r.target_q_5)
+    except:
+        plt.title("Winkelgeschindigkeit")
+        #nothing to do
     plt.grid(True)
     plt.title("Gelenkwinkel")
     plt.ylabel('Gelenkwinkel in Rad')
@@ -532,14 +536,34 @@ def plotCSV(filenameCSV):
     
     plt.figure()
     plt.plot(r.timestamp, r.target_qd_0)
-    plt.plot(r.timestamp, r.target_qd_1)
-    plt.plot(r.timestamp, r.target_qd_2)
-    plt.plot(r.timestamp, r.target_qd_3)
-    plt.plot(r.timestamp, r.target_qd_4)
-    plt.plot(r.timestamp, r.target_qd_5)
+    try:
+        plt.plot(r.timestamp, r.target_qd_1)
+        plt.plot(r.timestamp, r.target_qd_2)
+        plt.plot(r.timestamp, r.target_qd_3)
+        plt.plot(r.timestamp, r.target_qd_4)
+        plt.plot(r.timestamp, r.target_qd_5)
+    except:
+        #nothing to do
+        plt.title("Winkelgeschindigkeit")
     plt.grid(True)
     plt.title("Winkelgeschindigkeit")
     plt.ylabel('Winkelgeschwindigkeit in Rad / s')
+    plt.xlabel('Zeit in s')
+    
+    plt.figure()
+    plt.plot(r.timestamp, r.target_qdd_0)
+    try:
+        plt.plot(r.timestamp, r.target_qdd_1)
+        plt.plot(r.timestamp, r.target_qdd_2)
+        plt.plot(r.timestamp, r.target_qdd_3)
+        plt.plot(r.timestamp, r.target_qdd_4)
+        plt.plot(r.timestamp, r.target_qdd_5)
+    except:
+        plt.title("Winkelgeschindigkeit")
+        #nothing todo
+    plt.grid(True)
+    plt.title("Winkelbeschleunigung")
+    plt.ylabel('Winkelbeschleunigung in Rad / s**2')
     plt.xlabel('Zeit in s')
     
     return 0
@@ -551,7 +575,16 @@ def writeCSV(qT, vT, aT, t, filenameCSV):
     
     csv = open(filenameCSV, "w")  #open File in write mode
     
-    csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_qd_0 target_qd_1 target_qd_2 target_qd_3 target_qd_4 target_qd_5\n")
+    axNum = qT.shape[1]
+    
+    #print("CSV: ",qT.shape)
+    if(axNum == 1):
+        csv.write("timestamp target_q_0 target_qd_0 target_qdd_0\n")
+    elif(axNum == 6):
+        csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_qd_0 target_qd_1 target_qd_2 target_qd_3 target_qd_4 target_qd_5 target_qdd_0 target_qdd_1 target_qdd_2 target_qdd_3 target_qdd_4 target_qdd_5\n")
+    else:
+        return 1
+
     
     for timestamp in range(t.size):
         
@@ -560,16 +593,16 @@ def writeCSV(qT, vT, aT, t, filenameCSV):
         csv.write(str(time) + " ")
         
         #2. q_x
-        for achse in range(np.size(qT,1)):
-            csv.write(str(qT[timestamp,achse]) + " ")
+        for axis in range(axNum):
+            csv.write(str(qT[timestamp,axis]) + " ")
         
         #3. qd_x
-        for achse in range(np.size(vT,1)):
-            csv.write(str(vT[timestamp,achse]) + " ")
+        for axis in range(axNum):
+            csv.write(str(vT[timestamp,axis]) + " ")
             
         #4. qdd_x
-        for achse in range(np.size(aT,1)):
-            csv.write(str(aT[timestamp,achse]) + " ")
+        for axis in range(axNum):
+            csv.write(str(aT[timestamp,axis]) + " ")
             
         csv.write("\n")
         
