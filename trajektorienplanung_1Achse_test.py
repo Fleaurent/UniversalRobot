@@ -23,23 +23,23 @@ aMax = 1.4
 q0 = np.deg2rad(-44.2)
 q1 = np.deg2rad(0)
 
-tQ =  tp.trajektorieGesamtzeit(q0, q1, vMax, aMax) 
-print("tq: ",tQ)
+[tS1, tS2, tGes] =  tp.traj_timestamps(q0, q1, vMax, aMax) 
+print(tS1, tS2, tGes)
 
 
-if(tQ[0] == tQ[1]):
+if(tS1 == tS2):
     print("Dreieck")
-    qT, vT, t = tp.trajektorieDreieck(q0, q1, vMax, aMax, tQ[0], tQ[2])
+    [qT, vT, aT, t] = tp.traj_sampleDreieck(q0, q1, vMax, aMax, tS1, tGes)
 
 else:
     print("Trapez")
-    qT, vT, t = tp.trajektorieTrapez(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
+    [qT, vT, aT, t] = tp.traj_sampleTrapez(q0, q1, vMax, aMax, tS1, tS2, tGes)
     
 #qT, vT, t = tp.plotTrajektorieAchsen(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
 
 #tp.plotTrajektorie(qT, vT, t)
 #filenameCSV = "csv/achse1Dreieck.csv"
-#tp.writeCSV(qT, vT, t, filenameCSV)
+#tp.writeCSV(qT, vT, aT, t, filenameCSV)
 #tp.plotCSV(filenameCSV)
 
 
@@ -49,21 +49,21 @@ else:
 q0 = np.deg2rad(-90)
 q1 = np.deg2rad(90)
 
-tQ =  tp.trajektorieGesamtzeit(q0, q1, vMax, aMax) 
-print("tq: ",tQ)
+[tS1, tS2, tGes] =  tp.traj_timestamps(q0, q1, vMax, aMax) 
+print(tS1, tS2, tGes)
 
 
-if(tQ[0] == tQ[1]):
+if(tS1 == tS2):
     print("Dreieck")
-    qT, vT, t = tp.trajektorieDreieck(q0, q1, vMax, aMax, tQ[0], tQ[2])
+    [qT, vT, aT, t] = tp.traj_sampleDreieck(q0, q1, vMax, aMax, tS1, tGes)
 
 else:
     print("Trapez")
-    qT, vT, t = tp.trajektorieTrapez(q0, q1, vMax, aMax, tQ[0], tQ[1], tQ[2])
+    [qT, vT, aT, t] = tp.traj_sampleTrapez(q0, q1, vMax, aMax, tS1, tS2, tGes)
     
-#tp.plotTrajektorie(qT, vT, t)
+#tp.plotTrajektorie(qT, vT, aT, t)
 #filenameCSV = "csv/achse2Trapez.csv"
-#tp.writeCSV(qT, vT, t, filenameCSV)
+#tp.writeCSV(qT, vT, aT, t, filenameCSV)
 #tp.plotCSV(filenameCSV)
 
 """
@@ -75,23 +75,24 @@ q1 = np.deg2rad(-90)
 #Bsp: Vorgabe Schaltzeiten
 tGes = 5
 
-vaNeu = tp.trajektorieVANeutGes(q0, q1, vMax, aMax, tGes)
+[vNeu, aNeu, tS1, tS2, tGes] = tp.traj_getVAtimestamps(q0, q1, vMax, aMax, tGes)
 
-if((vaNeu[0] == 0) or (vaNeu[1] == 0)):
+if((vNeu == 0) or (aNeu == 0)):
     print("Winkel in vorgegebener Zeit nicht erreichbar")
     
 else:
-    if(tQ[0] == tQ[1]):
+    
+    if(tS1 == tS2):
         print("Dreieck")
-        qT, vT, t = tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], tGes)
+        [qT, vT, aT, t] = tp.traj_sampleDreieck(q0, q1, vNeu, aNeu, tS1, tGes)
     
     else:
         print("Trapez")
-        qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
+        [qT, vT, aT, t] = tp.traj_sampleTrapez(q0, q1, vNeu, aNeu, tS1, tS2, tGes)
 
-    #tp.plotTrajektorie(qT, vT, t)
+    #tp.plotTrajektorie(qT, vT, aT, t)
     #filenameCSV = "csv/achse3vaNeu.csv"
-    #tp.writeCSV(qT, vT, t, filenameCSV)
+    #tp.writeCSV(qT, vT, aT, t, filenameCSV)
     #tp.plotCSV(filenameCSV)
 
 """
@@ -105,23 +106,23 @@ tS1 = 1
 tS2 = 2
 tGes = 3
 
-vaNeu = tp.trajektorieVANeu(q0, q1, vMax, aMax, tS1, tGes)
+[vNeu, aNeu] = tp.traj_getVA(q0, q1, vMax, aMax, tS1, tGes)
 
-if((vaNeu[0] == 0) or (vaNeu[1] == 0)):
+if((vNeu == 0) or (aNeu == 0)):
     print("Winkel in vorgegebener Zeit nicht erreichbar")
     
 else:
-    if(tQ[0] == tQ[1]):
+    if(tS1 == tS2):
         print("Dreieck")
-        qT, vT, t = tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
+        [qT, vT, aT, t] = tp.traj_sampleDreieck(q0, q1, vNeu, aNeu, tS1, tGes)
     
     else:
         print("Trapez")
-        qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], tS1, tS2, tGes)
+        [qT, vT, aT, t] = tp.traj_sampleTrapez(q0, q1, vNeu, aNeu, tS1, tS2, tGes)
 
-    #tp.plotTrajektorie(qT, vT, t)
+    #tp.plotTrajektorie(qT, vT, aT, t)
     filenameCSV = "csv/achse4vaNeu.csv"
-    tp.writeCSV(qT, vT, t, filenameCSV)
+    tp.writeCSV(qT, vT, aT, t, filenameCSV)
     #tp.plotCSV(filenameCSV)
 
 """
@@ -139,16 +140,11 @@ if((vaNeu[0] == 0) or (vaNeu[1] == 0)):
     print("Winkel in vorgegebener Zeit nicht erreichbar")
     
 else:
-    if(tQ[0] == tQ[1]):
-        print("Dreieck")
-        qT, vT, t = tp.trajektorieDreieck(q0, q1, vaNeu[0], vaNeu[1], tS1, tGes)
-    
-    else:
-        print("Trapez")
-        qT, vT, t = tp.trajektorieTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
+    print("Trapez25")
+    [qT, vT, aT, t] = tp.traj_sampleTrapez(q0, q1, vaNeu[0], vaNeu[1], vaNeu[2], vaNeu[3], tGes)
 
-    #tp.plotTrajektorie(qT, vT, t)
+    #tp.plotTrajektorie(qT, vT, aT, t)
     #filenameCSV = "csv/achse5vaNeu.csv"
-    #tp.writeCSV(qT, vT, t, filenameCSV)
+    #tp.writeCSV(qT, vT, aT, t, filenameCSV)
     #tp.plotCSV(filenameCSV)
 

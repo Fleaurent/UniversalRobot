@@ -55,6 +55,7 @@ print("aMax: \t", aMax)
 print("q0: \t", q0)
 print("q1: \t", q1)
 
+
 """
 1. Führungsachse Dreieck Trajektorie: qG < qGrenz
 """
@@ -63,27 +64,29 @@ aMax[3] = 0.1
 tQFuehrung = tp.trajektorieFuehrungsachseZeit(q0, q1, vMax, aMax)
 print(tQFuehrung)
 
-vMaxNeu, aMaxNeu, tS1, tS2, tGes = tp.trajektorieFuehrungsachseFolgen(q0, q1, vMax, aMax)
+[vMaxNeu, aMaxNeu, tS1, tS2, tGes] = tp.trajektorieFuehrungsachseFolgen(q0, q1, vMax, aMax)
 print("vMaxNeu \t\t\t aMaxNeu \t\t\t tS1 \t\t\t\t tS2 \t\t\t\t tGes")
 print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 
-qT, vT, t = tp.plotTrajektorieAchsen(q0, q1, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+[qT, vT, aT, t] = tp.plotTrajektorieAchsen(q0, q1, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 
 filenameCSV = "csv/Achsen1Dreieck.csv"
-tp.writeCSV(qT, vT, t, filenameCSV)
+tp.writeCSV(qT, vT, aT, t, filenameCSV)
 #tp.plotCSV(filenameCSV)
+
+
 
 """
 2. Führungsachse Trapez Trajektorie: qG > qGrenz
 """
 aMax[3] = 1.0
 
-vMaxNeu, aMaxNeu, tS1, tS2, tGes = tp.trajektorieFuehrungsachseFolgen(q0, q1, vMax, aMax)
+[vMaxNeu, aMaxNeu, tS1, tS2, tGes] = tp.trajektorieFuehrungsachseFolgen(q0, q1, vMax, aMax)
 print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 
-qT, vT, t = tp.plotTrajektorieAchsen(q0, q1, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+[qT, vT, aT, t] = tp.plotTrajektorieAchsen(q0, q1, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 filenameCSV = "csv/Achsen2Trapez.csv"
-tp.writeCSV(qT, vT, t, filenameCSV)
+tp.writeCSV(qT, vT, aT, t, filenameCSV)
 #tp.plotCSV(filenameCSV)
 
 """
@@ -91,10 +94,10 @@ tp.writeCSV(qT, vT, t, filenameCSV)
 """
 aMax[3] = 1.0
 
-vMaxNeu, aMaxNeu, tS1, tS2, tGes = tp.trajektorieFuehrungsachse25(q0, q1, vMax, aMax)
+[vMaxNeu, aMaxNeu, tS1, tS2, tGes] = tp.trajektorieFuehrungsachse25(q0, q1, vMax, aMax)
 print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 
-qT, vT, t = tp.plotTrajektorieAchsen(q0, q1, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+[qT, vT, aT, t] = tp.plotTrajektorieAchsen(q0, q1, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 filenameCSV = "csv/Achsen3Trapez25.csv"
-tp.writeCSV(qT, vT, t, filenameCSV)
+tp.writeCSV(qT, vT, aT, t, filenameCSV)
 #tp.plotCSV(filenameCSV)
