@@ -133,6 +133,7 @@ xyzrpyTest = np.array([68.272, -170.257, -249.514, np.deg2rad(163.675),np.deg2ra
 #xyzrpyTest = np.array([68.272, -170.257, -249.514, np.deg2rad(0),np.deg2rad(0),np.deg2rad(0)])
 #q = np.array([0,np.deg2rad(0),np.deg2rad(0),0,np.deg2rad(0),0])
 #xyzrpyTest = np.array([-456.65, -192.8, 34.6, np.deg2rad(90),np.deg2rad(0),np.deg2rad(0)])
+#xyzrpyTest = np.array([0, -194.25, 694.15, 0,2.214,-2.2214])
 
 #q = np.array([0,0,0,0,0,0])
 #xyzrpyTest = np.array([-457, -193, 35, np.deg2rad(90),np.deg2rad(0),np.deg2rad(0)])

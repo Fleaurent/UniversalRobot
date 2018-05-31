@@ -177,7 +177,7 @@ def T_2_rotvec(T):
 
     theta = math.acos(((R[0, 0] + R[1, 1] + R[2, 2]) - 1) / 2)
     
-    if math.sin(theta) == 0:
+    if np.abs(math.sin(theta)) < 1e-6:
         rx = 0
         ry = 0
         rz = 0
@@ -273,8 +273,8 @@ def ik_ur(dh_para, tcp, sol):
     """
     Inverse Kinematics for UR type robots
     """
-    #T_0_6 = rotvec_2_T(tcp)
-    T_0_6 = zyx_2_T(tcp)
+    T_0_6 = rotvec_2_T(tcp)
+    #T_0_6 = zyx_2_T(tcp)
     
     # Achse 5 in 0
     #O5_in_0 = np.dot(T_0_6, transl(0, 0, -dh_para[5, 2]))
@@ -358,7 +358,10 @@ def ik_ur(dh_para, tcp, sol):
     # Winkel q3
     #test = (x_S**2 + y_S**2 - l1**2 - l2**2) / (2 * l1 * l2)
     #print("Value: ", test )
-    q3 = math.acos((x_S**2 + y_S**2 - l1**2 - l2**2) / (2 * l1 * l2))
+    try:
+        q3 = math.acos((x_S**2 + y_S**2 - l1**2 - l2**2) / (2 * l1 * l2))
+    except:
+        return 0
     
     if (sol & 2 == 0):
         q3 = q3
@@ -386,6 +389,7 @@ def ik_ur(dh_para, tcp, sol):
     #rotvec = T_2_rotvec(T_1_4)
     #T_0_4 = np.dot(T_0_1,T_1_4)
     #xyzrxryrz = T_2_zyx(np.dot(T_0_4,transl(0,0,1)))
+    print(T_1_4)
     #print(xyzrxryrz)
     #q234 = np.arctan(xyzrxryrz[0]/xyzrxryrz[2])
     
@@ -397,6 +401,7 @@ def ik_ur(dh_para, tcp, sol):
     q4 = q234 - q2 - q3
     
     #print("\nq4: ", q4)
+    
     
     return np.array([q1, q2, q3, q4, q5, q6])
     
