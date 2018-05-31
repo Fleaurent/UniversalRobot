@@ -343,9 +343,9 @@ def ik_ur(dh_para, tcp, sol):
     T_4_6 = np.dot(T_4_5, T_5_6)
     T_6_4 = Tinv(T_4_6)
     T_1_0 = Tinv(T_0_1)
-    T_1_4 = np.dot(np.dot(T_1_0, T_0_6), T_6_4)
+    T_1_4 = np.dot(np.dot(T_1_0, T_0_6),T_6_4)
     # 90 Grad Rotation zwischen 4 und 5 kompensieren
-    #T_1_4 = np.dot(T_1_4, rotx(-np.pi / 2))
+    T_1_4 = np.dot(T_1_4, rotx(-np.pi / 2))
     #print("T_1_4 ", T_1_4)
     
     x_S = T_1_4[0, 3]
@@ -386,16 +386,13 @@ def ik_ur(dh_para, tcp, sol):
     #print("\nq2: ", q2)
     
     # Gesamtwinkel
-    #rotvec = T_2_rotvec(T_1_4)
-    #T_0_4 = np.dot(T_0_1,T_1_4)
-    #xyzrxryrz = T_2_zyx(np.dot(T_0_4,transl(0,0,1)))
-    #print(T_1_4)
-    #print(xyzrxryrz)
-    #q234 = np.arctan(xyzrxryrz[0]/xyzrxryrz[2])
+    rotvec = T_2_rotvec(T_1_4)
+    #print("xyzrxryrz:",rotvec)
+    q234 = rotvec[5]
     
-    xyzrxryrz = T_2_zyx(T_1_4)
-    #print(xyzrxryrz)
-    q234 = xyzrxryrz[5]
+    #xyzrpy = T_2_rpy(T_1_4)
+    #print("xyzrpy:",xyzrpy)
+    #q234 = xyzrpy[5]
         
     # Winkel q4
     q4 = q234 - q2 - q3

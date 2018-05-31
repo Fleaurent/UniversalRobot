@@ -53,8 +53,8 @@ print("rotvecHome: ", rotvecTest)
 TrotvecHome = rl.rotvec_2_T(rotvecHomeSim)
 print(" TrotvecHome:\n", TrotvecHome)
 
-rotvecTest = rl.T_2_rotvec(TrotvecHome)
-print("rotvecHome: ", rotvecTest)
+rotvecHome = rl.T_2_rotvec(TrotvecHome)
+print("rotvecHome: ", rotvecHome)
 
 
 #4. Denavit Hartenberg
@@ -130,31 +130,38 @@ print("rotvecFk: ", rotvecFk)
 
 #6. Inverse kinematik
 print("\n6. Inverse kinematik")
+#a)xyzrpy --> q
 #qHome = np.array([0,np.deg2rad(-90),np.deg2rad(-90),0,np.deg2rad(90),0])
 #xyzrpyTest = np.array([-295.4, -110.4, 445.05, np.deg2rad(0),np.deg2rad(90),np.deg2rad(-90)])
 #q = np.array([np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45)])
-xyzrpyTest = np.array([68.272, -170.257, -249.514, np.deg2rad(163.675),np.deg2rad(58.6),np.deg2rad(118.175)])
+#xyzrpyTest = np.array([68.272, -170.257, -249.514, np.deg2rad(163.675),np.deg2rad(58.6),np.deg2rad(118.175)])
 #xyzrpyTest = np.array([68.272, -170.257, -249.514, np.deg2rad(0),np.deg2rad(0),np.deg2rad(0)])
 #q = np.array([0,np.deg2rad(0),np.deg2rad(0),0,np.deg2rad(0),0])
 #xyzrpyTest = np.array([-456.65, -192.8, 34.6, np.deg2rad(90),np.deg2rad(0),np.deg2rad(0)])
 #xyzrpyTest = np.array([0, -194.25, 694.15, 0,2.214,-2.2214])
-
 #q = np.array([0,0,0,0,0,0])
 #xyzrpyTest = np.array([-457, -193, 35, np.deg2rad(90),np.deg2rad(0),np.deg2rad(0)])
-print(xyzrpyTest)
+#print(xyzrpyTest)
+
+#b)xyzrxryrz rotvec --> q
+#qHome = np.array([0,np.deg2rad(-90),np.deg2rad(-90),0,np.deg2rad(90),0])
+#rotvecQ = np.array([ 295.15, -112.35, 480.9, -1.209, 1.209, -1.209])    #sol6
+rotvecQ = np.array([ 295.15, -112.35, 480.9, 2.4184, -2.4184, 2.4184])  #sol6
+#q = np.array([np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45)])
+#rotvecQ = np.array([ 70.2, -170.59, -214.24, 2.066, -2.921, 1.461])
 
 qIk = np.array([0,0,0,0,0,0])
 sol = 0
-print("\nsol: ",sol)
+
+#qIK = rl.ik_ur(dhParaUR3, rotvecQ, sol)
+#print("sol:", sol, qIK)
 
 for sol in range(8):
-    
-    qIK = rl.ik_ur(dhParaUR3, xyzrpyTest, sol)
-    print(qIK)
+    qIK = rl.ik_ur(dhParaUR3, rotvecQ, sol)
+    print("sol:", sol, qIK)
 
-#if FK correct
-#qIK = rl.ik_ur(dhParaUR3, xyzrxryrzTCP, sol)
-print(qIK)
+
+
 
 """
 theta = 1
