@@ -389,7 +389,7 @@ def ik_ur(dh_para, tcp, sol):
     #rotvec = T_2_rotvec(T_1_4)
     #T_0_4 = np.dot(T_0_1,T_1_4)
     #xyzrxryrz = T_2_zyx(np.dot(T_0_4,transl(0,0,1)))
-    print(T_1_4)
+    #print(T_1_4)
     #print(xyzrxryrz)
     #q234 = np.arctan(xyzrxryrz[0]/xyzrxryrz[2])
     

@@ -8,46 +8,53 @@ Created on Tue Apr 24 18:21:09 2018
 import numpy as np
 import robolib3 as rl
 
-#test git
-
 np.set_printoptions(precision=3,suppress=True)
 
-xyzrpyTest = np.array([10, 20, 30, np.deg2rad(45),np.deg2rad(45),np.deg2rad(45)])
-print(xyzrpyTest)
 
+#0.Testparameter
+xyzrpyTest = np.array([10, 20, 30, np.deg2rad(45),np.deg2rad(45),np.deg2rad(45)])
+rotvecHomeSim = np.array([295.15, -112.35, 480.90, 2.4184, -2.4184, 2.4184])
+xyzrpyHomeSim = np.array([295.15, -112.35, 480.90, -1.571, 0, -1.571])
+rotvecHomeRobo = np.array([295.40, -110.40, 445.05, -1.209, 1.209, -1.209])
+xyzrpyHomeRobo = np.array([295.40, -110.40, 445.05, -1.571, 0, -1.571])
+qHome = np.array([np.deg2rad(0), np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0),])
+
+print("xyzrpyTest:\t", xyzrpyTest)
+print("rotvecHome:\t", rotvecHomeSim)
+print("xyzrpyHome:\t", xyzrpyHomeSim)
+print("qHome:\t\t", qHome)
 
 #1. RPY == XYZ
 print("\n1. RPY == XYZ")
 
-TTest = rl.rpy_2_T(xyzrpyTest)
-print(TTest)
+Trpy = rl.rpy_2_T(xyzrpyHomeSim)
+print("Trpy:\n", Trpy)
 
-xyzrpyTest = rl.T_2_rpy(TTest)
-print(xyzrpyTest)
+xyzrpyTest = rl.T_2_rpy(Trpy)
+print("xyzrpy: ",xyzrpyTest)
 
 
 #2. ZYX
 print("\n2. ZYX")
 
-TTest = rl.zyx_2_T(xyzrpyTest)
-print(TTest)
+Tzyx = rl.zyx_2_T(xyzrpyHomeSim)
+print("Tzyx:\n", Tzyx)
 
-xyzrpyTest = rl.T_2_zyx(TTest)
-print(xyzrpyTest)
+xyzrpyTest = rl.T_2_zyx(Tzyx)
+print("xyzrpy: ",xyzrpyTest)
 
 
 #3. Rotation Vector
 print("\n3. Rotation Vector")
 
-rotvecTest = rl.T_2_rotvec(TTest)
-print(rotvecTest)
+rotvecTest = rl.T_2_rotvec(Trpy)
+print("rotvecHome: ", rotvecTest)
 
-#Rotation Vector Matrix
-TTest = rl.rotvec_2_T(rotvecTest)
-print(TTest)
+TrotvecHome = rl.rotvec_2_T(rotvecHomeSim)
+print(" TrotvecHome:\n", TrotvecHome)
 
-rotvecTest = rl.T_2_rotvec(TTest)
-print(rotvecTest)
+rotvecTest = rl.T_2_rotvec(TrotvecHome)
+print("rotvecHome: ", rotvecTest)
 
 
 #4. Denavit Hartenberg
