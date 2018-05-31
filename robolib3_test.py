@@ -60,28 +60,27 @@ print("rotvecHome: ", rotvecTest)
 #4. Denavit Hartenberg
 print("\n4. Denavit Hartenberg")
 
-alpha = 0 
-a = 0
-d = 0
-theta = 0
+alpha = np.deg2rad(90)
+a = 1
+d = 1
+theta = np.deg2rad(90)
 
-dhSP = np.array([alpha, a, d, theta])
-print("\ndh = dh(%3.f,%3.f,%3.f,%3.f)" % (dhSP[0],dhSP[1],dhSP[2],dhSP[3]))
+print("\ndh = dh(%.3f,%.3f,%.3f,%.3f)" % (alpha, a, d, theta))
 
-dh = rl.dh(dhSP[0],dhSP[1],dhSP[2],dhSP[3])
+dh = rl.dh(alpha, a, d, theta)
 print(dh)
 
-print("\ndhm = dhm(%3.f,%3.f,%3.f,%3.f)" % (dhSP[0],dhSP[1],dhSP[2],dhSP[3]))
-dhm = rl.dhm(dhSP[0],dhSP[1],dhSP[2],dhSP[3])
+print("\ndhm = dhm(%.3f,%.3f,%.3f,%.3f)" % (alpha, a, d, theta))
+dhm = rl.dhm(alpha, a, d, theta)
 print(dhm)
 
 #5. [DH]  Forwardkinematik
 print("\n5. [DH]  Forwardkinematik")
 #q = np.array([0,0,0,0,0,0])
-q = np.array([np.deg2rad(90),0,0,0,0,0])
+#q = np.array([np.deg2rad(90),0,0,0,0,0])
 #qHome
-#q = np.array([0,np.deg2rad(-90),np.deg2rad(-90),0,np.deg2rad(90),0])
-q = np.array([np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45)])
+q = np.array([0,np.deg2rad(-90),np.deg2rad(-90),0,np.deg2rad(90),0])
+#q = np.array([np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45)])
 print("Winkel q: " )
 print(q)
 
@@ -93,14 +92,6 @@ print(q)
 #q_home_offset = [0, -1.570796327, 0, -1.570796327, 0, 0]
 #joint_direction = [1, 1, -1, 1, 1, 1]
 
-
-#Parameter UR
-dhParaUR3 = np.array([(np.deg2rad(90),  0,          151.9,  0),
-                      (0,               -243.65,    0,      0),
-                      (0,               -213.25,    0,      0),
-                      (np.deg2rad(90),  0,          112.35, 0),
-                      (np.deg2rad(-90), 0,          85.35,  0),
-                      (0,               0,          81.9,   0)])
 
 #Parameter Robodk
 #l_ur = np.array([118,243.65,213,110.4,83.4,82.4])
@@ -119,7 +110,13 @@ dhParaUR3 = np.array([(np.deg2rad(90),  0,          118,    0),
                       (np.deg2rad(-90), 0,          83.4,   0),
                       (0,               0,          82.4,   0)])
 
-
+#Parameter URSim
+dhParaUR3 = np.array([(np.deg2rad(90),  0,          151.9,  0),
+                      (0,               -243.65,    0,      0),
+                      (0,               -213.25,    0,      0),
+                      (np.deg2rad(90),  0,          112.35, 0),
+                      (np.deg2rad(-90), 0,          85.35,  0),
+                      (0,               0,          81.9,   0)])
 
 
 #print("dhParaUR3: \n", dhParaUR3)
@@ -127,8 +124,8 @@ print("fk_UR3 = fk_ur(dhParaUR3,q)")
 fk_UR3 = rl.fk_ur(dhParaUR3,q)
 print(fk_UR3)
 
-xyzrxryrzTCP = rl.T_2_zyx(fk_UR3)
-print(xyzrxryrzTCP)
+rotvecFk = rl.T_2_rotvec(fk_UR3)
+print("rotvecFk: ", rotvecFk)
 
 
 #6. Inverse kinematik
