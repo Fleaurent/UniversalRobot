@@ -97,5 +97,6 @@ filenameRobo = "csv/robot_movej_90_8s.csv"
 
 filenameRobo = "csv/robot_movej_90_45_135.csv"
 tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 

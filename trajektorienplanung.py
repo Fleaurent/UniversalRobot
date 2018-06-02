@@ -568,6 +568,40 @@ def plotCSV(filenameCSV):
     
     return 0
 
+def plotPoseCSV(filenameCSV):
+    #'robot_data.csv'
+    with open(filenameCSV) as csvfile:
+        r = csv_reader.CSVReader(csvfile)
+
+    # plot
+    plt.figure()
+    try:
+        plt.plot(r.timestamp, r.actual_TCP_pose_0)
+        plt.plot(r.timestamp, r.actual_TCP_pose_1)
+        plt.plot(r.timestamp, r.actual_TCP_pose_2)
+    except:
+        plt.title("Pose XYZ")
+        #nothing to do
+    plt.grid(True)
+    plt.title("Pose XYZ")
+    plt.ylabel('XYZ in mm')
+    plt.xlabel('Zeit in s')
+    
+    
+    plt.figure()
+    try:
+        plt.plot(r.timestamp, r.actual_TCP_pose_3)
+        plt.plot(r.timestamp, r.actual_TCP_pose_4)
+        plt.plot(r.timestamp, r.actual_TCP_pose_5)
+    except:
+        plt.title("Pose rxryrz")
+        #nothing to do
+    plt.grid(True)
+    plt.title("Pose rxryrz")
+    plt.ylabel('rxryrz in Rad')
+    plt.xlabel('Zeit in s')
+    
+    return 0
 
 #nur Python 3.6: größe np.array Problem in 2.7
 def writeCSV(qT, vT, aT, t, filenameCSV):
