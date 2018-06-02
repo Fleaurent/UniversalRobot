@@ -7,7 +7,7 @@ toDO: keine Winkeländerung!
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-
+import os
 
 """
 Teil 1:  Trajektore einzelner Achse
@@ -510,22 +510,25 @@ def trajektorieFuehrungsachse25(q0, q1, vMax, aMax):
 """
 CSV Files
 """
-#plotCSV nur python2.7
+#plotCSV: python2.7
 import csv_reader
+#target
 def plotCSV(filenameCSV):
-    #'robot_data.csv'
-    with open(filenameCSV) as csvfile:
+    
+    filename = os.path.splitext(filenameCSV)[0]
+    
+    with open(('csv/' + filenameCSV)) as csvfile:
         r = csv_reader.CSVReader(csvfile)
 
     # plot
     plt.figure()
-    plt.plot(r.timestamp, r.target_q_0)
+    plt.plot(r.timestamp, r.target_q_0, color='r', label='q0')
     try:
-        plt.plot(r.timestamp, r.target_q_1)
-        plt.plot(r.timestamp, r.target_q_2)
-        plt.plot(r.timestamp, r.target_q_3)
-        plt.plot(r.timestamp, r.target_q_4)
-        plt.plot(r.timestamp, r.target_q_5)
+        plt.plot(r.timestamp, r.target_q_1, color='g', label='q1')
+        plt.plot(r.timestamp, r.target_q_2, color='b', label='q2')
+        plt.plot(r.timestamp, r.target_q_3, color='c', label='q3')
+        plt.plot(r.timestamp, r.target_q_4, color='magenta', label='q4')
+        plt.plot(r.timestamp, r.target_q_5, color='orange', label='q5')
     except:
         plt.title("Winkelgeschindigkeit")
         #nothing to do
@@ -533,15 +536,18 @@ def plotCSV(filenameCSV):
     plt.title("Gelenkwinkel")
     plt.ylabel('Gelenkwinkel in Rad')
     plt.xlabel('Zeit in s')
+    plt.legend()
+    plt.savefig('png/' + filename + '_q.png')
+    
     
     plt.figure()
-    plt.plot(r.timestamp, r.target_qd_0)
+    plt.plot(r.timestamp, r.target_qd_0, color='r', label='qd0')
     try:
-        plt.plot(r.timestamp, r.target_qd_1)
-        plt.plot(r.timestamp, r.target_qd_2)
-        plt.plot(r.timestamp, r.target_qd_3)
-        plt.plot(r.timestamp, r.target_qd_4)
-        plt.plot(r.timestamp, r.target_qd_5)
+        plt.plot(r.timestamp, r.target_qd_1, color='g', label='qd1')
+        plt.plot(r.timestamp, r.target_qd_2, color='b', label='qd2')
+        plt.plot(r.timestamp, r.target_qd_3, color='c', label='qd3')
+        plt.plot(r.timestamp, r.target_qd_4, color='magenta', label='qd4')
+        plt.plot(r.timestamp, r.target_qd_5, color='orange', label='qd5')
     except:
         #nothing to do
         plt.title("Winkelgeschindigkeit")
@@ -549,15 +555,18 @@ def plotCSV(filenameCSV):
     plt.title("Winkelgeschindigkeit")
     plt.ylabel('Winkelgeschwindigkeit in Rad / s')
     plt.xlabel('Zeit in s')
+    plt.legend()
+    plt.savefig('png/' + filename + '_qd.png')
+    
     
     plt.figure()
-    plt.plot(r.timestamp, r.target_qdd_0)
+    plt.plot(r.timestamp, r.target_qdd_0, color='r', label='qdd0')
     try:
-        plt.plot(r.timestamp, r.target_qdd_1)
-        plt.plot(r.timestamp, r.target_qdd_2)
-        plt.plot(r.timestamp, r.target_qdd_3)
-        plt.plot(r.timestamp, r.target_qdd_4)
-        plt.plot(r.timestamp, r.target_qdd_5)
+        plt.plot(r.timestamp, r.target_qdd_1, color='g', label='qdd1')
+        plt.plot(r.timestamp, r.target_qdd_2, color='b', label='qdd2')
+        plt.plot(r.timestamp, r.target_qdd_3, color='c', label='qdd3')
+        plt.plot(r.timestamp, r.target_qdd_4, color='magenta', label='qdd4')
+        plt.plot(r.timestamp, r.target_qdd_5, color='orange', label='qdd5')
     except:
         plt.title("Winkelgeschindigkeit")
         #nothing todo
@@ -565,34 +574,110 @@ def plotCSV(filenameCSV):
     plt.title("Winkelbeschleunigung")
     plt.ylabel('Winkelbeschleunigung in Rad / s**2')
     plt.xlabel('Zeit in s')
+    plt.legend()
+    plt.savefig('png/' + filename + '_qdd.png')
     
     return 0
 
+"""
+#actual
+def plotCSV(filenameCSV):
+    filename = os.path.splitext(filenameCSV)[0]
+
+    with open(('csv/' + filenameCSV)) as csvfile:
+        r = csv_reader.CSVReader(csvfile)
+
+    # plot
+    plt.figure()
+    plt.plot(r.timestamp, r.actual_q_0, color='r', label='q0')
+    try:
+        plt.plot(r.timestamp, r.actual_q_1, color='g', label='q1')
+        plt.plot(r.timestamp, r.actual_q_2, color='b', label='q2')
+        plt.plot(r.timestamp, r.actual_q_3, color='c', label='q3')
+        plt.plot(r.timestamp, r.actual_q_4, color='magenta', label='q4')
+        plt.plot(r.timestamp, r.actual_q_5, color='orange', label='q5')
+    except:
+        plt.title("Winkelgeschindigkeit")
+        #nothing to do
+    plt.grid(True)
+    plt.title("Gelenkwinkel")
+    plt.ylabel('Gelenkwinkel in Rad')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    plt.savefig('png/' + filename + '_q.png')
+    
+    
+    plt.figure()
+    plt.plot(r.timestamp, r.actual_qd_0, color='r', label='qd0')
+    try:
+        plt.plot(r.timestamp, r.actual_qd_1, color='g', label='qd1')
+        plt.plot(r.timestamp, r.actual_qd_2, color='b', label='qd2')
+        plt.plot(r.timestamp, r.actual_qd_3, color='c', label='qd3')
+        plt.plot(r.timestamp, r.actual_qd_4, color='magenta', label='qd4')
+        plt.plot(r.timestamp, r.actual_qd_5, color='orange', label='qd5')
+    except:
+        #nothing to do
+        plt.title("Winkelgeschindigkeit")
+    plt.grid(True)
+    plt.title("Winkelgeschindigkeit")
+    plt.ylabel('Winkelgeschwindigkeit in Rad / s')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    plt.savefig('png/' + filename + '_qd.png')
+    
+    
+    plt.figure()
+    plt.plot(r.timestamp, r.actual_qdd_0, color='r', label='qdd0')
+    try:
+        plt.plot(r.timestamp, r.actual_qdd_1, color='g', label='qdd1')
+        plt.plot(r.timestamp, r.actual_qdd_2, color='b', label='qdd2')
+        plt.plot(r.timestamp, r.actual_qdd_3, color='c', label='qdd3')
+        plt.plot(r.timestamp, r.actual_qdd_4, color='magenta', label='qdd4')
+        plt.plot(r.timestamp, r.actual_qdd_5, color='orange', label='qdd5')
+    except:
+        plt.title("Winkelgeschindigkeit")
+        #nothing todo
+    plt.grid(True)
+    plt.title("Winkelbeschleunigung")
+    plt.ylabel('Winkelbeschleunigung in Rad / s**2')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    plt.savefig('png/' + filename + '_qdd.png')
+    
+    return 0
+"""
+
+#plotPoseCSV: python2.7
 def plotPoseCSV(filenameCSV):
-    #'robot_data.csv'
-    with open(filenameCSV) as csvfile:
+    
+    filename = os.path.splitext(filenameCSV)[0]
+    
+    with open(('csv/' + filenameCSV)) as csvfile:
         r = csv_reader.CSVReader(csvfile)
 
     # plot
     plt.figure()
     try:
-        plt.plot(r.timestamp, r.actual_TCP_pose_0)
-        plt.plot(r.timestamp, r.actual_TCP_pose_1)
-        plt.plot(r.timestamp, r.actual_TCP_pose_2)
+        plt.plot(r.timestamp, r.actual_TCP_pose_0, color='r', label='X')
+        plt.plot(r.timestamp, r.actual_TCP_pose_1, color='g', label='Y')
+        plt.plot(r.timestamp, r.actual_TCP_pose_2, color='b', label='Z')
     except:
         plt.title("Pose XYZ")
         #nothing to do
     plt.grid(True)
     plt.title("Pose XYZ")
-    plt.ylabel('XYZ in mm')
+    plt.ylabel('XYZ in m')
     plt.xlabel('Zeit in s')
+    plt.legend()
+    plt.savefig('png/' + filename + '_Pose_XYZ.png')
+    
     
     
     plt.figure()
     try:
-        plt.plot(r.timestamp, r.actual_TCP_pose_3)
-        plt.plot(r.timestamp, r.actual_TCP_pose_4)
-        plt.plot(r.timestamp, r.actual_TCP_pose_5)
+        plt.plot(r.timestamp, r.actual_TCP_pose_3, color='c', label='rx')
+        plt.plot(r.timestamp, r.actual_TCP_pose_4, color='magenta', label='ry')
+        plt.plot(r.timestamp, r.actual_TCP_pose_5, color='orange', label='rz')
     except:
         plt.title("Pose rxryrz")
         #nothing to do
@@ -600,6 +685,8 @@ def plotPoseCSV(filenameCSV):
     plt.title("Pose rxryrz")
     plt.ylabel('rxryrz in Rad')
     plt.xlabel('Zeit in s')
+    plt.legend()
+    plt.savefig('png/' + filename + '_Pose_rxryrz.png')
     
     return 0
 
@@ -607,7 +694,7 @@ def plotPoseCSV(filenameCSV):
 def writeCSV(qT, vT, aT, t, filenameCSV):
     #"exampleCsv.csv" # directory relative to script
     
-    csv = open(filenameCSV, "w")  #open File in write mode
+    csv = open('csv/' + filenameCSV, "w")  #open File in write mode
     
     axNum = qT.shape[1]
     

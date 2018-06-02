@@ -1,4 +1,5 @@
 #ignore the _pycache_ directory
 __pycache__/
 csv/
+png/
 *.pyc
