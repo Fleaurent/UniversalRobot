@@ -35,9 +35,9 @@ else:
     print("Trapez")
     [qT, vT, aT, t] = tp.traj_sampleTrapez(qStart, qTarget, vMax, aMax, tS1, tS2, tGes)
     
-#qT, vT, t = tp.plotTrajektorieAchsen(qStart, qTarget, vMax, aMax, tQ[0], tQ[1], tQ[2])
+#qT, vT, t = tp.trajektorieAchsen(qStart, qTarget, vMax, aMax, tQ[0], tQ[1], tQ[2])
 
-#tp.plotTrajektorie(qT, vT, t)
+#tp.plotTrajektorieAchsen(qT, vT, t)
 filenameCSV = "achse1Dreieck.csv"
 tp.writeCSV(qT, vT, aT, t, filenameCSV)
 #tp.plotCSV(filenameCSV)
@@ -61,7 +61,7 @@ else:
     print("Trapez")
     [qT, vT, aT, t] = tp.traj_sampleTrapez(qStart, qTarget, vMax, aMax, tS1, tS2, tGes)
     
-#tp.plotTrajektorie(qT, vT, aT, t)
+#tp.plotTrajektorieAchsen(qT, vT, aT, t)
 filenameCSV = "achse2Trapez.csv"
 tp.writeCSV(qT, vT, aT, t, filenameCSV)
 #tp.plotCSV(filenameCSV)
@@ -90,7 +90,7 @@ else:
         print("Trapez")
         [qT, vT, aT, t] = tp.traj_sampleTrapez(qStart, qTarget, vNeu, aNeu, tS1, tS2, tGes)
 
-    #tp.plotTrajektorie(qT, vT, aT, t)
+    #tp.plotTrajektorieAchsen(qT, vT, aT, t)
     filenameCSV = "achse3vaNeu.csv"
     tp.writeCSV(qT, vT, aT, t, filenameCSV)
     #tp.plotCSV(filenameCSV)
@@ -120,7 +120,7 @@ else:
         print("Trapez")
         [qT, vT, aT, t] = tp.traj_sampleTrapez(qStart, qTarget, vNeu, aNeu, tS1, tS2, tGes)
 
-    #tp.plotTrajektorie(qT, vT, aT, t)
+    #tp.plotTrajektorieAchsen(qT, vT, aT, t)
     filenameCSV = "achse4vaNeu.csv"
     tp.writeCSV(qT, vT, aT, t, filenameCSV)
     #tp.plotCSV(filenameCSV)
@@ -143,7 +143,7 @@ else:
     print("Trapez25")
     [qT, vT, aT, t] = tp.traj_sampleTrapez(qStart, qTarget, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 
-    #tp.plotTrajektorie(qT, vT, aT, t)
+    #tp.plotTrajektorieAchsen(qT, vT, aT, t)
     filenameCSV = "achse5vaNeu.csv"
     tp.writeCSV(qT, vT, aT, t, filenameCSV)
     #tp.plotCSV(filenameCSV)

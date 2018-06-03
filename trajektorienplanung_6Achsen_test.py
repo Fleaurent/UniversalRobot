@@ -68,7 +68,7 @@ print(tQFuehrung)
 print("vMaxNeu \t\t\t aMaxNeu \t\t\t tS1 \t\t\t\t tS2 \t\t\t\t tGes")
 print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 
-[qT, vT, aT, t] = tp.plotTrajektorieAchsen(qStart, qTarget, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+[qT, vT, aT, t] = tp.trajektorieAchsen(qStart, qTarget, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 
 filenameCSV = "Achsen1Dreieck.csv"
 tp.writeCSV(qT, vT, aT, t, filenameCSV)
@@ -84,7 +84,7 @@ aMax[3] = 1.0
 [vMaxNeu, aMaxNeu, tS1, tS2, tGes] = tp.trajektorieFuehrungsachseFolgen(qStart, qTarget, vMax, aMax)
 print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 
-[qT, vT, aT, t] = tp.plotTrajektorieAchsen(qStart, qTarget, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+[qT, vT, aT, t] = tp.trajektorieAchsen(qStart, qTarget, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 filenameCSV = "Achsen2Trapez.csv"
 tp.writeCSV(qT, vT, aT, t, filenameCSV)
 #tp.plotCSV(filenameCSV)
@@ -97,7 +97,7 @@ aMax[3] = 1.0
 [vMaxNeu, aMaxNeu, tS1, tS2, tGes] = tp.trajektorieFuehrungsachse25(qStart, qTarget, vMax, aMax)
 print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 
-[qT, vT, aT, t] = tp.plotTrajektorieAchsen(qStart, qTarget, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+[qT, vT, aT, t] = tp.trajektorieAchsen(qStart, qTarget, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
 filenameCSV = "Achsen3Trapez25.csv"
 tp.writeCSV(qT, vT, aT, t, filenameCSV)
 #tp.plotCSV(filenameCSV)

@@ -7,6 +7,7 @@ toDO: keine Winkeländerung!
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+import robolib3 as rl
 import os
 
 """
@@ -58,21 +59,19 @@ def traj_getVAtimestamps(qStart, qTarget, vMax, aMax, tGes):
     aNeu = aMax
         
     #NAN check!
-    vNeu = (tGes - np.sqrt(tGes*tGes - 4 * qDiff/aMax))/(2/aMax)
+    try:
+        vNeu = (tGes - np.sqrt(tGes*tGes - 4 * qDiff/aMax))/(2/aMax)
+    except:
+        return [0, 0, 0, 0, 0]
+        
     #alternativ
     #tS1 = (tGes * aMax - math.sqrt(tGes * tGes * aMax * aMax - 4 * aMax * qDiff))/ (2 * aMax)
     #vMaxNeu = aMax * tS1
     
     #print("vMaxNeu: ", vMaxNeu)
-    if((math.isnan(vNeu)) or (vNeu > vMax)):
-        vNeu = 0
-        aNeu = 0
-        tS1 = 0
-        tS2 = 0
-        tGes = 0
-    else:   
-        [tS1, tS2, tGes] = traj_timestamps(qStart, qTarget, vNeu, aNeu)
-        print(tS1, tS2, tGes)
+   
+    [tS1, tS2, tGes] = traj_timestamps(qStart, qTarget, vNeu, aNeu)
+    #print(tS1, tS2, tGes)
         
         
     return [vNeu, aNeu, tS1, tS2, tGes]
@@ -124,7 +123,7 @@ def traj_sampleDreieck(qStart, qTarget, vMax, aMax, tS, tGes):
     aT[0:tA.size,0] = aMax
     aT[tA.size:tAB.size,0] = - aMax
     
-    plotTrajektorie(qT, vT, aT, tAB)
+    plotTrajektorieAchsen(qT, vT, aT, tAB)
     
 #    data = np.zeros([tA.size + tB.size, 3])
 #    data[0:tAB.size,0] = qT[0:tAB.size,0]
@@ -187,7 +186,7 @@ def traj_sampleTrapez(qStart, qTarget, vMax, aMax, tS1, tS2, tGes):
     aT[tA.size:(tA.size + tB.size),0] = 0 
     aT[(tA.size + tB.size):tAC.size,0] = - aMax
        
-    plotTrajektorie(qT, vT, aT, tAC)    
+    plotTrajektorieAchsen(qT, vT, aT, tAC)    
     
 #    data = np.zeros([tA.size + tB.size + tC.size, 3])
 #    data[0:tAC.size,0] = qT[0:tAC.size,0]
@@ -198,29 +197,84 @@ def traj_sampleTrapez(qStart, qTarget, vMax, aMax, tS1, tS2, tGes):
 
 
 #4. Trajektorie direkt aus Vektor plotten
-def plotTrajektorie(qT, vT, aT, t):
+def plotTrajektorieAchsen(qT, vT, aT, t):
+    
+    c = np.array(['r','g','b','c','magenta','orange'])
+    lq = np.array(['q0','q1','q2','q3','q4','q5'])
+    lqd = np.array(['qd0','qd1','qd2','qd3','qd4','qd5'])
+    lqdd = np.array(['qdd0','qdd1','qdd2','qdd3','qdd4','qdd5'])
     
     plt.figure()
-    plt.plot(t,qT)
+    #plt.plot(t,qT,color=c, label=l)
+    try:
+        for i in range(6):
+            plt.plot(t,qT[:,i],color=c[i],label=lq[i])
+    except:
+        plt.plot(t,qT,color='r', label='q')
     plt.grid(True)
     plt.title("Gelenkwinkel")
     plt.ylabel('Gelenkwinkel in Rad')
     plt.xlabel('Zeit in s')
+    plt.legend()
     
     
     plt.figure()
-    plt.plot(t,vT)
+    try:
+        for i in range(6):
+            plt.plot(t,vT[:,i],color=c[i],label=lqd[i])
+    except:
+        plt.plot(t,vT,color='r', label='qd')
     plt.grid(True)
     plt.title("Winkelgeschindigkeit")
     plt.ylabel('Winkelgeschwindigkeit in Rad / s')
     plt.xlabel('Zeit in s')
+    plt.legend()
     
     plt.figure()
-    plt.plot(t,aT)
+    try:
+        for i in range(6):
+            plt.plot(t,aT[:,i],color=c[i],label=lqdd[i])
+    except:
+        plt.plot(t,aT,color='r', label='qdd')
     plt.grid(True)
     plt.title("Winkelbeschleunigung")
     plt.ylabel('Winkelgeschwindigkeit in Rad / s**2')
     plt.xlabel('Zeit in s')
+    plt.legend()
+    
+    return 0
+
+def plotTrajektoriePose(xyzrxryrz, t):
+    
+    # plot
+    plt.figure()
+    try:
+        plt.plot(t, xyzrxryrz[:,0], color='r', label='X')
+        plt.plot(t, xyzrxryrz[:,1], color='g', label='Y')
+        plt.plot(t, xyzrxryrz[:,2], color='b', label='Z')
+    except:
+        plt.title("Pose XYZ")
+        #nothing to do
+    plt.grid(True)
+    plt.title("Pose XYZ")
+    plt.ylabel('XYZ in m')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    
+    
+    plt.figure()
+    try:
+        plt.plot(t, xyzrxryrz[:,3], color='c', label='rx')
+        plt.plot(t, xyzrxryrz[:,4], color='magenta', label='ry')
+        plt.plot(t, xyzrxryrz[:,5], color='orange', label='rz')
+    except:
+        plt.title("Pose rxryrz")
+        #nothing to do
+    plt.grid(True)
+    plt.title("Pose rxryrz")
+    plt.ylabel('rxryrz in Rad')
+    plt.xlabel('Zeit in s')
+    plt.legend()
     
     return 0
 
@@ -231,21 +285,17 @@ Teil 2: Führungsachse mit synchronen Folgeachsen
 
 def trajektorieFuehrungsachseZeit(qStart, qTarget, vMax, aMax):
     
-    tQFuehrung = np.array([0,0,0])
+    tGesFuehrung = 0
     Achse = 0
     Fuehrungsachse = 0 
     
     for Achse in range(qStart.size):
-        tQtemp = traj_timestamps(qStart[Achse],qTarget[Achse],vMax[Achse],aMax[Achse])
+        [tS1Temp, tS2Temp, tGesTemp] = traj_timestamps(qStart[Achse],qTarget[Achse],vMax[Achse],aMax[Achse])
         #print(tQtemp)
         
-        if(tQtemp[2] > tQFuehrung[2]):
-            tQFuehrung = tQtemp
-            Fuehrungsachse = Achse + 1
-    
-    tS1Fuehrung = tQFuehrung[0]
-    tS2Fuehrung = tQFuehrung[1]
-    tGesFuehrung = tQFuehrung[2]
+        if(tGesTemp > tGesFuehrung):
+            [tS1Fuehrung, tS2Fuehrung, tGesFuehrung] = [tS1Temp, tS2Temp, tGesTemp]
+            Fuehrungsachse = Achse
     
     return [tS1Fuehrung, tS2Fuehrung, tGesFuehrung, Fuehrungsachse]
 
@@ -259,15 +309,16 @@ def trajektorieFuehrungsachseFolgen(qStart, qTarget, vMax, aMax):
     tGes    =    np.zeros(qStart.size)
     
     #1. Parameter Führungachse == langsamste Achse
-    tQFuehrung = trajektorieFuehrungsachseZeit(qStart, qTarget, vMax, aMax)
+    [tS1Fuehrung, tS2Fuehrung, tGesFuehrung, FuehrungsAchse] = trajektorieFuehrungsachseZeit(qStart, qTarget, vMax, aMax)
     
-    FuehrungsAchse = int(tQFuehrung[3] - 1)
+    #cast für Array?
+    #FuehrungsAchse = int(Fuehrungsachse)
     
     vMaxNeu[FuehrungsAchse] = vMax[FuehrungsAchse]
     aMaxNeu[FuehrungsAchse] = aMax[FuehrungsAchse]
-    tS1[FuehrungsAchse]     = tQFuehrung[0]
-    tS2[FuehrungsAchse]     = tQFuehrung[1]
-    tGes[FuehrungsAchse]    = tQFuehrung[2]
+    tS1[FuehrungsAchse]     = tS1Fuehrung
+    tS2[FuehrungsAchse]     = tS2Fuehrung
+    tGes[FuehrungsAchse]    = tGesFuehrung
     
     #2. restliche Achsen an Führungsachse anpassen
     Achse = 0
@@ -278,11 +329,68 @@ def trajektorieFuehrungsachseFolgen(qStart, qTarget, vMax, aMax):
             [vMaxNeu[Achse],aMaxNeu[Achse]] = traj_getVA(qStart[Achse], qTarget[Achse], vMax[Achse], aMax[Achse], tS1[FuehrungsAchse], tGes[FuehrungsAchse])
             
             if( (vMaxNeu[Achse] == 0) or (aMaxNeu[Achse] == 0) ):
-                #Ts1 für Achse nicht umsetzbar! asynchroner Trapeztrajektorie mit tGes
-                [vMaxNeu[Achse], aMaxNeu[Achse], tS1[Achse], tS2[Achse], tGes[Achse]] = traj_getVAtimestamps(qStart[Achse], qTarget[Achse], vMax[Achse], aMax[Achse], tQFuehrung[2])
+                #Ts1 für Achse nicht umsetzbar! asynchrone Trapeztrajektorie mit neuem tGes
+                #[vMaxNeu[Achse], aMaxNeu[Achse], tS1[Achse], tS2[Achse], tGes[Achse]] = traj_getVAtimestamps(qStart[Achse], qTarget[Achse], vMax[Achse], aMax[Achse], tGesFuehrung)
+
+                #keine Winkeländerung
+                vMaxNeu[Achse] = 0
+                aMaxNeu[Achse] = 0
+                tS1[Achse] = tS1[FuehrungsAchse]
+                tS2[Achse] = tS2[FuehrungsAchse]
+                tGes[Achse] = tGes[FuehrungsAchse]
+                    
                 print("vaNeu: ",vMaxNeu[Achse], aMaxNeu[Achse], tS1[Achse], tS2[Achse], tGes[Achse])
                 
-            else:
+            else:  
+                #Zeitbedingung eingehalten: synchrone Trapeztrajektorie mit tS1, tS2, tGes
+                tS1[Achse] = tS1[FuehrungsAchse]
+                tS2[Achse] = tS2[FuehrungsAchse]
+                tGes[Achse] = tGes[FuehrungsAchse]
+
+    
+    return [vMaxNeu, aMaxNeu, tS1, tS2, tGes]
+
+def trajektorieZeitvorgabe(qStart, qTarget, vMax, aMax, tGesVorgabe):
+    
+    vMaxNeu =    np.zeros(qStart.size)
+    aMaxNeu =    np.zeros(qStart.size)
+    tS1     =    np.zeros(qStart.size)
+    tS2     =    np.zeros(qStart.size)
+    tGes    =    np.zeros(qStart.size)
+    
+    #1. Parameter Führungachse == langsamste Achse
+    [tS1Fuehrung, tS2Fuehrung, tGesFuehrung, FuehrungsAchse] = trajektorieFuehrungsachseZeit(qStart, qTarget, vMax, aMax)
+    
+    if(tGesFuehrung > tGesVorgabe):
+        #vorgegebenes tGes zu klein
+        return [0, 0, 0, 0, 0]
+    
+    #2.Fuehrungsachse an tGes anpassen
+    [vMaxNeu[FuehrungsAchse], aMaxNeu[FuehrungsAchse], tS1[FuehrungsAchse], tS2[FuehrungsAchse], tGes[FuehrungsAchse]] = traj_getVAtimestamps(qStart[FuehrungsAchse], qTarget[FuehrungsAchse], vMax[FuehrungsAchse], aMax[FuehrungsAchse], tGesVorgabe)
+    
+    
+    #3. restliche Achsen an Führungsachse anpassen
+    Achse = 0
+    for Achse in range(qStart.size):
+        
+        if(Achse != FuehrungsAchse):
+            
+            [vMaxNeu[Achse],aMaxNeu[Achse]] = traj_getVA(qStart[Achse], qTarget[Achse], vMax[Achse], aMax[Achse], tS1[FuehrungsAchse], tGes[FuehrungsAchse])
+            
+            if( (vMaxNeu[Achse] == 0) or (aMaxNeu[Achse] == 0) ):
+                #Ts1 für Achse nicht umsetzbar! asynchrone Trapeztrajektorie mit neuem tGes
+                #[vMaxNeu[Achse], aMaxNeu[Achse], tS1[Achse], tS2[Achse], tGes[Achse]] = traj_getVAtimestamps(qStart[Achse], qTarget[Achse], vMax[Achse], aMax[Achse], tGesFuehrung)
+
+                #keine Winkeländerung
+                vMaxNeu[Achse] = 0
+                aMaxNeu[Achse] = 0
+                tS1[Achse] = tS1[FuehrungsAchse]
+                tS2[Achse] = tS2[FuehrungsAchse]
+                tGes[Achse] = tGes[FuehrungsAchse]
+                    
+                print("vaNeu: ",vMaxNeu[Achse], aMaxNeu[Achse], tS1[Achse], tS2[Achse], tGes[Achse])
+                
+            else:  
                 #Zeitbedingung eingehalten: synchrone Trapeztrajektorie mit tS1, tS2, tGes
                 tS1[Achse] = tS1[FuehrungsAchse]
                 tS2[Achse] = tS2[FuehrungsAchse]
@@ -292,17 +400,19 @@ def trajektorieFuehrungsachseFolgen(qStart, qTarget, vMax, aMax):
     return [vMaxNeu, aMaxNeu, tS1, tS2, tGes]
 
 
-
-def plotTrajektorieAchsen(qStart, qTarget, vMax, aMax, tS1, tS2, tGes):
+def trajektorieAchsen(qStart, qTarget, vMax, aMax, tS1, tS2, tGes):
     
     tDelta = 1 / 125
     Achse = 0
     
-    if(tS1[0] == tS2[0]):
+    FuehrungAchse = np.argmax(tGes)
+
+    
+    if(tS1[FuehrungAchse] == tS2[FuehrungAchse]):
         
         #Dreieck
-        tA = np.arange(0, tS1[0] + tDelta, tDelta)
-        tB = np.arange(tS1[0] + tDelta, tGes[0] + tDelta, tDelta)
+        tA = np.arange(0, tS1[FuehrungAchse] + tDelta, tDelta)
+        tB = np.arange(tS1[FuehrungAchse] + tDelta, tGes[FuehrungAchse] + tDelta, tDelta)
         
         tAB = np.zeros([tA.size + tB.size])
         tAB[0:tA.size] = tA
@@ -317,35 +427,43 @@ def plotTrajektorieAchsen(qStart, qTarget, vMax, aMax, tS1, tS2, tGes):
         
         #berechne q(t)/v(t) für jede Achse
         for Achse in range(qStart.size):
-   
-            #Gelenkwinkel steigend/fallend: Vorzeichen nutzen
-            if(qStart[Achse] > qTarget[Achse]):
-                aMax[Achse] = -aMax[Achse]
+            
+            if(aMax[Achse] == 0 or vMax[Achse] == 0):
+                #keine Winkeländerung
+                qT[0:tA.size,Achse] = qStart[Achse]
+                qT[tA.size:tAB.size,Achse] = qStart[Achse]
+                #vT, aT bleiben 0
+            
+            else:
                 
-            qTS[Achse] = qStart[Achse] + 0.5 * aMax[Achse] * tS1[Achse]**2
-            vTS[Achse] = aMax[Achse] * tS1[Achse]
+                #Gelenkwinkel steigend/fallend: Vorzeichen nutzen
+                if(qStart[Achse] > qTarget[Achse]):
+                    aMax[Achse] = -aMax[Achse]
+                    
+                qTS[Achse] = qStart[Achse] + 0.5 * aMax[Achse] * tS1[Achse]**2
+                vTS[Achse] = aMax[Achse] * tS1[Achse]
+                
+                qT[0:tA.size,Achse] = qStart[Achse] + 0.5 * aMax[Achse] * tA**2
+                qT[tA.size:tAB.size,Achse] = qTS[Achse] + vTS[Achse] * (tB - tS1[Achse]) - 0.5 * aMax[Achse] * (tB - tS1[Achse])**2
+                
+                vT[0:tA.size,Achse] = aMax[Achse] * tA
+                vT[tA.size:tAB.size,Achse] = vTS[Achse] - aMax[Achse] * (tB - tS1[Achse])
+                
+                aT[0:tA.size,Achse] = aMax[Achse]
+                aT[tA.size:tAB.size,Achse] = - aMax[Achse]
             
-            qT[0:tA.size,Achse] = qStart[Achse] + 0.5 * aMax[Achse] * tA**2
-            qT[tA.size:tAB.size,Achse] = qTS[Achse] + vTS[Achse] * (tB - tS1[Achse]) - 0.5 * aMax[Achse] * (tB - tS1[Achse])**2
-            
-            vT[0:tA.size,Achse] = aMax[Achse] * tA
-            vT[tA.size:tAB.size,Achse] = vTS[Achse] - aMax[Achse] * (tB - tS1[Achse])
-            
-            aT[0:tA.size,Achse] = aMax[Achse]
-            aT[tA.size:tAB.size,Achse] = - aMax[Achse]
-            
-        plotTrajektorie(qT, vT, aT, tAB)
+        plotTrajektorieAchsen(qT, vT, aT, tAB)
         
         return [qT, vT, aT, tAB]
         
     else:
         #Trapez
-        tA = np.arange(0, tS1[0] + tDelta, tDelta)
-        tB = np.arange(tS1[0] + tDelta, tS2[0] + tDelta, tDelta)
-        tC = np.arange(tS2[0] + tDelta, tGes[0] + tDelta, tDelta)
+        tA = np.arange(0, tS1[FuehrungAchse] + tDelta, tDelta)
+        tB = np.arange(tS1[FuehrungAchse] + tDelta, tS2[FuehrungAchse] + tDelta, tDelta)
+        tC = np.arange(tS2[FuehrungAchse] + tDelta, tGes[FuehrungAchse] + tDelta, tDelta)
         
         tACsize = tA.size + tB.size + tC.size
-        print("TAC size: ", tA.size, tB.size, tC.size, tACsize)
+        #print("TAC size: ", tA.size, tB.size, tC.size, tACsize)
                 
         tAC = np.zeros([tA.size + tB.size + tC.size])
         tAC[0:tA.size] = tA
@@ -363,66 +481,89 @@ def plotTrajektorieAchsen(qStart, qTarget, vMax, aMax, tS1, tS2, tGes):
         #berechne q,v
         for Achse in range(qStart.size):
             
-            #Gelenkwinkel steigend/fallend: Vorzeichen nutzen
-            if(qStart[Achse] > qTarget[Achse]):
-                aMax[Achse]  = -aMax[Achse] 
-                vMax[Achse]  = -vMax[Achse] 
+            if(aMax[Achse] == 0 or vMax[Achse] == 0):
+                #keine Winkeländerung
+                qT[0:tA.size,Achse] = qStart[Achse]
+                qT[tA.size:(tA.size + tB.size),Achse] = qStart[Achse]
+                qT[(tA.size + tB.size):tAC.size,Achse] = qStart[Achse]
+                #vT, aT bleiben 0
             
-            qDiff[Achse] = qTarget[Achse] - qStart[Achse]
-
-            qTS1[Achse] = qStart[Achse] + 0.5 * aMax[Achse] * tS1[Achse]**2
-            qTS2[Achse] = qTarget[Achse] - vMax[Achse]**2 / (2 * aMax[Achse])
-            
-            if(tS1[Achse] == tS1[0]):
-                
-                qT[0:tA.size,Achse] = qStart[Achse] + 0.5 * aMax[Achse] * tA**2
-                qT[tA.size:(tA.size + tB.size),Achse] = qTS1[Achse] + (tB - tS1[Achse]) * vMax[Achse]
-                qT[(tA.size + tB.size):tAC.size,Achse] = qTS2[Achse] + (vMax[Achse] + (aMax[Achse] * qDiff[Achse])/ vMax[Achse]) * (tC - tS2[Achse]) - 0.5 * aMax[Achse] * (tC**2 - tS2[Achse]**2)
-                
-                vT[0:tA.size,Achse] = aMax[Achse] * tA
-                vT[tA.size:(tA.size + tB.size),Achse] = vMax[Achse] 
-                vT[(tA.size + tB.size):tAC.size,Achse] = - aMax[Achse] * tC + vMax[Achse] + (aMax[Achse] * qDiff[Achse]) / vMax[Achse]
-                
-                aT[0:tA.size,Achse] = aMax[Achse]
-                aT[tA.size:(tA.size + tB.size),Achse] = 0
-                aT[(tA.size + tB.size):tAC.size,Achse] = - aMax[Achse]
-           
             else:
-                tCs = 0
-                print(tCs)
-                
-                tAs = np.arange(0, tS1[Achse] + tDelta, tDelta)
-                tBs = np.arange(tS1[Achse] + tDelta, tS2[Achse] + tDelta, tDelta)
-                tCs = np.arange(tS2[Achse] + tDelta, tGes[Achse], tDelta)
-                
-                #Problem: different sizes because of rounding
-                tACssize = tAs.size + tBs.size + tCs.size
-                print("TACs size: ", tAs.size, tBs.size, tCs.size, tACssize)
-                
-                if(tACssize < tACsize):
-                    tCs = np.arange(tS2[Achse] + tDelta, tGes[Achse] + tDelta, tDelta)
-                elif(tACssize > tACsize):
-                    tCs = np.arange(tS2[Achse] + tDelta, tGes[Achse] - tDelta, tDelta)
                     
-                qT[0:tAs.size,Achse] = qStart[Achse] + 0.5 * aMax[Achse] * tAs**2
-                qT[tAs.size:(tAs.size + tBs.size),Achse] = qTS1[Achse] + (tBs - tS1[Achse]) * vMax[Achse]
-                qT[(tAs.size + tBs.size):tAC.size,Achse] = qTS2[Achse] + (vMax[Achse] + (aMax[Achse] * qDiff[Achse])/ vMax[Achse]) * (tCs - tS2[Achse]) - 0.5 * aMax[Achse] * (tCs**2 - tS2[Achse]**2)
-                #Problem: different sizes because of rounding
+                #Gelenkwinkel steigend/fallend: Vorzeichen nutzen
+                if(qStart[Achse] > qTarget[Achse]):
+                    aMax[Achse]  = -aMax[Achse] 
+                    vMax[Achse]  = -vMax[Achse] 
                 
-                vT[0:tAs.size,Achse] = aMax[Achse] * tAs
-                vT[tAs.size:(tAs.size + tBs.size),Achse] = vMax[Achse] 
-                vT[(tAs.size + tBs.size):tAC.size,Achse] = - aMax[Achse] * tCs + vMax[Achse] + (aMax[Achse] * qDiff[Achse]) / vMax[Achse]
+                qDiff[Achse] = qTarget[Achse] - qStart[Achse]
+    
+                qTS1[Achse] = qStart[Achse] + 0.5 * aMax[Achse] * tS1[Achse]**2
+                qTS2[Achse] = qTarget[Achse] - vMax[Achse]**2 / (2 * aMax[Achse])
                 
-                aT[0:tAs.size,Achse] = aMax[Achse]
-                aT[tAs.size:(tAs.size + tBs.size),Achse] = 0 
-                aT[(tAs.size + tBs.size):tAC.size,Achse] = - aMax[Achse]
-            
-        plotTrajektorie(qT, vT, aT, tAC)
+                if(tS1[Achse] == tS1[FuehrungAchse]):
+                    
+                    qT[0:tA.size,Achse] = qStart[Achse] + 0.5 * aMax[Achse] * tA**2
+                    qT[tA.size:(tA.size + tB.size),Achse] = qTS1[Achse] + (tB - tS1[Achse]) * vMax[Achse]
+                    qT[(tA.size + tB.size):tAC.size,Achse] = qTS2[Achse] + (vMax[Achse] + (aMax[Achse] * qDiff[Achse])/ vMax[Achse]) * (tC - tS2[Achse]) - 0.5 * aMax[Achse] * (tC**2 - tS2[Achse]**2)
+                    
+                    vT[0:tA.size,Achse] = aMax[Achse] * tA
+                    vT[tA.size:(tA.size + tB.size),Achse] = vMax[Achse] 
+                    vT[(tA.size + tB.size):tAC.size,Achse] = - aMax[Achse] * tC + vMax[Achse] + (aMax[Achse] * qDiff[Achse]) / vMax[Achse]
+                    
+                    aT[0:tA.size,Achse] = aMax[Achse]
+                    aT[tA.size:(tA.size + tB.size),Achse] = 0
+                    aT[(tA.size + tB.size):tAC.size,Achse] = - aMax[Achse]
+               
+                else:
+                    tCs = 0
+                    print(tCs)
+                    
+                    tAs = np.arange(0, tS1[Achse] + tDelta, tDelta)
+                    tBs = np.arange(tS1[Achse] + tDelta, tS2[Achse] + tDelta, tDelta)
+                    tCs = np.arange(tS2[Achse] + tDelta, tGes[Achse], tDelta)
+                    
+                    #Problem: different sizes because of rounding
+                    tACssize = tAs.size + tBs.size + tCs.size
+                    print("TACs size: ", tAs.size, tBs.size, tCs.size, tACssize)
+                    
+                    if(tACssize < tACsize):
+                        tCs = np.arange(tS2[Achse] + tDelta, tGes[Achse] + tDelta, tDelta)
+                    elif(tACssize > tACsize):
+                        tCs = np.arange(tS2[Achse] + tDelta, tGes[Achse] - tDelta, tDelta)
+                        
+                    qT[0:tAs.size,Achse] = qStart[Achse] + 0.5 * aMax[Achse] * tAs**2
+                    qT[tAs.size:(tAs.size + tBs.size),Achse] = qTS1[Achse] + (tBs - tS1[Achse]) * vMax[Achse]
+                    qT[(tAs.size + tBs.size):tAC.size,Achse] = qTS2[Achse] + (vMax[Achse] + (aMax[Achse] * qDiff[Achse])/ vMax[Achse]) * (tCs - tS2[Achse]) - 0.5 * aMax[Achse] * (tCs**2 - tS2[Achse]**2)
+                    #Problem: different sizes because of rounding
+                    
+                    vT[0:tAs.size,Achse] = aMax[Achse] * tAs
+                    vT[tAs.size:(tAs.size + tBs.size),Achse] = vMax[Achse] 
+                    vT[(tAs.size + tBs.size):tAC.size,Achse] = - aMax[Achse] * tCs + vMax[Achse] + (aMax[Achse] * qDiff[Achse]) / vMax[Achse]
+                    
+                    aT[0:tAs.size,Achse] = aMax[Achse]
+                    aT[tAs.size:(tAs.size + tBs.size),Achse] = 0 
+                    aT[(tAs.size + tBs.size):tAC.size,Achse] = - aMax[Achse]
+                
+        plotTrajektorieAchsen(qT, vT, aT, tAC)
        
         return [qT, vT, aT, tAC]
     
     return [0, 0, 0]
 
+def trajektoriePose(qT, t, dhPara):
+    xyzrxryrz = np.zeros((t.shape[0],6))
+    T = np.zeros((4,4))
+    
+    print(t.shape[0])
+    
+    for i in range(t.shape[0]):
+         T = rl.fk_ur(dhPara,qT[i,:])
+         xyzrxryrz[i] = rl.T_2_rotvec(T)
+        
+    print(xyzrxryrz[1,:])
+    plotTrajektoriePose(xyzrxryrz, t)
+    
+    return xyzrxryrz
 
 """
 Teil 3: Trapezverlauf mit 25% tGes Beschleunigung
@@ -522,8 +663,8 @@ def plotCSV(filenameCSV):
 
     # plot
     plt.figure()
-    plt.plot(r.timestamp, r.target_q_0, color='r', label='q0')
     try:
+        plt.plot(r.timestamp, r.target_q_0, color='r', label='q0')
         plt.plot(r.timestamp, r.target_q_1, color='g', label='q1')
         plt.plot(r.timestamp, r.target_q_2, color='b', label='q2')
         plt.plot(r.timestamp, r.target_q_3, color='c', label='q3')
@@ -541,8 +682,8 @@ def plotCSV(filenameCSV):
     
     
     plt.figure()
-    plt.plot(r.timestamp, r.target_qd_0, color='r', label='qd0')
     try:
+        plt.plot(r.timestamp, r.target_qd_0, color='r', label='qd0')
         plt.plot(r.timestamp, r.target_qd_1, color='g', label='qd1')
         plt.plot(r.timestamp, r.target_qd_2, color='b', label='qd2')
         plt.plot(r.timestamp, r.target_qd_3, color='c', label='qd3')
@@ -560,8 +701,8 @@ def plotCSV(filenameCSV):
     
     
     plt.figure()
-    plt.plot(r.timestamp, r.target_qdd_0, color='r', label='qdd0')
     try:
+        plt.plot(r.timestamp, r.target_qdd_0, color='r', label='qdd0')
         plt.plot(r.timestamp, r.target_qdd_1, color='g', label='qdd1')
         plt.plot(r.timestamp, r.target_qdd_2, color='b', label='qdd2')
         plt.plot(r.timestamp, r.target_qdd_3, color='c', label='qdd3')
@@ -691,7 +832,7 @@ def plotPoseCSV(filenameCSV):
     return 0
 
 #nur Python 3.6: größe np.array Problem in 2.7
-def writeCSV(qT, vT, aT, t, filenameCSV):
+def writeCSV(qT, vT, aT, xyzrxryrz, t, filenameCSV):
     #"exampleCsv.csv" # directory relative to script
     
     csv = open('csv/' + filenameCSV, "w")  #open File in write mode
@@ -702,7 +843,7 @@ def writeCSV(qT, vT, aT, t, filenameCSV):
     if(axNum == 1):
         csv.write("timestamp target_q_0 target_qd_0 target_qdd_0\n")
     elif(axNum == 6):
-        csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_qd_0 target_qd_1 target_qd_2 target_qd_3 target_qd_4 target_qd_5 target_qdd_0 target_qdd_1 target_qdd_2 target_qdd_3 target_qdd_4 target_qdd_5\n")
+        csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_qd_0 target_qd_1 target_qd_2 target_qd_3 target_qd_4 target_qd_5 target_qdd_0 target_qdd_1 target_qdd_2 target_qdd_3 target_qdd_4 target_qdd_5 actual_TCP_pose_0 actual_TCP_pose_1 actual_TCP_pose_2 actual_TCP_pose_3 actual_TCP_pose_4 actual_TCP_pose_5\n")
     else:
         return 1
 
@@ -713,17 +854,21 @@ def writeCSV(qT, vT, aT, t, filenameCSV):
         time = np.float32(t[timestamp])
         csv.write(str(time) + " ")
         
-        #2. q_x
+        #2. q_X
         for axis in range(axNum):
             csv.write(str(qT[timestamp,axis]) + " ")
         
-        #3. qd_x
+        #3. qd_X
         for axis in range(axNum):
             csv.write(str(vT[timestamp,axis]) + " ")
             
-        #4. qdd_x
+        #4. qdd_X
         for axis in range(axNum):
             csv.write(str(aT[timestamp,axis]) + " ")
+        
+        #5- actual_TCP_pose_X
+        for para in range(6):
+            csv.write(str(xyzrxryrz[timestamp,para]) + " ")
             
         csv.write("\n")
         
