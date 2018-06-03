@@ -82,94 +82,95 @@ Teil B: robolib Berechnung
 """
 #1. movej_Dreieck
 filenameRobo = "robolib_movej_Dreieck.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 #2. movej_Trapez
 filenameRobo = "robolib_movej_Trapez.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 #3. movej_Dreieck_Zeit
 filenameRobo = "robolib_movej_Dreieck_Zeit.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 #4. movej_Trapez_Zeit
 filenameRobo = "robolib_movej_Trapez_Zeit.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 #5. movej_Synchron
 filenameRobo = "robolib_movej_Synchron.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 #6. movel_x400
 filenameRobo = "robolib_movel_x400.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 filenameRobo = "robolib_movel_x400_Zeit.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 #7. movel_x400_Singular
 filenameRobo = "robolib_movel_x400_Singular.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 filenameRobo = "robolib_movel_x400_Singular_Zeit.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 
 """
 Teil C: URSim Aufzeichnung
 """
+"""
 #1. movej_Dreieck
 filenameRobo = "ursim_movej_Dreieck.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 #2. movej_Trapez
 filenameRobo = "ursim_movej_Trapez.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 #3. movej_Dreieck_Zeit
 filenameRobo = "ursim_movej_Dreieck_Zeit.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 #4. movej_Trapez_Zeit
 filenameRobo = "ursim_movej_Trapez_Zeit.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 #5. movej_Synchron
 filenameRobo = "ursim_movej_Synchron.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 #6. movel_x400
 filenameRobo = "ursim_movel_x400.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 filenameRobo = "ursim_movel_x400_Zeit.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 #7. movel_x400_Singular
 filenameRobo = "ursim_movel_x400_Singular.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
 
 filenameRobo = "ursim_movel_x400_Singular_Zeit.csv"
-#tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
-
+tp.plotCSV(filenameRobo)
+tp.plotPoseCSV(filenameRobo)
+"""
 
 """
 Teil D: Roboteraufzeichnung
