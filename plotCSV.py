@@ -176,10 +176,12 @@ tp.plotPoseCSV(filenameRobo)
 """
 Teil D: Roboteraufzeichnung
 """
+"""
 #1. movej_Dreieck
 filenameRobo = "robot_movej_Dreieck.csv"
 tp.plotCSV(filenameRobo)
 tp.plotPoseCSV(filenameRobo)
+
 
 #2. movej_Trapez
 filenameRobo = "robot_movej_Trapez.csv"
@@ -191,6 +193,7 @@ filenameRobo = "robot_movej_Dreieck_Zeit.csv"
 tp.plotCSV(filenameRobo)
 tp.plotPoseCSV(filenameRobo)
 
+
 #4. movej_Trapez_Zeit
 filenameRobo = "robot_movej_Trapez_Zeit.csv"
 tp.plotCSV(filenameRobo)
@@ -200,22 +203,23 @@ tp.plotPoseCSV(filenameRobo)
 filenameRobo = "robot_movej_Synchron.csv"
 tp.plotCSV(filenameRobo)
 tp.plotPoseCSV(filenameRobo)
-
+"""
 #6. movel_x400
 filenameRobo = "robot_movel_x400.csv"
 tp.plotCSV(filenameRobo)
 tp.plotPoseCSV(filenameRobo)
-
+"""
 filenameRobo = "robot_movel_x400_Zeit.csv"
 tp.plotCSV(filenameRobo)
 tp.plotPoseCSV(filenameRobo)
-
+"""
 #7. movel_x400_Singular
 filenameRobo = "robot_movel_x400_Singular.csv"
 tp.plotCSV(filenameRobo)
 tp.plotPoseCSV(filenameRobo)
-
+"""
 filenameRobo = "robot_movel_x400_Singular_Zeit.csv"
 tp.plotCSV(filenameRobo)
 tp.plotPoseCSV(filenameRobo)
 
+"""

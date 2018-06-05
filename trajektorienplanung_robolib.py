@@ -62,7 +62,7 @@ qTarget = np.array([qTargetA1,qTargetA2,qTargetA3,qTargetA4,qTargetA5,qTargetA6]
 
 
 
-#1. movej Achse1 30deg with a,v --> movej_Dreieck
+#1. movej Achse1 30deg mit a,v --> movej_Dreieck
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
@@ -78,7 +78,7 @@ tp.writeCSV(qT, vT, aT, xyzrxryrz, t, filenameCSV)
 
 
 
-#2. movej q1 90deg with a,v --> movej_Trapez
+#2. movej Achse1 90deg mit a,v --> movej_Trapez
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(90),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
@@ -94,7 +94,7 @@ tp.writeCSV(qT, vT, aT, xyzrxryrz, t, filenameCSV)
 
 
 
-#3. movej q1 30deg in time t --> movej_Dreieck_Zeit
+#3. movej Achse1 30deg in Zeit t --> movej_Dreieck_Zeit
 tGesVorgabe = 3
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
@@ -128,7 +128,7 @@ tp.writeCSV(qT, vT, aT, xyzrxryrz, t, filenameCSV)
 
 
 
-#5. movej q1 90deg, q2 60deg, q3 30deg in time t =  --> movej_Synchron
+#5. movej Achse1 90deg, Achse2 60deg, Achse3 30deg in time t --> movej_Synchron
 a = 1.0
 v = 0.8
 tGesVorgabe = 6
@@ -147,10 +147,10 @@ tp.writeCSV(qT, vT, aT, xyzrxryrz, t,  filenameCSV)
 
 """
 #TODO
-#6. movel x 400 with a,v/ time t --> movel_x400
+#6. movel x 400 with a,v --> movel_x400
 a = 1.0
-v = 0.8
-t = 4
+v = 0.2
+
 pHome = np.array([0.300,-0.200,0.400,2.4186,-2.4185,2.4185])
 pTarget = np.array([0.300,0.200,0.400,2.4186,-2.4185,2.4185])
 
@@ -159,10 +159,10 @@ tp.writeCSV(qT, vT, aT, t, filenameCSV)
 
 
 
-#7. movel x 400 with a,v/ time t: movel_x400_Singular
+#7. movel x 400 mit a,v nahe Singularität: movel_x400_Singular
 a = 1.0
-v = 0.8
-t = 4
+v = 0.2
+
 pHome = np.array([0.200,-0.200,0.400,2.4186,-2.4185,2.4185])
 pTarget = np.array([0.200,0.200,0.400,2.4186,-2.4185,2.4185])
 

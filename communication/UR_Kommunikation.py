@@ -31,7 +31,7 @@ PORT = 30002 # port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 
-"""
+
 #1. movej axis1 30deg with a,v --> movej_Dreieck
 a = 1.0
 v = 0.8
@@ -39,14 +39,14 @@ qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),n
 qTarget = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
 
-command = "movej([" + str(qStart[0]) + "," + str(qStart[1]) + "," + str(qStart[2]) +"," + str(qStart[3]) +"," + str(qStart[4]) +"," + str(qStart[5]) +"], a=" + str(a) + ", v=" + str(v)  + ")\n"
+command = "movej([" + str(qStart[0]) + "," + str(qStart[1]) + "," + str(qStart[2]) +"," + str(qStart[3]) +"," + str(qStart[4]) +"," + str(qStart[5]) +"])\n"
 s.send(command.encode('ascii'))
 
 sleep(5)
 
 command = "movej([" + str(qTarget[0]) + "," + str(qTarget[1]) + "," + str(qTarget[2]) +"," + str(qTarget[3]) +"," + str(qTarget[4]) +"," + str(qTarget[5]) +"], a=" + str(a) + ", v=" + str(v) + ")\n"
 s.send(command.encode('ascii'))
-"""
+
 
 """
 #2. movej axis1 90deg with a,v --> movej_Trapez
@@ -56,7 +56,7 @@ qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),n
 qTarget = np.array([np.deg2rad(90),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
 
-command = "movej([" + str(qStart[0]) + "," + str(qStart[1]) + "," + str(qStart[2]) +"," + str(qStart[3]) +"," + str(qStart[4]) +"," + str(qStart[5]) +"], a=" + str(a) + ", v=" + str(v)  + ")\n"
+command = "movej([" + str(qStart[0]) + "," + str(qStart[1]) + "," + str(qStart[2]) +"," + str(qStart[3]) +"," + str(qStart[4]) +"," + str(qStart[5]) +"])\n"
 s.send(command.encode('ascii'))
 
 sleep(8)
@@ -88,7 +88,7 @@ qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),n
 qTarget = np.array([np.deg2rad(90),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
 
-command = "movej([" + str(qStart[0]) + "," + str(qStart[1]) + "," + str(qStart[2]) +"," + str(qStart[3]) +"," + str(qStart[4]) +"," + str(qStart[5]) +"])\n"
+command = "movej([" + str(qStart[0]) + "," + str(qStart[1]) + "," + str(qStart[2]) +"," + str(qStart[3]) +"," + str(qStart[4]) +"," + str(qStart[5]) + "])\n"
 s.send(command.encode('ascii'))
 
 sleep(8)
@@ -98,7 +98,7 @@ s.send(command.encode('ascii'))
 """
 
 """
-#5. movej axis1 90deg, q2 60deg, q3 30deg in time t =  --> movej_Synchron
+#5. movej Achse1 90deg, Achse2 60deg, Achse3 30deg in time t --> movej_Synchron
 a = 1.0
 v = 0.8
 t = 6
@@ -116,7 +116,7 @@ s.send(command.encode('ascii'))
 """
 
 """
-#6. movel x 400 with a,v/ time t --> movel_x400
+#6. movel x 400 with a,v --> movel_x400
 a = 1.0
 v = 0.2
 t = 4
@@ -146,7 +146,7 @@ s.send(command.encode('ascii'))
 """
 
 """
-#7. movel x 400 with a,v/ time t: movel_x400_Singular
+#7. movel x 400 mit a,v nahe Singularität: movel_x400_Singular
 a = 1.0
 v = 0.2
 t = 4
