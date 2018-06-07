@@ -102,7 +102,7 @@ def traj_getVAtimestamps(qStart, qTarget, vMax, aMax, tGes):
 
 
 def traj_sample(qStart, qTarget, tS1, tS2, tGes, vMax, aMax, tDelta):
-    qDiff = abs(qTarget - qStart)
+    qDiff = qTarget - qStart
     
     if(qStart > qTarget):
         aMax = - aMax
@@ -154,13 +154,16 @@ def traj_sample(qStart, qTarget, tS1, tS2, tGes, vMax, aMax, tDelta):
         print("Trapez")
         i = 0
         
-        #qTS1 = qStart + 0.5 * aMax * tS1**2
-        #qTS2 = qTarget - vMax**2 / (2 * aMax)
+        qTS1 = qStart + 0.5 * aMax * tS1**2
+        qTS2 = qTarget - vMax**2 / (2 * aMax)
         
-        qTS1 = vMax**2 / (2 * aMax)
-        qTS2 = qTS1 + (tS2 - tS1) * vMax
+        #qTS1 = qStart + vMax**2 / (2 * aMax)
+        #qTS2 = qTS1 + (tS2 - tS1) * vMax
         
-        qDiff = (qTarget - qStart)
+        print(0.5 * aMax * tS1**2)
+        print(vMax**2 / (2 * aMax))
+        print(qTS1)
+        print(qTS2)
         
         for ti in t:
             
