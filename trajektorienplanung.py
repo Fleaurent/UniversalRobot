@@ -25,13 +25,37 @@ def traj_timestamps(qStart, qTarget, vMax, aMax):
         
     if qDiff <= qGrenz:
         #Dreieck: tS1 = tS2, tGes
-        tGes = math.sqrt((4 * qDiff) / aMax)
+        tS1 =  math.sqrt(qDiff / aMax)
+        tS2 = tS1
+        tGes = 2 * tS1
+        
+        #tGes = math.sqrt((4 * qDiff) / aMax)
+        #tS1 = tGes/2
+        #tS2 = tS1
+		
+    else:
+        #Trapez: tS1, tS2, tGes
+        tGes = (vMax / aMax) + (qDiff / vMax)
+        tS1 = vMax / aMax
+        tS2 = tGes - tS1
+    
+    return [tS1, tS2, tGes]
+
+def traj_Pose_timestamps(pStart, pTarget, vMax, aMax):
+    
+    #norm = sqrt(x^2 + y^2 + z^2)
+    pDiff = math.sqrt((pStart[0] - pTarget[0])**2 + (pStart[1] - pTarget[1])**2 + (pStart[2] - pTarget[2])**2)
+    pGrenz = (vMax * vMax) / aMax
+    
+    if pDiff <= pGrenz:
+        #Dreieck: tS1 = tS2, tGes
+        tGes = math.sqrt((4 * pDiff) / aMax)
         tS1 = tGes/2
         tS2 = tS1
 		
     else:
         #Trapez: tS1, tS2, tGes
-        tGes = (vMax / aMax) + (qDiff / vMax)
+        tGes = (vMax / aMax) + (pDiff / vMax)
         tS1 = vMax / aMax
         tS2 = tGes - tS1
     
@@ -76,6 +100,105 @@ def traj_getVAtimestamps(qStart, qTarget, vMax, aMax, tGes):
         
     return [vNeu, aNeu, tS1, tS2, tGes]
 
+
+def traj_sample(qStart, qTarget, tS1, tS2, tGes, vMax, aMax, tDelta):
+    qDiff = abs(qTarget - qStart)
+    
+    if(qStart > qTarget):
+        aMax = - aMax
+        vMax = - vMax
+    
+    t = np.arange(0, tGes + tDelta, tDelta)
+    
+    
+    qT = np.zeros(t.size)
+    vT = np.zeros(t.size)
+    aT = np.zeros(t.size)
+    
+    if(tS1 == tS2):
+        print("Dreieck")
+        i=0
+        
+        #Paramter Zeitpunkt tS1
+        qTS = qStart + 0.5 * aMax * tS1**2
+        vTS = aMax * tS1
+        #print(vTS)
+        #vTS = np.sqrt(aMax * qDiff)
+        #print(vTS)
+        
+        for ti in t:
+            
+            if(ti < tS1):
+                #Dreieck steigend
+                qT[i] = qStart + 0.5 * aMax * ti**2
+                vT[i] = aMax * ti
+                aT[i] = aMax
+            else:
+                #Dreieck fallend
+                qT[i] = qTS + vTS * (ti - tS1) - 0.5 * aMax * (ti - tS1)**2
+                vT[i] = vTS - aMax * (ti - tS1) 
+                aT[i] = - aMax
+                
+            i = i+1
+        
+        #print(qT)
+        
+        """
+        i = 0
+        for i in range(t.size):
+            vT[i] = t[i]
+        print(vT)
+        """
+        
+    else:
+        print("Trapez")
+        i = 0
+        
+        #qTS1 = qStart + 0.5 * aMax * tS1**2
+        #qTS2 = qTarget - vMax**2 / (2 * aMax)
+        
+        qTS1 = vMax**2 / (2 * aMax)
+        qTS2 = qTS1 + (tS2 - tS1) * vMax
+        
+        qDiff = (qTarget - qStart)
+        
+        for ti in t:
+            
+            if(ti < tS1):
+                #Trapez steigend
+                qT[i] = qStart + 0.5 * aMax * ti**2
+                vT[i] = aMax * ti
+                aT[i] = aMax
+                
+            elif(ti < tS2):
+                #Trapez konst
+                qT[i] = qTS1 + (ti - tS1) * vMax
+                vT[i] = vMax
+                aT[i] = 0
+                
+            else:
+                #Trapez fallend
+                qT[i] = qTS2 + (vMax + (aMax * qDiff)/ vMax) * (ti - tS2) - 0.5 * aMax * (ti**2 - tS2**2)
+                vT[i] = - aMax * ti + vMax + (aMax * qDiff) / vMax
+                aT[i] = - aMax
+    
+            i = i+1
+        
+        """
+        i=0
+        for ti in t:
+            qT[i] = ti
+            i = i+1
+        
+       # print(qT)
+        
+        i = 0
+        for i in range(t.size):
+            vT[i] = t[i]
+        #print(vT)
+        """
+        
+    return[qT, vT, aT, t]
 
 #3. a) berechne Zeitverlauf Dreieck Trajektorie: qT, vT, aT zu sampleZeitpunkten tAB
 def traj_sampleDreieck(qStart, qTarget, vMax, aMax, tS, tGes):
@@ -194,6 +317,30 @@ def traj_sampleTrapez(qStart, qTarget, vMax, aMax, tS1, tS2, tGes):
 #    data[0:tAC.size,2] = tAC[0:tAC.size,0]
     
     return [qT, vT, aT, tAC]
+
+"""
+def traj_samplePoseDreieck(pStart, pTarget, vMax, aMax, tS, tGes):
+    tDelta = 1 / 125
+    
+    pDiff = math.sqrt((pStart[0] - pTarget[0])**2 + (pStart[1] - pTarget[1])**2 + (pStart[2] - pTarget[2])**2)
+    pGrenz = (vMax * vMax) / aMax
+    
+    tSample = np.arange(0, tGes + tDelta, tDelta)
+    
+    for ti in tSample:
+        if(ti < TS):
+            #Steigendes Dreieck
+            qStart + 0.5 * aMax * tA**2
+        else:
+            print("test")
+            #fallendes Dreieck
+    
+    
+    
+    return [xyzrxryrzT, tAB]
+"""
+def traj_samplePoseTrapez(qStart, qTarget, vMax, aMax, tS1, tS2, tGes):
+    return [xyzrxryrzT, tAC]
 
 
 #4. Trajektorie direkt aus Vektor plotten
@@ -671,7 +818,7 @@ def plotCSV(filenameCSV):
         plt.plot(r.timestamp, r.target_q_4, color='magenta', label='q4')
         plt.plot(r.timestamp, r.target_q_5, color='orange', label='q5')
     except:
-        plt.title("Winkelgeschindigkeit")
+        plt.title("Gelenkwinkel")
         #nothing to do
     plt.grid(True)
     plt.title("Gelenkwinkel")
@@ -709,7 +856,7 @@ def plotCSV(filenameCSV):
         plt.plot(r.timestamp, r.target_qdd_4, color='magenta', label='qdd4')
         plt.plot(r.timestamp, r.target_qdd_5, color='orange', label='qdd5')
     except:
-        plt.title("Winkelgeschindigkeit")
+        plt.title("Winkelbeschleunigung")
         #nothing todo
     plt.grid(True)
     plt.title("Winkelbeschleunigung")
