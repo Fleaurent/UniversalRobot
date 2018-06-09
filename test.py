@@ -24,7 +24,7 @@ print(tS1, tS2, tGes)
 print(tS1X, tS2X, tGesX)
 
 #Achse 1 zeitlich an Dominante Achse anpassen
-[vNeu, aNeu] = tp.traj_getVA(qStart, qTarget, vMax, aMax, tS1X, tGesX)
+[vNeu, aNeu] = tp.traj_getVA(qStart, qTarget, tS1X, tGesX)
 print(vNeu, aNeu)
 
 [tS1, tS2, tGes] = tp.traj_timestamps(qStart, qTarget, vNeu, aNeu)
@@ -42,3 +42,7 @@ plt.show()
 plt.plot(t, aT)
 plt.title('Acceleration')
 plt.show()
+
+#todo
+#csv
+#6 achsen 1. vergleich Fuehrungsachse 2. anderre achsen anpassen 3. traj_sample 4.plot

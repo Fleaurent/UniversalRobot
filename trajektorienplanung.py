@@ -63,16 +63,11 @@ def traj_Pose_timestamps(pStart, pTarget, vMax, aMax):
 
 
 #2. a) Berechnung vNeu, aNeu für vorgegebene Schaltzeitpunkte tS1 + tGes
-def traj_getVA(qStart, qTarget, vMax, aMax, tS1, tGes):
+def traj_getVA(qStart, qTarget, tS1, tGes):
     qDiff = abs(qTarget - qStart)
         
     aNeu = qDiff / (tS1 * tGes - tS1**2)
     vNeu = aNeu * tS1
-    
-    if((aNeu > aMax) or (vNeu > vMax)):
-        vNeu = 0
-        aNeu = 0
-        #handle Error
     
     return [vNeu, aNeu]
 
@@ -80,11 +75,11 @@ def traj_getVA(qStart, qTarget, vMax, aMax, tS1, tGes):
 def traj_getVAtimestamps(qStart, qTarget, vMax, aMax, tGes):
     #tGes vorgegeben: vMaxNeu
     qDiff = abs(qTarget - qStart)
-    aNeu = aMax
+    aNew = aMax
         
     #NAN check!
     try:
-        vNeu = (tGes - np.sqrt(tGes*tGes - 4 * qDiff/aMax))/(2/aMax)
+        vNew = (tGes - np.sqrt(tGes*tGes - 4 * qDiff/aMax))/(2/aMax)
     except:
         return [0, 0, 0, 0, 0]
         
@@ -94,11 +89,10 @@ def traj_getVAtimestamps(qStart, qTarget, vMax, aMax, tGes):
     
     #print("vMaxNeu: ", vMaxNeu)
    
-    [tS1, tS2, tGes] = traj_timestamps(qStart, qTarget, vNeu, aNeu)
+    [tS1, tS2, tGes] = traj_timestamps(qStart, qTarget, vNew, aNew)
     #print(tS1, tS2, tGes)
-        
-        
-    return [vNeu, aNeu, tS1, tS2, tGes]
+            
+    return [vNew, aNew, tS1, tS2, tGes]
 
 
 def traj_sample(qStart, qTarget, tS1, tS2, tGes, vMax, aMax, tDelta):
@@ -143,13 +137,6 @@ def traj_sample(qStart, qTarget, tS1, tS2, tGes, vMax, aMax, tDelta):
         
         #print(qT)
         
-        """
-        i = 0
-        for i in range(t.size):
-            vT[i] = t[i]
-        print(vT)
-        """
-        
     else:
         print("Trapez")
         i = 0
@@ -187,21 +174,315 @@ def traj_sample(qStart, qTarget, tS1, tS2, tGes, vMax, aMax, tDelta):
     
             i = i+1
         
-        """
-        i=0
-        for ti in t:
-            qT[i] = ti
-            i = i+1
-        
-       # print(qT)
-        
-        i = 0
-        for i in range(t.size):
-            vT[i] = t[i]
-        #print(vT)
-        """
-        
     return[qT, vT, aT, t]
+    
+    
+    
+"""
+Teil 2: mehrere Achsen synchronisieren
+"""
+
+def leadingAxisTimestamps(qStart, qTarget, vMax, aMax):
+    
+    tGesLead = 0
+    axis = 0
+    leadingAxis = 0 
+    
+    for axis in range(qStart.size):
+        [tS1Temp, tS2Temp, tGesTemp] = traj_timestamps(qStart[axis],qTarget[axis],vMax[axis],aMax[axis])
+        
+        if(tGesTemp > tGesLead):
+            [tS1Lead, tS2Lead, tGesLead] = [tS1Temp, tS2Temp, tGesTemp]
+            leadingAxis = axis
+    
+    return[tS1Lead, tS2Lead, tGesLead, leadingAxis]
+    
+    
+def followingAxesVA(qStart, qTarget, tS1Lead, tS2Lead, tGesLead):
+    
+    vNew = np.zeros(qStart.size)
+    aNew = np.zeros(qStart.size)
+    axis = 0
+    
+    for axis in range(qStart.size):
+       [vNew[axis],aNew[axis]] = traj_getVA(qStart[axis], qTarget[axis], tS1Lead, tGesLead)
+    
+    return [vNew, aNew]
+    
+def traj_sampleAxes(qStart, qTarget, vMax, aMax, tDelta):
+    
+    [tS1Lead, tS2Lead, tGesLead, leadingAxis] = leadingAxisTimestamps(qStart, qTarget, vMax, aMax)
+    
+    [vNew, aNew] = followingAxesVA(qStart, qTarget, tS1Lead, tS2Lead, tGesLead)
+    
+    t = np.arange(0, tGesLead + tDelta, tDelta)
+    qT = np.zeros([qStart.size,t.size])
+    vT = np.zeros([qStart.size,t.size])
+    aT = np.zeros([qStart.size,t.size])
+    
+    for axis in range(qStart.size):
+       [qT[axis,:], vT[axis,:], aT[axis,:], t] = traj_sample(qStart[axis], qTarget[axis], tS1Lead, tS2Lead, tGesLead, vNew[axis], aNew[axis], tDelta)
+          
+    return[qT, vT, aT, t]
+    
+    
+"""
+Teil 3: Trajektorien Plotten
+"""
+def plotTrajAxes(qT, vT, aT, t):
+    
+    c = np.array(['r','g','b','c','magenta','orange'])
+    lq = np.array(['q0','q1','q2','q3','q4','q5'])
+    lqd = np.array(['qd0','qd1','qd2','qd3','qd4','qd5'])
+    lqdd = np.array(['qdd0','qdd1','qdd2','qdd3','qdd4','qdd5'])
+    
+    plt.figure()
+    #plt.plot(t,qT,color=c, label=l)
+    try:
+        for axis in range(6):
+            plt.plot(t, qT[axis,:], color=c[axis], label=lq[axis])
+    except:
+        return axis
+    
+    plt.grid(True)
+    plt.title("Gelenkwinkel")
+    plt.ylabel('Gelenkwinkel in Rad')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    
+    
+    plt.figure()
+    try:
+        for axis in range(6):
+            plt.plot(t, vT[axis,:], color=c[axis], label=lqd[axis])
+    except:
+        return axis
+    
+    plt.grid(True)
+    plt.title("Winkelgeschindigkeit")
+    plt.ylabel('Winkelgeschwindigkeit in Rad / s')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    
+    plt.figure()
+    try:
+        for axis in range(6):
+            plt.plot(t, aT[axis,:], color=c[axis], label=lqdd[axis])
+    except:
+        return axis
+    
+    plt.grid(True)
+    plt.title("Winkelbeschleunigung")
+    plt.ylabel('Winkelgeschwindigkeit in Rad / s**2')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    
+    return 0
+
+
+def plotTrajPose(xyzrxryrz, t):
+    
+    # plot
+    plt.figure()
+    try:
+        plt.plot(t, xyzrxryrz[:,0], color='r', label='X')
+        plt.plot(t, xyzrxryrz[:,1], color='g', label='Y')
+        plt.plot(t, xyzrxryrz[:,2], color='b', label='Z')
+    except:
+        return 1
+        
+    plt.grid(True)
+    plt.title("Pose XYZ")
+    plt.ylabel('XYZ in m')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    
+    
+    plt.figure()
+    try:
+        plt.plot(t, xyzrxryrz[:,3], color='c', label='rx')
+        plt.plot(t, xyzrxryrz[:,4], color='magenta', label='ry')
+        plt.plot(t, xyzrxryrz[:,5], color='orange', label='rz')
+    except:
+        return 2
+        
+    plt.grid(True)
+    plt.title("Pose rxryrz")
+    plt.ylabel('rxryrz in Rad')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    
+    return 0
+
+"""
+Teil 4: CSV Files
+"""
+#nur Python 3.6: größe np.array Problem in 2.7
+#def writeCSV(qT, vT, aT, xyzrxryrz, t, filenameCSV):
+def writeCSV(qT, vT, aT, t, filenameCSV):
+    #"exampleCsv.csv" # directory relative to script
+    
+    csv = open('csv/' + filenameCSV, "w")  #open File in write mode
+    
+    axNum = qT.shape[0]
+    
+    #print("CSV: ",qT.shape)
+    if(axNum == 1):
+        csv.write("timestamp target_q_0 target_qd_0 target_qdd_0\n")
+    elif(axNum == 6):
+        csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_qd_0 target_qd_1 target_qd_2 target_qd_3 target_qd_4 target_qd_5 target_qdd_0 target_qdd_1 target_qdd_2 target_qdd_3 target_qdd_4 target_qdd_5\n")
+        #csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_qd_0 target_qd_1 target_qd_2 target_qd_3 target_qd_4 target_qd_5 target_qdd_0 target_qdd_1 target_qdd_2 target_qdd_3 target_qdd_4 target_qdd_5 actual_TCP_pose_0 actual_TCP_pose_1 actual_TCP_pose_2 actual_TCP_pose_3 actual_TCP_pose_4 actual_TCP_pose_5\n")
+    else:
+        return 1
+
+    
+    for timestamp in range(t.size):
+        
+        #1. timestamp
+        time = np.float32(t[timestamp])
+        csv.write(str(time) + " ")
+        
+        #2. q_X
+        for axis in range(axNum):
+            csv.write(str(qT[axis,timestamp]) + " ")
+        
+        #3. qd_X
+        for axis in range(axNum):
+            csv.write(str(vT[axis,timestamp]) + " ")
+            
+        #4. qdd_X
+        for axis in range(axNum):
+            csv.write(str(aT[axis,timestamp]) + " ")
+        
+        """
+        #5- actual_TCP_pose_X
+        for para in range(6):
+            csv.write(str(xyzrxryrz[para,timestamp]) + " ")
+        """
+            
+        csv.write("\n")
+        
+    return 0
+
+
+#plotCSV: python2.7
+import csv_reader
+
+def plotCSV(filenameCSV):
+    
+    filename = os.path.splitext(filenameCSV)[0]
+    
+    with open(('csv/' + filenameCSV)) as csvfile:
+        r = csv_reader.CSVReader(csvfile)
+
+    # plot
+    plt.figure()
+    try:
+        plt.plot(r.timestamp, r.target_q_0, color='r', label='q0')
+        plt.plot(r.timestamp, r.target_q_1, color='g', label='q1')
+        plt.plot(r.timestamp, r.target_q_2, color='b', label='q2')
+        plt.plot(r.timestamp, r.target_q_3, color='c', label='q3')
+        plt.plot(r.timestamp, r.target_q_4, color='magenta', label='q4')
+        plt.plot(r.timestamp, r.target_q_5, color='orange', label='q5')
+    except:
+        return 1
+        
+    plt.grid(True)
+    plt.title("Gelenkwinkel")
+    plt.ylabel('Gelenkwinkel in Rad')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    plt.savefig('png/' + filename + '_q.png')
+    
+    
+    plt.figure()
+    try:
+        plt.plot(r.timestamp, r.target_qd_0, color='r', label='qd0')
+        plt.plot(r.timestamp, r.target_qd_1, color='g', label='qd1')
+        plt.plot(r.timestamp, r.target_qd_2, color='b', label='qd2')
+        plt.plot(r.timestamp, r.target_qd_3, color='c', label='qd3')
+        plt.plot(r.timestamp, r.target_qd_4, color='magenta', label='qd4')
+        plt.plot(r.timestamp, r.target_qd_5, color='orange', label='qd5')
+    except:
+        return 2
+    
+    plt.grid(True)
+    plt.title("Winkelgeschindigkeit")
+    plt.ylabel('Winkelgeschwindigkeit in Rad / s')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    plt.savefig('png/' + filename + '_qd.png')
+    
+    
+    plt.figure()
+    try:
+        plt.plot(r.timestamp, r.target_qdd_0, color='r', label='qdd0')
+        plt.plot(r.timestamp, r.target_qdd_1, color='g', label='qdd1')
+        plt.plot(r.timestamp, r.target_qdd_2, color='b', label='qdd2')
+        plt.plot(r.timestamp, r.target_qdd_3, color='c', label='qdd3')
+        plt.plot(r.timestamp, r.target_qdd_4, color='magenta', label='qdd4')
+        plt.plot(r.timestamp, r.target_qdd_5, color='orange', label='qdd5')
+    except:
+        return 3
+    
+    plt.grid(True)
+    plt.title("Winkelbeschleunigung")
+    plt.ylabel('Winkelbeschleunigung in Rad / s**2')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    plt.savefig('png/' + filename + '_qdd.png')
+    
+    return 0
+
+
+#plotPoseCSV: python2.7
+def plotPoseCSV(filenameCSV):
+    
+    filename = os.path.splitext(filenameCSV)[0]
+    
+    with open(('csv/' + filenameCSV)) as csvfile:
+        r = csv_reader.CSVReader(csvfile)
+
+    # plot
+    plt.figure()
+    try:
+        plt.plot(r.timestamp, r.actual_TCP_pose_0, color='r', label='X')
+        plt.plot(r.timestamp, r.actual_TCP_pose_1, color='g', label='Y')
+        plt.plot(r.timestamp, r.actual_TCP_pose_2, color='b', label='Z')
+    except:
+        plt.title("Pose XYZ")
+        #nothing to do
+    plt.grid(True)
+    plt.title("Pose XYZ")
+    plt.ylabel('XYZ in m')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    plt.savefig('png/' + filename + '_Pose_XYZ.png')
+    
+    
+    
+    plt.figure()
+    try:
+        plt.plot(r.timestamp, r.actual_TCP_pose_3, color='c', label='rx')
+        plt.plot(r.timestamp, r.actual_TCP_pose_4, color='magenta', label='ry')
+        plt.plot(r.timestamp, r.actual_TCP_pose_5, color='orange', label='rz')
+    except:
+        plt.title("Pose rxryrz")
+        #nothing to do
+    plt.grid(True)
+    plt.title("Pose rxryrz")
+    plt.ylabel('rxryrz in Rad')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    plt.savefig('png/' + filename + '_Pose_rxryrz.png')
+    
+    return 0
+
+
+    
+"""
+alt
+"""
 
 #3. a) berechne Zeitverlauf Dreieck Trajektorie: qT, vT, aT zu sampleZeitpunkten tAB
 def traj_sampleDreieck(qStart, qTarget, vMax, aMax, tS, tGes):
@@ -795,231 +1076,3 @@ def trajektorieFuehrungsachse25(qStart, qTarget, vMax, aMax):
             print("Fehler: 25% nicht möglich für Achse: ", Achse)
     
     return [vMaxNeu, aMaxNeu, tS1, tS2, tGes]
-
-
-
-"""
-CSV Files
-"""
-#plotCSV: python2.7
-import csv_reader
-#target
-def plotCSV(filenameCSV):
-    
-    filename = os.path.splitext(filenameCSV)[0]
-    
-    with open(('csv/' + filenameCSV)) as csvfile:
-        r = csv_reader.CSVReader(csvfile)
-
-    # plot
-    plt.figure()
-    try:
-        plt.plot(r.timestamp, r.target_q_0, color='r', label='q0')
-        plt.plot(r.timestamp, r.target_q_1, color='g', label='q1')
-        plt.plot(r.timestamp, r.target_q_2, color='b', label='q2')
-        plt.plot(r.timestamp, r.target_q_3, color='c', label='q3')
-        plt.plot(r.timestamp, r.target_q_4, color='magenta', label='q4')
-        plt.plot(r.timestamp, r.target_q_5, color='orange', label='q5')
-    except:
-        plt.title("Gelenkwinkel")
-        #nothing to do
-    plt.grid(True)
-    plt.title("Gelenkwinkel")
-    plt.ylabel('Gelenkwinkel in Rad')
-    plt.xlabel('Zeit in s')
-    plt.legend()
-    plt.savefig('png/' + filename + '_q.png')
-    
-    
-    plt.figure()
-    try:
-        plt.plot(r.timestamp, r.target_qd_0, color='r', label='qd0')
-        plt.plot(r.timestamp, r.target_qd_1, color='g', label='qd1')
-        plt.plot(r.timestamp, r.target_qd_2, color='b', label='qd2')
-        plt.plot(r.timestamp, r.target_qd_3, color='c', label='qd3')
-        plt.plot(r.timestamp, r.target_qd_4, color='magenta', label='qd4')
-        plt.plot(r.timestamp, r.target_qd_5, color='orange', label='qd5')
-    except:
-        #nothing to do
-        plt.title("Winkelgeschindigkeit")
-    plt.grid(True)
-    plt.title("Winkelgeschindigkeit")
-    plt.ylabel('Winkelgeschwindigkeit in Rad / s')
-    plt.xlabel('Zeit in s')
-    plt.legend()
-    plt.savefig('png/' + filename + '_qd.png')
-    
-    
-    plt.figure()
-    try:
-        plt.plot(r.timestamp, r.target_qdd_0, color='r', label='qdd0')
-        plt.plot(r.timestamp, r.target_qdd_1, color='g', label='qdd1')
-        plt.plot(r.timestamp, r.target_qdd_2, color='b', label='qdd2')
-        plt.plot(r.timestamp, r.target_qdd_3, color='c', label='qdd3')
-        plt.plot(r.timestamp, r.target_qdd_4, color='magenta', label='qdd4')
-        plt.plot(r.timestamp, r.target_qdd_5, color='orange', label='qdd5')
-    except:
-        plt.title("Winkelbeschleunigung")
-        #nothing todo
-    plt.grid(True)
-    plt.title("Winkelbeschleunigung")
-    plt.ylabel('Winkelbeschleunigung in Rad / s**2')
-    plt.xlabel('Zeit in s')
-    plt.legend()
-    plt.savefig('png/' + filename + '_qdd.png')
-    
-    return 0
-
-"""
-#actual
-def plotCSV(filenameCSV):
-    filename = os.path.splitext(filenameCSV)[0]
-
-    with open(('csv/' + filenameCSV)) as csvfile:
-        r = csv_reader.CSVReader(csvfile)
-
-    # plot
-    plt.figure()
-    plt.plot(r.timestamp, r.actual_q_0, color='r', label='q0')
-    try:
-        plt.plot(r.timestamp, r.actual_q_1, color='g', label='q1')
-        plt.plot(r.timestamp, r.actual_q_2, color='b', label='q2')
-        plt.plot(r.timestamp, r.actual_q_3, color='c', label='q3')
-        plt.plot(r.timestamp, r.actual_q_4, color='magenta', label='q4')
-        plt.plot(r.timestamp, r.actual_q_5, color='orange', label='q5')
-    except:
-        plt.title("Winkelgeschindigkeit")
-        #nothing to do
-    plt.grid(True)
-    plt.title("Gelenkwinkel")
-    plt.ylabel('Gelenkwinkel in Rad')
-    plt.xlabel('Zeit in s')
-    plt.legend()
-    plt.savefig('png/' + filename + '_q.png')
-    
-    
-    plt.figure()
-    plt.plot(r.timestamp, r.actual_qd_0, color='r', label='qd0')
-    try:
-        plt.plot(r.timestamp, r.actual_qd_1, color='g', label='qd1')
-        plt.plot(r.timestamp, r.actual_qd_2, color='b', label='qd2')
-        plt.plot(r.timestamp, r.actual_qd_3, color='c', label='qd3')
-        plt.plot(r.timestamp, r.actual_qd_4, color='magenta', label='qd4')
-        plt.plot(r.timestamp, r.actual_qd_5, color='orange', label='qd5')
-    except:
-        #nothing to do
-        plt.title("Winkelgeschindigkeit")
-    plt.grid(True)
-    plt.title("Winkelgeschindigkeit")
-    plt.ylabel('Winkelgeschwindigkeit in Rad / s')
-    plt.xlabel('Zeit in s')
-    plt.legend()
-    plt.savefig('png/' + filename + '_qd.png')
-    
-    
-    plt.figure()
-    plt.plot(r.timestamp, r.actual_qdd_0, color='r', label='qdd0')
-    try:
-        plt.plot(r.timestamp, r.actual_qdd_1, color='g', label='qdd1')
-        plt.plot(r.timestamp, r.actual_qdd_2, color='b', label='qdd2')
-        plt.plot(r.timestamp, r.actual_qdd_3, color='c', label='qdd3')
-        plt.plot(r.timestamp, r.actual_qdd_4, color='magenta', label='qdd4')
-        plt.plot(r.timestamp, r.actual_qdd_5, color='orange', label='qdd5')
-    except:
-        plt.title("Winkelgeschindigkeit")
-        #nothing todo
-    plt.grid(True)
-    plt.title("Winkelbeschleunigung")
-    plt.ylabel('Winkelbeschleunigung in Rad / s**2')
-    plt.xlabel('Zeit in s')
-    plt.legend()
-    plt.savefig('png/' + filename + '_qdd.png')
-    
-    return 0
-"""
-
-#plotPoseCSV: python2.7
-def plotPoseCSV(filenameCSV):
-    
-    filename = os.path.splitext(filenameCSV)[0]
-    
-    with open(('csv/' + filenameCSV)) as csvfile:
-        r = csv_reader.CSVReader(csvfile)
-
-    # plot
-    plt.figure()
-    try:
-        plt.plot(r.timestamp, r.actual_TCP_pose_0, color='r', label='X')
-        plt.plot(r.timestamp, r.actual_TCP_pose_1, color='g', label='Y')
-        plt.plot(r.timestamp, r.actual_TCP_pose_2, color='b', label='Z')
-    except:
-        plt.title("Pose XYZ")
-        #nothing to do
-    plt.grid(True)
-    plt.title("Pose XYZ")
-    plt.ylabel('XYZ in m')
-    plt.xlabel('Zeit in s')
-    plt.legend()
-    plt.savefig('png/' + filename + '_Pose_XYZ.png')
-    
-    
-    
-    plt.figure()
-    try:
-        plt.plot(r.timestamp, r.actual_TCP_pose_3, color='c', label='rx')
-        plt.plot(r.timestamp, r.actual_TCP_pose_4, color='magenta', label='ry')
-        plt.plot(r.timestamp, r.actual_TCP_pose_5, color='orange', label='rz')
-    except:
-        plt.title("Pose rxryrz")
-        #nothing to do
-    plt.grid(True)
-    plt.title("Pose rxryrz")
-    plt.ylabel('rxryrz in Rad')
-    plt.xlabel('Zeit in s')
-    plt.legend()
-    plt.savefig('png/' + filename + '_Pose_rxryrz.png')
-    
-    return 0
-
-#nur Python 3.6: größe np.array Problem in 2.7
-def writeCSV(qT, vT, aT, xyzrxryrz, t, filenameCSV):
-    #"exampleCsv.csv" # directory relative to script
-    
-    csv = open('csv/' + filenameCSV, "w")  #open File in write mode
-    
-    axNum = qT.shape[1]
-    
-    #print("CSV: ",qT.shape)
-    if(axNum == 1):
-        csv.write("timestamp target_q_0 target_qd_0 target_qdd_0\n")
-    elif(axNum == 6):
-        csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_qd_0 target_qd_1 target_qd_2 target_qd_3 target_qd_4 target_qd_5 target_qdd_0 target_qdd_1 target_qdd_2 target_qdd_3 target_qdd_4 target_qdd_5 actual_TCP_pose_0 actual_TCP_pose_1 actual_TCP_pose_2 actual_TCP_pose_3 actual_TCP_pose_4 actual_TCP_pose_5\n")
-    else:
-        return 1
-
-    
-    for timestamp in range(t.size):
-        
-        #1. timestamp
-        time = np.float32(t[timestamp])
-        csv.write(str(time) + " ")
-        
-        #2. q_X
-        for axis in range(axNum):
-            csv.write(str(qT[timestamp,axis]) + " ")
-        
-        #3. qd_X
-        for axis in range(axNum):
-            csv.write(str(vT[timestamp,axis]) + " ")
-            
-        #4. qdd_X
-        for axis in range(axNum):
-            csv.write(str(aT[timestamp,axis]) + " ")
-        
-        #5- actual_TCP_pose_X
-        for para in range(6):
-            csv.write(str(xyzrxryrz[timestamp,para]) + " ")
-            
-        csv.write("\n")
-        
-    return 0

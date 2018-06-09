@@ -61,11 +61,21 @@ qTarget = np.array([qTargetA1,qTargetA2,qTargetA3,qTargetA4,qTargetA5,qTargetA6]
 
 
 
-
 #1. movej Achse1 30deg mit a,v --> movej_Dreieck
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
+[qT, vT, aT, t] = tp.traj_sampleAxes(qStart, qTarget, vMax, aMax, tDelta)
+tp.plotTrajAxes(qT, vT, aT, t)
+
+#xyzrxryrz = tp.trajektoriePose(qT, t, dhParaUR3)
+#tp.plotPoses(xyzrxryrz, t)
+
+filenameCSV = "testeDreieck.csv"
+#tp.writeCSV(qT, vT, aT, t, xyzrxryrz, filenameCSV)
+tp.writeCSV(qT, vT, aT, t, filenameCSV)
+
+"""
 [vMaxNeu, aMaxNeu, tS1, tS2, tGes] = tp.trajektorieFuehrungsachseFolgen(qStart, qTarget, vMax, aMax)
 print("vMaxNeu \t\t\t aMaxNeu \t\t\t tS1 \t\t\t\t tS2 \t\t\t\t tGes")
 print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
@@ -75,9 +85,9 @@ xyzrxryrz = tp.trajektoriePose(qT, t, dhParaUR3)
 
 filenameCSV = "robolib_movej_Dreieck.csv"
 tp.writeCSV(qT, vT, aT, xyzrxryrz, t, filenameCSV)
+"""
 
-
-
+"""
 #2. movej Achse1 90deg mit a,v --> movej_Trapez
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(90),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
@@ -144,6 +154,7 @@ xyzrxryrz = tp.trajektoriePose(qT, t, dhParaUR3)
 
 filenameCSV = "robolib_movej_Synchron.csv"
 tp.writeCSV(qT, vT, aT, xyzrxryrz, t,  filenameCSV)
+"""
 
 """
 #TODO
