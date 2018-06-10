@@ -41,7 +41,7 @@ def traj_timestamps(qStart, qTarget, vMax, aMax):
     
     return [tS1, tS2, tGes]
 
-def traj_Pose_timestamps(pStart, pTarget, vMax, aMax):
+def traj_PoseTimestamps(pStart, pTarget, vMax, aMax):
     
     #norm = sqrt(x^2 + y^2 + z^2)
     pDiff = math.sqrt((pStart[0] - pTarget[0])**2 + (pStart[1] - pTarget[1])**2 + (pStart[2] - pTarget[2])**2)
@@ -104,9 +104,7 @@ def traj_sample(qStart, qTarget, tS1, tS2, tGes, vMax, aMax, tDelta):
         aMax = - aMax
         vMax = - vMax
     
-    t = np.arange(0, tGes + tDelta, tDelta)
-    
-    
+    t = np.arange(0, tGes + tDelta, tDelta) 
     qT = np.zeros(t.size)
     vT = np.zeros(t.size)
     aT = np.zeros(t.size)
@@ -188,7 +186,111 @@ def traj_sample(qStart, qTarget, tS1, tS2, tGes, vMax, aMax, tDelta):
     
         
     return[qT, vT, aT, t]
+
+
+def traj_samplePose(pStart, pTarget, tS1, tS2, tGes, vMax, aMax, tDelta):
     
+    pDiff = np.sqrt((pStart[0] - pTarget[0])**2 + (pStart[1] - pTarget[1])**2 + (pStart[2] - pTarget[2])**2)
+     
+    direction = pTarget[0:3] - pStart[0:3]
+    length = np.sqrt((direction[0]**2) + (direction[1]**2) + (direction[2]**2))
+    gradient = direction / length
+    
+    """
+    x = 5
+    linEq = pStart[0:3] + x * gradient
+    print(linEq)
+    """
+    
+    t = np.arange(0, tGes + tDelta, tDelta)
+    xyzrxryrzT = np.zeros([t.size,6])
+    vT = np.zeros(t.size)
+    aT = np.zeros(t.size)
+    
+    if(tS1 == tS2):
+        print("Dreieck")
+        i=0
+        
+        #Paramter Zeitpunkt tS1
+        xyzrxryrzTs = np.zeros(3)
+        xyzrxryrzTs[0:3] = pStart[0:3] + 0.5 * aMax * (tS1**2) * gradient
+        vTs = aMax * tS1
+        #print(vTS)
+        #vTS = np.sqrt(aMax * qDiff)
+        #print(vTS)
+        
+        for i in range(t.size):
+            
+            if(t[i] < tS1):
+                #Dreieck steigend
+                xyzrxryrzT[i,0:3] = pStart[0:3] + 0.5 * aMax * (tS1**2) * gradient
+                xyzrxryrzT[i,3:6] = pStart[3:6]
+                vT[i] = aMax * t[i]
+                aT[i] = aMax
+            else:
+                #Dreieck fallend
+                xyzrxryrzT[i,0:3] = xyzrxryrzTs[0:3] + (vTs * (t[i] - tS1) - 0.5 * aMax * ((t[i] - tS1)**2)) * gradient
+                xyzrxryrzT[i,3:6] = pStart[3:6]
+                vT[i] = vTs - aMax * (t[i] - tS1) 
+                aT[i] = - aMax
+                
+        
+        #print(qT)
+        
+    else:
+        print("Trapez")
+        i = 0
+        
+        if(np.abs(pDiff) < 1e-4):
+            #qDiff == 0
+            
+            for i in range(t.size):     
+                xyzrxryrzT[i,0:3] = pStart[0:3]
+                xyzrxryrzT[i,3:6] = pStart[3:6]
+                vT[i] = 0
+                aT[i] = 0
+
+
+        else:
+            #qDiff > 0
+            xyzrxryrzTs1 = np.zeros(3)
+            xyzrxryrzTs2 = np.zeros(3)
+            xyzrxryrzTs1[0:3] = pStart[0:3] + 0.5 * aMax * (tS1**2) * gradient
+            xyzrxryrzTs2[0:3] = pTarget[0:3] - (vMax**2 / (2 * aMax)) * gradient
+        
+            #qTS1 = qStart + vMax**2 / (2 * aMax)
+            #qTS2 = qTS1 + (tS2 - tS1) * vMax
+        
+            print(0.5 * aMax * tS1**2)
+            print(vMax**2 / (2 * aMax))
+            print(xyzrxryrzTs1[0:3])
+            print(xyzrxryrzTs2[0:3])
+            
+            for i in range(t.size):
+                
+                if(t[i] < tS1):
+                    #Trapez steigend
+                    xyzrxryrzT[i,0:3] = pStart[0:3] + (0.5 * aMax * t[i]**2) * gradient
+                    xyzrxryrzT[i,3:6] = pStart[3:6]
+                    vT[i] = aMax * t[i]
+                    aT[i] = aMax
+                    
+                elif(t[i] < tS2):
+                    #Trapez konst
+                    xyzrxryrzT[i,0:3] = xyzrxryrzTs1[0:3] + ((t[i] - tS1) * vMax) * gradient
+                    xyzrxryrzT[i,3:6] = pStart[3:6]
+                    vT[i] = vMax
+                    aT[i] = 0
+                    
+                else:
+                    #Trapez fallend
+                    xyzrxryrzT[i,0:3] = xyzrxryrzTs2[0:3] + ((vMax + (aMax * pDiff)/ vMax) * (t[i] - tS2)  - 0.5 * aMax * (t[i]**2 - tS2**2)) * gradient
+                    xyzrxryrzT[i,3:6] = pStart[3:6]
+                    vT[i] = - aMax * t[i] + vMax + (aMax * pDiff) / vMax
+                    aT[i] = - aMax
+    
+        
+    return[xyzrxryrzT, vT, aT, t]
     
     
 """
@@ -240,7 +342,7 @@ def traj_sampleAxes(qStart, qTarget, vMax, aMax, tDelta):
     return[qT, vT, aT, t]
      
 
-def traj_samplePose(qT, t, dhPara):
+def traj_samplePoseFk(qT, t, dhPara):
     
     xyzrxryrz = np.zeros((t.shape[0],6))
     T = np.zeros((4,4))
@@ -384,14 +486,14 @@ def plotTrajAxes(qT, vT, aT, t):
     return 0
 
 
-def plotTrajPose(xyzrxryrz, t):
+def plotTrajPoseFk(xyzrxryrzT, t):
     
     # plot
     plt.figure()
     try:
-        plt.plot(t, xyzrxryrz[:,0], color='r', label='X')
-        plt.plot(t, xyzrxryrz[:,1], color='g', label='Y')
-        plt.plot(t, xyzrxryrz[:,2], color='b', label='Z')
+        plt.plot(t, xyzrxryrzT[:,0], color='r', label='X')
+        plt.plot(t, xyzrxryrzT[:,1], color='g', label='Y')
+        plt.plot(t, xyzrxryrzT[:,2], color='b', label='Z')
     except:
         return 1
         
@@ -404,15 +506,96 @@ def plotTrajPose(xyzrxryrz, t):
     
     plt.figure()
     try:
-        plt.plot(t, xyzrxryrz[:,3], color='c', label='rx')
-        plt.plot(t, xyzrxryrz[:,4], color='magenta', label='ry')
-        plt.plot(t, xyzrxryrz[:,5], color='orange', label='rz')
+        plt.plot(t, xyzrxryrzT[:,3], color='c', label='rx')
+        plt.plot(t, xyzrxryrzT[:,4], color='magenta', label='ry')
+        plt.plot(t, xyzrxryrzT[:,5], color='orange', label='rz')
     except:
         return 2
         
     plt.grid(True)
     plt.title("Pose rxryrz")
     plt.ylabel('rxryrz in Rad')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    
+    return 0
+
+def plotTrajPose(xyzrxryrzT, vT, aT, t):
+    # plot
+    plt.figure()
+    try:
+        plt.plot(t, xyzrxryrzT[:,0], color='r', label='X')
+        plt.plot(t, xyzrxryrzT[:,1], color='g', label='Y')
+        plt.plot(t, xyzrxryrzT[:,2], color='b', label='Z')
+    except:
+        return 1
+        
+    plt.grid(True)
+    plt.title("Pose XYZ")
+    plt.ylabel('XYZ in m')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    
+    
+    plt.figure()
+    try:
+        plt.plot(t, xyzrxryrzT[:,3], color='c', label='rx')
+        plt.plot(t, xyzrxryrzT[:,4], color='magenta', label='ry')
+        plt.plot(t, xyzrxryrzT[:,5], color='orange', label='rz')
+    except:
+        return 2
+        
+    plt.grid(True)
+    plt.title("Pose rxryrz")
+    plt.ylabel('rxryrz in Rad')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    
+    
+    plt.figure()
+    try:
+        plt.plot(t, vT[:], color='r', label='vTCP')
+    except:
+        return 3
+    
+    plt.grid(True)
+    plt.title("TCP geschindigkeit")
+    plt.ylabel('Geschwindigkeit in m/s')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    
+    plt.figure()
+    try:
+        plt.plot(t, aT[:], color='r', label='aTCP')
+    except:
+        return 4
+    
+    plt.grid(True)
+    plt.title("TCP Beschleunigung")
+    plt.ylabel('Beschwindigkeit in Rad / s**2')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    
+    return 0
+
+def plotTrajAxesIk(qT,  t):
+    
+    c = np.array(['r','g','b','c','magenta','orange'])
+    lq = np.array(['q0','q1','q2','q3','q4','q5'])
+    lqd = np.array(['qd0','qd1','qd2','qd3','qd4','qd5'])
+    lqdd = np.array(['qdd0','qdd1','qdd2','qdd3','qdd4','qdd5'])
+    
+    plt.figure()
+    #plt.plot(t,qT,color=c, label=l)
+    try:
+        for axis in range(6):
+            plt.plot(t, qT[:,axis], color=c[axis], label=lq[axis])
+    except:
+        return axis
+    
+    plt.grid(True)
+    plt.title("Gelenkwinkel")
+    plt.ylabel('Gelenkwinkel in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
     
