@@ -80,11 +80,7 @@ filenameCSVB3 = "Achsen3Trapez25.csv"
 """
 Teil B: robolib Berechnung
 """
-#0. testeDreieck
-filenameRobo = "testeDreieck.csv"
-tp.plotCSV(filenameRobo)
-#tp.plotPoseCSV(filenameRobo)
-"""
+
 #1. movej_Dreieck
 filenameRobo = "robolib_movej_Dreieck.csv"
 tp.plotCSV(filenameRobo)
@@ -109,7 +105,7 @@ tp.plotPoseCSV(filenameRobo)
 filenameRobo = "robolib_movej_Synchron.csv"
 tp.plotCSV(filenameRobo)
 tp.plotPoseCSV(filenameRobo)
-
+"""
 #6. movel_x400
 filenameRobo = "robolib_movel_x400.csv"
 #tp.plotCSV(filenameRobo)

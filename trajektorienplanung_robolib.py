@@ -60,7 +60,7 @@ qStart = np.array([qStartA1,qStartA2,qStartA3,qStartA4,qStartA5,qStartA6])
 qTarget = np.array([qTargetA1,qTargetA2,qTargetA3,qTargetA4,qTargetA5,qTargetA6])
 
 
-
+"""
 #1. movej Achse1 30deg mit a,v --> movej_Dreieck
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
@@ -68,20 +68,8 @@ qTarget = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0)
 [qT, vT, aT, t] = tp.traj_sampleAxes(qStart, qTarget, vMax, aMax, tDelta)
 tp.plotTrajAxes(qT, vT, aT, t)
 
-#xyzrxryrz = tp.trajektoriePose(qT, t, dhParaUR3)
-#tp.plotPoses(xyzrxryrz, t)
-
-filenameCSV = "testeDreieck.csv"
-#tp.writeCSV(qT, vT, aT, t, xyzrxryrz, filenameCSV)
-tp.writeCSV(qT, vT, aT, t, filenameCSV)
-
-"""
-[vMaxNeu, aMaxNeu, tS1, tS2, tGes] = tp.trajektorieFuehrungsachseFolgen(qStart, qTarget, vMax, aMax)
-print("vMaxNeu \t\t\t aMaxNeu \t\t\t tS1 \t\t\t\t tS2 \t\t\t\t tGes")
-print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
-
-[qT, vT, aT, t] = tp.trajektorieAchsen(qStart, qTarget, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
-xyzrxryrz = tp.trajektoriePose(qT, t, dhParaUR3)
+xyzrxryrz = tp.traj_samplePose(qT, t, dhParaUR3)
+tp.plotTrajPose(xyzrxryrz, t)
 
 filenameCSV = "robolib_movej_Dreieck.csv"
 tp.writeCSV(qT, vT, aT, xyzrxryrz, t, filenameCSV)
@@ -92,52 +80,49 @@ tp.writeCSV(qT, vT, aT, xyzrxryrz, t, filenameCSV)
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(90),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
-[vMaxNeu, aMaxNeu, tS1, tS2, tGes] = tp.trajektorieFuehrungsachseFolgen(qStart, qTarget, vMax, aMax)
-print("vMaxNeu \t\t\t aMaxNeu \t\t\t tS1 \t\t\t\t tS2 \t\t\t\t tGes")
-print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+[qT, vT, aT, t] = tp.traj_sampleAxes(qStart, qTarget, vMax, aMax, tDelta)
+tp.plotTrajAxes(qT, vT, aT, t)
 
-[qT, vT, aT, t] = tp.trajektorieAchsen(qStart, qTarget, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
-xyzrxryrz = tp.trajektoriePose(qT, t, dhParaUR3)
+xyzrxryrz = tp.traj_samplePose(qT, t, dhParaUR3)
+tp.plotTrajPose(xyzrxryrz, t)
 
 filenameCSV = "robolib_movej_Trapez.csv"
 tp.writeCSV(qT, vT, aT, xyzrxryrz, t, filenameCSV)
+"""
 
-
-
+"""
 #3. movej Achse1 30deg in Zeit t --> movej_Dreieck_Zeit
 tGesVorgabe = 3
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
-[vMaxNeu, aMaxNeu, tS1, tS2, tGes] = tp.trajektorieZeitvorgabe(qStart, qTarget, vMax, aMax, tGesVorgabe)
-print("vMaxNeu \t\t\t aMaxNeu \t\t\t tS1 \t\t\t\t tS2 \t\t\t\t tGes")
-print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+[qT, vT, aT, t] = tp.traj_sampleAxesTime(qStart, qTarget, vMax, aMax, tGesVorgabe, tDelta)
+tp.plotTrajAxes(qT, vT, aT, t)
 
-[qT, vT, aT, t] = tp.trajektorieAchsen(qStart, qTarget, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
-xyzrxryrz = tp.trajektoriePose(qT, t, dhParaUR3)
+xyzrxryrz = tp.traj_samplePose(qT, t, dhParaUR3)
+tp.plotTrajPose(xyzrxryrz, t)
 
 filenameCSV = "robolib_movej_Dreieck_Zeit.csv"
 tp.writeCSV(qT, vT, aT, xyzrxryrz, t, filenameCSV)
+"""
 
-
-
+"""
 #4. movej q1 90deg in time t --> movej_Trapez_Zeit
 tGesVorgabe = 6
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(90),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
-[vMaxNeu, aMaxNeu, tS1, tS2, tGes] = tp.trajektorieZeitvorgabe(qStart, qTarget, vMax, aMax, tGesVorgabe)
-print("vMaxNeu \t\t\t aMaxNeu \t\t\t tS1 \t\t\t\t tS2 \t\t\t\t tGes")
-print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+[qT, vT, aT, t] = tp.traj_sampleAxesTime(qStart, qTarget, vMax, aMax, tGesVorgabe, tDelta)
+tp.plotTrajAxes(qT, vT, aT, t)
 
-[qT, vT, aT, t] = tp.trajektorieAchsen(qStart, qTarget, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
-xyzrxryrz = tp.trajektoriePose(qT, t, dhParaUR3)
+xyzrxryrz = tp.traj_samplePose(qT, t, dhParaUR3)
+tp.plotTrajPose(xyzrxryrz, t)
 
 filenameCSV = "robolib_movej_Trapez_Zeit.csv"
 tp.writeCSV(qT, vT, aT, xyzrxryrz, t, filenameCSV)
+"""
 
-
-
+"""
 #5. movej Achse1 90deg, Achse2 60deg, Achse3 30deg in time t --> movej_Synchron
 a = 1.0
 v = 0.8
@@ -145,12 +130,11 @@ tGesVorgabe = 6
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(90),np.deg2rad(-30),np.deg2rad(-60),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
-[vMaxNeu, aMaxNeu, tS1, tS2, tGes] = tp.trajektorieZeitvorgabe(qStart, qTarget, vMax, aMax, tGesVorgabe)
-print("vMaxNeu \t\t\t aMaxNeu \t\t\t tS1 \t\t\t\t tS2 \t\t\t\t tGes")
-print(vMaxNeu, aMaxNeu, tS1, tS2, tGes)
+[qT, vT, aT, t] = tp.traj_sampleAxesTime(qStart, qTarget, vMax, aMax, tGesVorgabe, tDelta)
+tp.plotTrajAxes(qT, vT, aT, t)
 
-[qT, vT, aT, t] = tp.trajektorieAchsen(qStart, qTarget, vMaxNeu, aMaxNeu, tS1, tS2, tGes)
-xyzrxryrz = tp.trajektoriePose(qT, t, dhParaUR3)
+xyzrxryrz = tp.traj_samplePose(qT, t, dhParaUR3)
+tp.plotTrajPose(xyzrxryrz, t)
 
 filenameCSV = "robolib_movej_Synchron.csv"
 tp.writeCSV(qT, vT, aT, xyzrxryrz, t,  filenameCSV)
