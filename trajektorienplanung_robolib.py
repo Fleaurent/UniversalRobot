@@ -141,7 +141,7 @@ tp.writeCSV(qT, vT, aT, xyzrxryrzT, t,  filenameCSV)
 """
 
 """
-#TODO
+#TODO --> trajektorienplanung_Pose.py
 #6. movel x 400 with a,v --> movel_x400
 a = 1.0
 v = 0.2

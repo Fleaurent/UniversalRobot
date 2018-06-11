@@ -80,7 +80,7 @@ filenameCSVB3 = "Achsen3Trapez25.csv"
 """
 Teil B: robolib Berechnung
 """
-
+"""
 #1. movej_Dreieck
 filenameRobo = "robolib_movej_Dreieck.csv"
 #tp.plotCSV(filenameRobo)
@@ -108,7 +108,7 @@ tp.plotCSVTcp(filenameRobo)
 #7. movel_x400_Singular
 filenameRobo = "robolib_movel_x400_Singular.csv"
 tp.plotCSVTcp(filenameRobo)
-
+"""
 
 """
 Teil C: URSim Aufzeichnung
@@ -138,15 +138,11 @@ tp.plotCSV(filenameRobo)
 filenameRobo = "ursim_movel_x400.csv"
 tp.plotCSVTcp(filenameRobo)
 
-filenameRobo = "ursim_movel_x400_Zeit.csv"
-tp.plotCSVTcp(filenameRobo)
-
 #7. movel_x400_Singular
 filenameRobo = "ursim_movel_x400_Singular.csv"
 tp.plotCSVTcp(filenameRobo)
 
-filenameRobo = "ursim_movel_x400_Singular_Zeit.csv"
-tp.plotCSVTcp(filenameRobo)
+
 """
 
 """
@@ -180,17 +176,9 @@ tp.plotCSV(filenameRobo)
 filenameRobo = "robot_movel_x400.csv"
 tp.plotplotCSVTcpCSV(filenameRobo)
 """
-"""
-filenameRobo = "robot_movel_x400_Zeit.csv"
-tp.plotCSVTcp(filenameRobo)
-"""
+
 #7. movel_x400_Singular
 """
 filenameRobo = "robot_movel_x400_Singular.csv"
 tp.plotCSVTcp(filenameRobo)
-"""
-"""
-filenameRobo = "robot_movel_x400_Singular_Zeit.csv"
-tp.plotCSVTcp(filenameRobo)
-
 """
