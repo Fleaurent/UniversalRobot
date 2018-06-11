@@ -145,20 +145,21 @@ print("\n6. Inverse kinematik")
 
 #b)xyzrxryrz rotvec --> q
 #qHome = np.array([0,np.deg2rad(-90),np.deg2rad(-90),0,np.deg2rad(90),0])
-#rotvecQ = np.array([ 295.15, -112.35, 480.9, -1.209, 1.209, -1.209])    #sol6
-rotvecQ = np.array([ 295.15, -112.35, 480.9, 2.4184, -2.4184, 2.4184])  #sol6
+#tcp = np.array([ 295.15, -112.35, 480.9, -1.209, 1.209, -1.209])    #sol6
+tcp = np.array([ 295.15, -112.35, 480.9, 2.4184, -2.4184, 2.4184])  #sol6
 #q = np.array([np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45)])
-#rotvecQ = np.array([ 70.2, -170.59, -214.24, 2.066, -2.921, 1.461])
+#tcp = np.array([ 70.2, -170.59, -214.24, 2.066, -2.921, 1.461])
 
 qIk = np.array([0,0,0,0,0,0])
 sol = 0
 
-#qIK = rl.ik_ur(dhParaUR3, rotvecQ, sol)
+#qIK = rl.ik_ur(dhParaUR3, tcp, sol)
 #print("sol:", sol, qIK)
 
 for sol in range(8):
-    qIK = rl.ik_ur(dhParaUR3, rotvecQ, sol)
+    qIK = rl.ik_ur(dhParaUR3, tcp, sol)
     print("sol:", sol, qIK)
+    
 
 
 

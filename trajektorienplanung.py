@@ -188,10 +188,12 @@ def traj_sample(qStart, qTarget, tS1, tS2, tGes, vMax, aMax, tDelta):
     return[qT, vT, aT, t]
 
 
-def traj_samplePose(pStart, pTarget, tS1, tS2, tGes, vMax, aMax, tDelta):
+def traj_samplePose(pStart, pTarget, vMax, aMax, tDelta):
+    
+    [tS1, tS2, tGes] =  traj_PoseTimestamps(pStart, pTarget, vMax, aMax)
     
     pDiff = np.sqrt((pStart[0] - pTarget[0])**2 + (pStart[1] - pTarget[1])**2 + (pStart[2] - pTarget[2])**2)
-     
+    
     direction = pTarget[0:3] - pStart[0:3]
     length = np.sqrt((direction[0]**2) + (direction[1]**2) + (direction[2]**2))
     gradient = direction / length
@@ -342,16 +344,43 @@ def traj_sampleAxes(qStart, qTarget, vMax, aMax, tDelta):
     return[qT, vT, aT, t]
      
 
-def traj_samplePoseFk(qT, t, dhPara):
+def traj_samplePoseFk(qT, dhPara):
     
-    xyzrxryrz = np.zeros((t.shape[0],6))
+    xyzrxryrz = np.zeros((qT.shape[0],6))
     T = np.zeros((4,4))
     
-    for ti in range(t.shape[0]):
-         T = rl.fk_ur(dhPara,qT[ti,:])
-         xyzrxryrz[ti,:] = rl.T_2_rotvec(T)
+    for i in range(qT.shape[0]):
+         T = rl.fk_ur(dhPara,qT[i,:])
+         xyzrxryrz[i,:] = rl.T_2_rotvec(T)
     
     return xyzrxryrz
+
+def traj_sampleAxesIk(tcpT, dhParaUR3):
+    
+    qT = np.zeros((tcpT.shape[0],6))
+    sol = 7
+    
+    print(tcpT.shape[0])
+    
+    for i in range(8):
+        try:
+            qT[i,:] = rl.ik_ur(dhParaUR3, tcpT[0,:],i)
+            print(qT[i,:])
+        except:
+                print("fail")
+        
+    
+    """
+    try:
+        for i in range(tcpT.shape[0]):
+            qT = rl.ik_ur(dhParaUR3, tcpT[i,:],sol)
+    except:
+        print("Fail")
+    """
+    #qIK = rl.ik_ur(dhParaUR3, rotvecQ, sol)
+    #print("sol:", sol, qIK)
+    
+    return qT
 
 """
 Teil 2B: mehrere Achsen synchronisieren mit Zeitvorgabe
@@ -520,7 +549,7 @@ def plotTrajPoseFk(xyzrxryrzT, t):
     
     return 0
 
-def plotTrajPose(xyzrxryrzT, vT, aT, t):
+def plotTrajPose(xyzrxryrzT, vTcPT, aTcpT, t):
     # plot
     plt.figure()
     try:
@@ -554,25 +583,25 @@ def plotTrajPose(xyzrxryrzT, vT, aT, t):
     
     plt.figure()
     try:
-        plt.plot(t, vT[:], color='r', label='vTCP')
+        plt.plot(t, vTcPT[:], color='r', label='vTCP')
     except:
         return 3
     
     plt.grid(True)
-    plt.title("TCP geschindigkeit")
+    plt.title("TCP Geschindigkeit")
     plt.ylabel('Geschwindigkeit in m/s')
     plt.xlabel('Zeit in s')
     plt.legend()
     
     plt.figure()
     try:
-        plt.plot(t, aT[:], color='r', label='aTCP')
+        plt.plot(t, aTcpT[:], color='r', label='aTCP')
     except:
         return 4
     
     plt.grid(True)
     plt.title("TCP Beschleunigung")
-    plt.ylabel('Beschwindigkeit in Rad / s**2')
+    plt.ylabel('Beschleunigung in Rad / s**2')
     plt.xlabel('Zeit in s')
     plt.legend()
     
@@ -582,9 +611,7 @@ def plotTrajAxesIk(qT,  t):
     
     c = np.array(['r','g','b','c','magenta','orange'])
     lq = np.array(['q0','q1','q2','q3','q4','q5'])
-    lqd = np.array(['qd0','qd1','qd2','qd3','qd4','qd5'])
-    lqdd = np.array(['qdd0','qdd1','qdd2','qdd3','qdd4','qdd5'])
-    
+
     plt.figure()
     #plt.plot(t,qT,color=c, label=l)
     try:
