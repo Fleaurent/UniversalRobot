@@ -90,10 +90,10 @@ pStart = np.array([300,-200,400,2.4186,-2.4185,2.4185])
 pTarget = np.array([300,200,400,2.4186,-2.4185,2.4185])
 
 [xyzrxryrzT, vTcpT, aTcpT, t] = tp.traj_samplePose(pStart, pTarget, vMax, aMax, tDelta)
-#tp.plotTrajPose(xyzrxryrzT, vTcpT, aTcpT, t)
+tp.plotTrajPose(xyzrxryrzT, vTcpT, aTcpT, t)
 
 qT = tp.traj_sampleAxesIk(xyzrxryrzT, dhParaUR3, sol)
-#tp.plotTrajAxesIk(qT, t)
+tp.plotTrajAxesIk(qT, t)
 
 filenameCSV = "robolib_movel_x400.csv"
 tp.writeCSVTcp(qT, xyzrxryrzT, vTcpT, aTcpT, t, filenameCSV)
@@ -104,10 +104,10 @@ pStart = np.array([200,-200,400,2.4186,-2.4185,2.4185])
 pTarget = np.array([200,200,400,2.4186,-2.4185,2.4185])
 
 [xyzrxryrzT, vTcpT, aTcpT, t] = tp.traj_samplePose(pStart, pTarget, vMax, aMax, tDelta)
-#tp.plotTrajPose(xyzrxryrzT, vTcpT, aTcpT, t)
+tp.plotTrajPose(xyzrxryrzT, vTcpT, aTcpT, t)
 
 qT = tp.traj_sampleAxesIk(xyzrxryrzT, dhParaUR3, sol)
-#tp.plotTrajAxesIk(qT, t)
+tp.plotTrajAxesIk(qT, t)
 
 filenameCSV = "robolib_movel_x400_Singular.csv"
 tp.writeCSVTcp(qT, xyzrxryrzT, vTcpT, aTcpT, t, filenameCSV)

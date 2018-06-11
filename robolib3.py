@@ -402,14 +402,7 @@ def ik_ur(dh_para, tcp, sol):
     # Winkel q4
     q4 = q234 - q2 - q3
     
-    #print("\nq4: ", q4)
-    
-    #Korrektur movel_x400
-    if np.abs(q4) >= (np.pi):
-        q4 = q4 - np.pi
-    if np.abs(q4) >= (np.pi):
-        q4 = q4 - np.pi
-        
+    #print("\nq4: ", q4)   
         
     return [q1, q2, q3, q4, q5, q6]
     

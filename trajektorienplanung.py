@@ -374,8 +374,19 @@ def traj_sampleAxesIk(tcpT, dhParaUR3, sol):
     try:
         for i in range(tcpT.shape[0]):
             qT[i,:] = rl.ik_ur(dhParaUR3, tcpT[i,:],sol)
+            
+            #Korrektur movel_x400
+            q4 = qT[i,3]
+            if np.abs(q4) >= (np.pi):
+                q4 = q4 - np.pi
+            if np.abs(q4) >= (np.pi):
+                q4 = q4 - np.pi
+            qT[i,3] = q4
+            
     except:
-        print("Fail")
+        #print("Fail")
+        return 0
+        
     
     #qIK = rl.ik_ur(dhParaUR3, rotvecQ, sol)
     #print("sol:", sol, qIK)
