@@ -502,7 +502,7 @@ def plotTrajAxes(qT, vT, aT, t):
     plt.ylabel('Gelenkwinkel in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     
     fig2 = plt.figure().gca()
     try:
@@ -519,7 +519,7 @@ def plotTrajAxes(qT, vT, aT, t):
     plt.ylabel('Winkelgeschwindigkeit in Rad / s')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     
     fig3 = plt.figure().gca()
     try:
@@ -536,7 +536,7 @@ def plotTrajAxes(qT, vT, aT, t):
     plt.ylabel('Winkelgeschwindigkeit in Rad / s**2')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     
     return 0
 
@@ -559,7 +559,7 @@ def plotTrajPoseFk(xyzrxryrzT, t):
     plt.ylabel('XYZ in m')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     
     
     fig2 = plt.figure().gca()
@@ -577,7 +577,7 @@ def plotTrajPoseFk(xyzrxryrzT, t):
     plt.ylabel('rxryrz in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     
     return 0
 
@@ -598,7 +598,7 @@ def plotTrajPose(xyzrxryrzT, vTcPT, aTcpT, t):
     plt.ylabel('XYZ in mm')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     
     
     fig2 = plt.figure().gca()
@@ -616,7 +616,7 @@ def plotTrajPose(xyzrxryrzT, vTcPT, aTcpT, t):
     plt.ylabel('rxryrz in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     
     
     fig3 = plt.figure().gca()
@@ -632,7 +632,7 @@ def plotTrajPose(xyzrxryrzT, vTcPT, aTcpT, t):
     plt.ylabel('Geschwindigkeit in mm/s')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     
     fig4 = plt.figure().gca()
     try:
@@ -647,7 +647,7 @@ def plotTrajPose(xyzrxryrzT, vTcPT, aTcpT, t):
     plt.ylabel('Beschleunigung in mm/ s**2')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     
     return 0
 
@@ -671,7 +671,7 @@ def plotTrajAxesIk(qT,  t):
     plt.ylabel('Gelenkwinkel in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     
     return 0
 
@@ -795,7 +795,7 @@ def plotCSV(filenameCSV):
     plt.ylabel('Gelenkwinkel in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     plt.savefig('png/' + filename + '_q.png')
     
     
@@ -817,7 +817,7 @@ def plotCSV(filenameCSV):
     plt.ylabel('Winkelgeschwindigkeit in Rad / s')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     plt.savefig('png/' + filename + '_qd.png')
     
     
@@ -839,7 +839,7 @@ def plotCSV(filenameCSV):
     plt.ylabel('Winkelbeschleunigung in Rad / s**2')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     plt.savefig('png/' + filename + '_qdd.png')
     
     
@@ -859,7 +859,7 @@ def plotCSV(filenameCSV):
     plt.ylabel('XYZ in m')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     plt.savefig('png/' + filename + '_Pose_XYZ.png')
     
     
@@ -879,7 +879,7 @@ def plotCSV(filenameCSV):
     plt.ylabel('rxryrz in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     plt.savefig('png/' + filename + '_Pose_rxryrz.png')
     return 0
 
@@ -911,7 +911,7 @@ def plotCSVTcp(filenameCSV):
     plt.ylabel('Gelenkwinkel in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     plt.savefig('png/' + filename + '_q.png')
     
         
@@ -931,7 +931,7 @@ def plotCSVTcp(filenameCSV):
     plt.ylabel('XYZ in mm')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     plt.savefig('png/' + filename + '_Pose_XYZ.png')
     
     
@@ -951,7 +951,7 @@ def plotCSVTcp(filenameCSV):
     plt.ylabel('rxryrz in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     plt.savefig('png/' + filename + '_Pose_rxryrz.png')
     
     
@@ -968,7 +968,7 @@ def plotCSVTcp(filenameCSV):
     plt.ylabel('Tcp Geschwindigkeit in mm/s')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     plt.savefig('png/' + filename + '_Tcp_v.png')
     
     
@@ -986,7 +986,7 @@ def plotCSVTcp(filenameCSV):
     plt.ylabel('Tcp Beschleunigung in mm / s**2')
     plt.xlabel('Zeit in s')
     plt.legend()
-    plt.show()
+    #plt.show()
     plt.savefig('png/' + filename + '_TCP_a.png')
     
     

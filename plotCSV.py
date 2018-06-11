@@ -108,8 +108,8 @@ tp.plotCSVTcp(filenameRobo)
 #7. movel_x400_Singular
 filenameRobo = "robolib_movel_x400_Singular.csv"
 tp.plotCSVTcp(filenameRobo)
-"""
 
+"""
 """
 Teil C: URSim Aufzeichnung
 """
@@ -148,7 +148,7 @@ tp.plotCSVTcp(filenameRobo)
 """
 Teil D: Roboteraufzeichnung
 """
-"""
+
 #1. movej_Dreieck
 filenameRobo = "robot_movej_Dreieck.csv"
 tp.plotCSV(filenameRobo)
@@ -181,4 +181,4 @@ tp.plotCSVTcp(filenameRobo)
 
 filenameRobo = "robot_movel_x400_Singular.csv"
 tp.plotCSVTcp(filenameRobo)
-"""
+
