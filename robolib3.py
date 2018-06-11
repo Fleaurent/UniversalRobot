@@ -361,7 +361,12 @@ def ik_ur(dh_para, tcp, sol):
     try:
         q3 = math.acos((x_S**2 + y_S**2 - l1**2 - l2**2) / (2 * l1 * l2))
     except:
+        print((x_S**2 + y_S**2 - l1**2 - l2**2))
+        print((2 * l1 * l2))
         return 0
+
+    #print((x_S**2 + y_S**2 - l1**2 - l2**2))
+    #print((2 * l1 * l2))
     
     if (sol & 2 == 0):
         q3 = q3
@@ -399,6 +404,12 @@ def ik_ur(dh_para, tcp, sol):
     
     #print("\nq4: ", q4)
     
-    
-    return np.array([q1, q2, q3, q4, q5, q6])
+    #Korrektur movel_x400
+    if np.abs(q4) >= (np.pi):
+        q4 = q4 - np.pi
+    if np.abs(q4) >= (np.pi):
+        q4 = q4 - np.pi
+        
+        
+    return [q1, q2, q3, q4, q5, q6]
     
