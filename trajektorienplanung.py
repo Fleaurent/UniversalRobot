@@ -7,8 +7,10 @@ toDO: keine Winkeländerung!
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import robolib3 as rl
 import os
+
 
 """
 Teil 1:  Trajektorie einzelner Achse
@@ -330,6 +332,7 @@ def followingAxesVA(qStart, qTarget, tS1Lead, tS2Lead, tGesLead):
 def traj_sampleAxes(qStart, qTarget, vMax, aMax, tDelta):
     
     [tS1Lead, tS2Lead, tGesLead, leadingAxis] = leadingAxisTimestamps(qStart, qTarget, vMax, aMax)
+    print(tS1Lead, tS2Lead, tGesLead, leadingAxis)
     
     [vNew, aNew] = followingAxesVA(qStart, qTarget, tS1Lead, tS2Lead, tGesLead)
     
@@ -482,46 +485,58 @@ def plotTrajAxes(qT, vT, aT, t):
     lqd = np.array(['qd0','qd1','qd2','qd3','qd4','qd5'])
     lqdd = np.array(['qdd0','qdd1','qdd2','qdd3','qdd4','qdd5'])
     
-    plt.figure()
+    fig1 = plt.figure().gca()
     #plt.plot(t,qT,color=c, label=l)
     try:
         for axis in range(6):
-            plt.plot(t, qT[:,axis], color=c[axis], label=lq[axis])
+            fig1.plot(t, qT[:,axis], color=c[axis], label=lq[axis])
     except:
         return axis
     
     plt.grid(True)
+    #fig.xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
+    #fig.xaxis.set_ticklabels(  )
+    fig1.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig1.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.title("Gelenkwinkel")
     plt.ylabel('Gelenkwinkel in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     
-    
-    plt.figure()
+    fig2 = plt.figure().gca()
     try:
         for axis in range(6):
-            plt.plot(t, vT[:,axis], color=c[axis], label=lqd[axis])
+            fig2.plot(t, vT[:,axis], color=c[axis], label=lqd[axis])
     except:
         return axis
     
     plt.grid(True)
+    #fig2.xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
+    fig2.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig2.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.title("Winkelgeschindigkeit")
     plt.ylabel('Winkelgeschwindigkeit in Rad / s')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     
-    plt.figure()
+    fig3 = plt.figure().gca()
     try:
         for axis in range(6):
-            plt.plot(t, aT[:,axis], color=c[axis], label=lqdd[axis])
+            fig3.plot(t, aT[:,axis], color=c[axis], label=lqdd[axis])
     except:
         return axis
     
     plt.grid(True)
+    #fig3.xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
+    fig3.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig3.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.title("Winkelbeschleunigung")
     plt.ylabel('Winkelgeschwindigkeit in Rad / s**2')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     
     return 0
 
@@ -529,92 +544,110 @@ def plotTrajAxes(qT, vT, aT, t):
 def plotTrajPoseFk(xyzrxryrzT, t):
     
     # plot
-    plt.figure()
+    fig1 = plt.figure().gca()
     try:
-        plt.plot(t, xyzrxryrzT[:,0], color='r', label='X')
-        plt.plot(t, xyzrxryrzT[:,1], color='g', label='Y')
-        plt.plot(t, xyzrxryrzT[:,2], color='b', label='Z')
+        fig1.plot(t, xyzrxryrzT[:,0], color='r', label='X')
+        fig1.plot(t, xyzrxryrzT[:,1], color='g', label='Y')
+        fig1.plot(t, xyzrxryrzT[:,2], color='b', label='Z')
     except:
         return 1
         
+    fig1.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig1.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
     plt.title("Pose XYZ")
     plt.ylabel('XYZ in m')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     
     
-    plt.figure()
+    fig2 = plt.figure().gca()
     try:
-        plt.plot(t, xyzrxryrzT[:,3], color='c', label='rx')
-        plt.plot(t, xyzrxryrzT[:,4], color='magenta', label='ry')
-        plt.plot(t, xyzrxryrzT[:,5], color='orange', label='rz')
+        fig2.plot(t, xyzrxryrzT[:,3], color='c', label='rx')
+        fig2.plot(t, xyzrxryrzT[:,4], color='magenta', label='ry')
+        fig2.plot(t, xyzrxryrzT[:,5], color='orange', label='rz')
     except:
         return 2
         
+    fig2.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig2.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
     plt.title("Pose rxryrz")
     plt.ylabel('rxryrz in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     
     return 0
 
 def plotTrajPose(xyzrxryrzT, vTcPT, aTcpT, t):
     # plot
-    plt.figure()
+    fig1 = plt.figure().gca()
     try:
-        plt.plot(t, xyzrxryrzT[:,0], color='r', label='X')
-        plt.plot(t, xyzrxryrzT[:,1], color='g', label='Y')
-        plt.plot(t, xyzrxryrzT[:,2], color='b', label='Z')
+        fig1.plot(t, xyzrxryrzT[:,0], color='r', label='X')
+        fig1.plot(t, xyzrxryrzT[:,1], color='g', label='Y')
+        fig1.plot(t, xyzrxryrzT[:,2], color='b', label='Z')
     except:
         return 1
         
+    fig1.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig1.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
     plt.title("Pose XYZ")
     plt.ylabel('XYZ in mm')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     
     
-    plt.figure()
+    fig2 = plt.figure().gca()
     try:
-        plt.plot(t, xyzrxryrzT[:,3], color='c', label='rx')
-        plt.plot(t, xyzrxryrzT[:,4], color='magenta', label='ry')
-        plt.plot(t, xyzrxryrzT[:,5], color='orange', label='rz')
+        fig2.plot(t, xyzrxryrzT[:,3], color='c', label='rx')
+        fig2.plot(t, xyzrxryrzT[:,4], color='magenta', label='ry')
+        fig2.plot(t, xyzrxryrzT[:,5], color='orange', label='rz')
     except:
         return 2
         
+    fig2.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig2.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
     plt.title("Pose rxryrz")
     plt.ylabel('rxryrz in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     
     
-    plt.figure()
+    fig3 = plt.figure().gca()
     try:
-        plt.plot(t, vTcPT[:], color='r', label='vTCP')
+        fig3.plot(t, vTcPT[:], color='r', label='vTCP')
     except:
         return 3
     
+    fig3.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig3.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
     plt.title("TCP Geschindigkeit")
     plt.ylabel('Geschwindigkeit in mm/s')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     
-    plt.figure()
+    fig4 = plt.figure().gca()
     try:
-        plt.plot(t, aTcpT[:], color='r', label='aTCP')
+        fig4.plot(t, aTcpT[:], color='r', label='aTCP')
     except:
         return 4
     
+    fig4.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig4.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
     plt.title("TCP Beschleunigung")
     plt.ylabel('Beschleunigung in mm/ s**2')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     
     return 0
 
@@ -623,19 +656,22 @@ def plotTrajAxesIk(qT,  t):
     c = np.array(['r','g','b','c','magenta','orange'])
     lq = np.array(['q0','q1','q2','q3','q4','q5'])
 
-    plt.figure()
+    fig1 = plt.figure().gca()
     #plt.plot(t,qT,color=c, label=l)
     try:
         for axis in range(6):
-            plt.plot(t, qT[:,axis], color=c[axis], label=lq[axis])
+            fig1.plot(t, qT[:,axis], color=c[axis], label=lq[axis])
     except:
         return axis
     
+    fig1.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig1.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
     plt.title("Gelenkwinkel")
     plt.ylabel('Gelenkwinkel in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     
     return 0
 
@@ -741,94 +777,109 @@ def plotCSV(filenameCSV):
         r = csv_reader.CSVReader(csvfile)
 
     # Axes
-    plt.figure()
+    fig1 = plt.figure().gca()
     try:
-        plt.plot(r.timestamp, r.target_q_0, color='r', label='q0')
-        plt.plot(r.timestamp, r.target_q_1, color='g', label='q1')
-        plt.plot(r.timestamp, r.target_q_2, color='b', label='q2')
-        plt.plot(r.timestamp, r.target_q_3, color='c', label='q3')
-        plt.plot(r.timestamp, r.target_q_4, color='magenta', label='q4')
-        plt.plot(r.timestamp, r.target_q_5, color='orange', label='q5')
+        fig1.plot(r.timestamp, r.target_q_0, color='r', label='q0')
+        fig1.plot(r.timestamp, r.target_q_1, color='g', label='q1')
+        fig1.plot(r.timestamp, r.target_q_2, color='b', label='q2')
+        fig1.plot(r.timestamp, r.target_q_3, color='c', label='q3')
+        fig1.plot(r.timestamp, r.target_q_4, color='magenta', label='q4')
+        fig1.plot(r.timestamp, r.target_q_5, color='orange', label='q5')
     except:
         return 1
         
+    fig1.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig1.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
-    plt.title("Gelenkwinkel")
+    plt.title(filenameCSV + " - Gelenkwinkel")
     plt.ylabel('Gelenkwinkel in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     plt.savefig('png/' + filename + '_q.png')
     
     
-    plt.figure()
+    fig2 = plt.figure().gca()
     try:
-        plt.plot(r.timestamp, r.target_qd_0, color='r', label='qd0')
-        plt.plot(r.timestamp, r.target_qd_1, color='g', label='qd1')
-        plt.plot(r.timestamp, r.target_qd_2, color='b', label='qd2')
-        plt.plot(r.timestamp, r.target_qd_3, color='c', label='qd3')
-        plt.plot(r.timestamp, r.target_qd_4, color='magenta', label='qd4')
-        plt.plot(r.timestamp, r.target_qd_5, color='orange', label='qd5')
+        fig2.plot(r.timestamp, r.target_qd_0, color='r', label='qd0')
+        fig2.plot(r.timestamp, r.target_qd_1, color='g', label='qd1')
+        fig2.plot(r.timestamp, r.target_qd_2, color='b', label='qd2')
+        fig2.plot(r.timestamp, r.target_qd_3, color='c', label='qd3')
+        fig2.plot(r.timestamp, r.target_qd_4, color='magenta', label='qd4')
+        fig2.plot(r.timestamp, r.target_qd_5, color='orange', label='qd5')
     except:
         return 2
     
+    fig2.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig2.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
-    plt.title("Winkelgeschindigkeit")
+    plt.title(filenameCSV + " - Winkelgeschindigkeit")
     plt.ylabel('Winkelgeschwindigkeit in Rad / s')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     plt.savefig('png/' + filename + '_qd.png')
     
     
-    plt.figure()
+    fig3 = plt.figure().gca()
     try:
-        plt.plot(r.timestamp, r.target_qdd_0, color='r', label='qdd0')
-        plt.plot(r.timestamp, r.target_qdd_1, color='g', label='qdd1')
-        plt.plot(r.timestamp, r.target_qdd_2, color='b', label='qdd2')
-        plt.plot(r.timestamp, r.target_qdd_3, color='c', label='qdd3')
-        plt.plot(r.timestamp, r.target_qdd_4, color='magenta', label='qdd4')
-        plt.plot(r.timestamp, r.target_qdd_5, color='orange', label='qdd5')
+        fig3.plot(r.timestamp, r.target_qdd_0, color='r', label='qdd0')
+        fig3.plot(r.timestamp, r.target_qdd_1, color='g', label='qdd1')
+        fig3.plot(r.timestamp, r.target_qdd_2, color='b', label='qdd2')
+        fig3.plot(r.timestamp, r.target_qdd_3, color='c', label='qdd3')
+        fig3.plot(r.timestamp, r.target_qdd_4, color='magenta', label='qdd4')
+        fig3.plot(r.timestamp, r.target_qdd_5, color='orange', label='qdd5')
     except:
         return 3
     
+    fig3.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig3.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
-    plt.title("Winkelbeschleunigung")
+    plt.title(filenameCSV + " - Winkelbeschleunigung")
     plt.ylabel('Winkelbeschleunigung in Rad / s**2')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     plt.savefig('png/' + filename + '_qdd.png')
     
     
     #Pose
-    plt.figure()
+    fig4 = plt.figure().gca()
     try:
-        plt.plot(r.timestamp, r.actual_TCP_pose_0, color='r', label='X')
-        plt.plot(r.timestamp, r.actual_TCP_pose_1, color='g', label='Y')
-        plt.plot(r.timestamp, r.actual_TCP_pose_2, color='b', label='Z')
+        fig4.plot(r.timestamp, r.actual_TCP_pose_0, color='r', label='X')
+        fig4.plot(r.timestamp, r.actual_TCP_pose_1, color='g', label='Y')
+        fig4.plot(r.timestamp, r.actual_TCP_pose_2, color='b', label='Z')
     except:
         return 4
-        #nothing to do
+        
+    fig4.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig4.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
-    plt.title("Pose XYZ")
+    plt.title(filenameCSV + " - Pose XYZ")
     plt.ylabel('XYZ in m')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     plt.savefig('png/' + filename + '_Pose_XYZ.png')
     
     
     
-    plt.figure()
+    fig5 = plt.figure().gca()
     try:
-        plt.plot(r.timestamp, r.actual_TCP_pose_3, color='c', label='rx')
-        plt.plot(r.timestamp, r.actual_TCP_pose_4, color='magenta', label='ry')
-        plt.plot(r.timestamp, r.actual_TCP_pose_5, color='orange', label='rz')
+        fig5.plot(r.timestamp, r.actual_TCP_pose_3, color='c', label='rx')
+        fig5.plot(r.timestamp, r.actual_TCP_pose_4, color='magenta', label='ry')
+        fig5.plot(r.timestamp, r.actual_TCP_pose_5, color='orange', label='rz')
     except:
         return 5
-        #nothing to do
+        
+    fig5.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig5.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
-    plt.title("Pose rxryrz")
+    plt.title(filenameCSV + " - Pose rxryrz")
     plt.ylabel('rxryrz in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     plt.savefig('png/' + filename + '_Pose_rxryrz.png')
     return 0
 
@@ -842,86 +893,102 @@ def plotCSVTcp(filenameCSV):
         r = csv_reader.CSVReader(csvfile)
 
      # Axes
-    plt.figure()
+    fig1 = plt.figure().gca()
     try:
-        plt.plot(r.timestamp, r.target_q_0, color='r', label='q0')
-        plt.plot(r.timestamp, r.target_q_1, color='g', label='q1')
-        plt.plot(r.timestamp, r.target_q_2, color='b', label='q2')
-        plt.plot(r.timestamp, r.target_q_3, color='c', label='q3')
-        plt.plot(r.timestamp, r.target_q_4, color='magenta', label='q4')
-        plt.plot(r.timestamp, r.target_q_5, color='orange', label='q5')
+        fig1.plot(r.timestamp, r.target_q_0, color='r', label='q0')
+        fig1.plot(r.timestamp, r.target_q_1, color='g', label='q1')
+        fig1.plot(r.timestamp, r.target_q_2, color='b', label='q2')
+        fig1.plot(r.timestamp, r.target_q_3, color='c', label='q3')
+        fig1.plot(r.timestamp, r.target_q_4, color='magenta', label='q4')
+        fig1.plot(r.timestamp, r.target_q_5, color='orange', label='q5')
     except:
         return 1
         
+    fig1.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig1.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
-    plt.title("Gelenkwinkel")
+    plt.title(filenameCSV + " - Gelenkwinkel")
     plt.ylabel('Gelenkwinkel in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     plt.savefig('png/' + filename + '_q.png')
     
         
     #Pose
-    plt.figure()
+    fig2 = plt.figure().gca()
     try:
-        plt.plot(r.timestamp, r.actual_TCP_pose_0, color='r', label='X')
-        plt.plot(r.timestamp, r.actual_TCP_pose_1, color='g', label='Y')
-        plt.plot(r.timestamp, r.actual_TCP_pose_2, color='b', label='Z')
+        fig2.plot(r.timestamp, r.actual_TCP_pose_0, color='r', label='X')
+        fig2.plot(r.timestamp, r.actual_TCP_pose_1, color='g', label='Y')
+        fig2.plot(r.timestamp, r.actual_TCP_pose_2, color='b', label='Z')
     except:
         return 2
-        #nothing to do
+        
+    fig2.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig2.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
-    plt.title("Pose XYZ")
+    plt.title(filenameCSV + " - Pose XYZ")
     plt.ylabel('XYZ in mm')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     plt.savefig('png/' + filename + '_Pose_XYZ.png')
     
     
     
-    plt.figure()
+    fig3 = plt.figure().gca()
     try:
-        plt.plot(r.timestamp, r.actual_TCP_pose_3, color='c', label='rx')
-        plt.plot(r.timestamp, r.actual_TCP_pose_4, color='magenta', label='ry')
-        plt.plot(r.timestamp, r.actual_TCP_pose_5, color='orange', label='rz')
+        fig3.plot(r.timestamp, r.actual_TCP_pose_3, color='c', label='rx')
+        fig3.plot(r.timestamp, r.actual_TCP_pose_4, color='magenta', label='ry')
+        fig3.plot(r.timestamp, r.actual_TCP_pose_5, color='orange', label='rz')
     except:
-        return 4
-        #nothing to do
+        return 3
+    
+    fig3.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig3.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
-    plt.title("Pose rxryrz")
+    plt.title(filenameCSV + " - Pose rxryrz")
     plt.ylabel('rxryrz in Rad')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     plt.savefig('png/' + filename + '_Pose_rxryrz.png')
     
     
-    plt.figure()
+    fig4 = plt.figure().gca()
     try:
-        plt.plot(r.timestamp, r.actual_TCP_v, color='r', label='vTcp')
+        fig4.plot(r.timestamp, r.actual_TCP_v, color='r', label='vTcp')
     except:
-        return 5
-        #nothing to do
+        return 4
+        
+    fig4.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig4.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
-    plt.title("Tcp Geschwindigkeit")
+    plt.title(filenameCSV + " - Tcp Geschwindigkeit")
     plt.ylabel('Tcp Geschwindigkeit in mm/s')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     plt.savefig('png/' + filename + '_Tcp_v.png')
     
     
     
-    plt.figure()
+    fig5 = plt.figure().gca()
     try:
-        plt.plot(r.timestamp, r.actual_TCP_a, color='c', label='aTcp')
+        fig5.plot(r.timestamp, r.actual_TCP_a, color='c', label='aTcp')
     except:
-        return 6
-        #nothing to do
+        return 5
+        
+    fig5.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig5.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
-    plt.title("Tcp Beschleunigung")
+    plt.title(filenameCSV + " - Tcp Beschleunigung")
     plt.ylabel('Tcp Beschleunigung in mm / s**2')
     plt.xlabel('Zeit in s')
     plt.legend()
+    plt.show()
     plt.savefig('png/' + filename + '_TCP_a.png')
+    
     
     return 0
 

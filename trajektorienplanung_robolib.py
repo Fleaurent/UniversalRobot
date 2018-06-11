@@ -69,10 +69,10 @@ qTarget = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0)
 tp.plotTrajAxes(qT, vT, aT, t)
 
 xyzrxryrzT = tp.traj_samplePoseFk(qT, dhParaUR3)
-tp.plotTrajPoseFk(xyzrxryrzT, t)
+#tp.plotTrajPoseFk(xyzrxryrzT, t)
 
 filenameCSV = "robolib_movej_Dreieck.csv"
-tp.writeCSV(qT, vT, aT, xyzrxryrzT, t, filenameCSV)
+#tp.writeCSV(qT, vT, aT, xyzrxryrzT, t, filenameCSV)
 
 
 """
