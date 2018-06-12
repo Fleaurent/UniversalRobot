@@ -269,6 +269,7 @@ def fk_ur(dh_para, q):
         i = i+1
     return T_0_6
 
+
 def ik_ur(dh_para, tcp, sol):
     """
     Inverse Kinematics for UR type robots

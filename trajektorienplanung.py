@@ -111,7 +111,19 @@ def traj_sample(qStart, qTarget, tS1, tS2, tGes, vMax, aMax, tDelta):
     vT = np.zeros(t.size)
     aT = np.zeros(t.size)
     
-    if(tS1 == tS2):
+    if(np.abs(qDiff) < 1e-4):
+        #qDiff == 0
+        print("qDiff == 0")
+        qTS1 = qStart
+        qTS2 = qTarget
+        
+        for i in range(t.size):     
+            qT[i] = qStart
+            vT[i] = 0
+            aT[i] = 0
+                
+    elif(tS1 == tS2):
+        #qDiff > 0
         print("Dreieck")
         i=0
         
@@ -139,52 +151,41 @@ def traj_sample(qStart, qTarget, tS1, tS2, tGes, vMax, aMax, tDelta):
         #print(qT)
         
     else:
+        #qDiff > 0
         print("Trapez")
         i = 0
-        
-        if(np.abs(qDiff) < 1e-4):
-            #qDiff == 0
-            qTS1 = qStart
-            qTS2 = qTarget
-            
-            for i in range(t.size):     
-                qT[i] = qStart
-                vT[i] = 0
-                aT[i] = 0
 
-
-        else:
-            #qDiff > 0
-            qTS1 = qStart + 0.5 * aMax * tS1**2
-            qTS2 = qTarget - vMax**2 / (2 * aMax)
         
-            #qTS1 = qStart + vMax**2 / (2 * aMax)
-            #qTS2 = qTS1 + (tS2 - tS1) * vMax
+        qTS1 = qStart + 0.5 * aMax * tS1**2
+        qTS2 = qTarget - vMax**2 / (2 * aMax)
+    
+        #qTS1 = qStart + vMax**2 / (2 * aMax)
+        #qTS2 = qTS1 + (tS2 - tS1) * vMax
+    
+        print(0.5 * aMax * tS1**2)
+        print(vMax**2 / (2 * aMax))
+        print(qTS1)
+        print(qTS2)
         
-            print(0.5 * aMax * tS1**2)
-            print(vMax**2 / (2 * aMax))
-            print(qTS1)
-            print(qTS2)
+        for i in range(t.size):
             
-            for i in range(t.size):
+            if(t[i] < tS1):
+                #Trapez steigend
+                qT[i] = qStart + 0.5 * aMax * t[i]**2
+                vT[i] = aMax * t[i]
+                aT[i] = aMax
                 
-                if(t[i] < tS1):
-                    #Trapez steigend
-                    qT[i] = qStart + 0.5 * aMax * t[i]**2
-                    vT[i] = aMax * t[i]
-                    aT[i] = aMax
-                    
-                elif(t[i] < tS2):
-                    #Trapez konst
-                    qT[i] = qTS1 + (t[i] - tS1) * vMax
-                    vT[i] = vMax
-                    aT[i] = 0
-                    
-                else:
-                    #Trapez fallend
-                    qT[i] = qTS2 + (vMax + (aMax * qDiff)/ vMax) * (t[i] - tS2) - 0.5 * aMax * (t[i]**2 - tS2**2)
-                    vT[i] = - aMax * t[i] + vMax + (aMax * qDiff) / vMax
-                    aT[i] = - aMax
+            elif(t[i] < tS2):
+                #Trapez konst
+                qT[i] = qTS1 + (t[i] - tS1) * vMax
+                vT[i] = vMax
+                aT[i] = 0
+                
+            else:
+                #Trapez fallend
+                qT[i] = qTS2 + (vMax + (aMax * qDiff)/ vMax) * (t[i] - tS2) - 0.5 * aMax * (t[i]**2 - tS2**2)
+                vT[i] = - aMax * t[i] + vMax + (aMax * qDiff) / vMax
+                aT[i] = - aMax
     
         
     return[qT, vT, aT, t]
