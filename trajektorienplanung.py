@@ -209,6 +209,8 @@ def traj_samplePose(pStart, pTarget, vMax, aMax, tDelta):
     
     t = np.arange(0, tGes + tDelta, tDelta)
     xyzrxryrzT = np.zeros([t.size,6])
+    xyzrxryrzVT = np.zeros([t.size,6])
+    xyzrxryrzAT = np.zeros([t.size,6])
     vT = np.zeros(t.size)
     aT = np.zeros(t.size)
     
@@ -230,12 +232,19 @@ def traj_samplePose(pStart, pTarget, vMax, aMax, tDelta):
                 #Dreieck steigend
                 xyzrxryrzT[i,0:3] = pStart[0:3] + 0.5 * aMax * (tS1**2) * gradient
                 xyzrxryrzT[i,3:6] = pStart[3:6]
+                
+                xyzrxryrzVT[i,0:3] = aMax * tS1 * gradient
+                xyzrxryrzAT[i,0:3] = aMax * gradient
+                
                 vT[i] = aMax * t[i]
                 aT[i] = aMax
             else:
                 #Dreieck fallend
                 xyzrxryrzT[i,0:3] = xyzrxryrzTs[0:3] + (vTs * (t[i] - tS1) - 0.5 * aMax * ((t[i] - tS1)**2)) * gradient
                 xyzrxryrzT[i,3:6] = pStart[3:6]
+                
+                xyzrxryrzVT[i,0:3] = vTs - aMax * ((t[i] - tS1)) * gradient
+                xyzrxryrzAT[i,0:3] = - aMax * gradient
                 vT[i] = vTs - aMax * (t[i] - tS1) 
                 aT[i] = - aMax
                 
@@ -266,10 +275,10 @@ def traj_samplePose(pStart, pTarget, vMax, aMax, tDelta):
             #qTS1 = qStart + vMax**2 / (2 * aMax)
             #qTS2 = qTS1 + (tS2 - tS1) * vMax
         
-            print(0.5 * aMax * tS1**2)
-            print(vMax**2 / (2 * aMax))
-            print(xyzrxryrzTs1[0:3])
-            print(xyzrxryrzTs2[0:3])
+            #print(0.5 * aMax * tS1**2)
+            #print(vMax**2 / (2 * aMax))
+            #print(xyzrxryrzTs1[0:3])
+            #print(xyzrxryrzTs2[0:3])
             
             for i in range(t.size):
                 
@@ -277,6 +286,10 @@ def traj_samplePose(pStart, pTarget, vMax, aMax, tDelta):
                     #Trapez steigend
                     xyzrxryrzT[i,0:3] = pStart[0:3] + (0.5 * aMax * t[i]**2) * gradient
                     xyzrxryrzT[i,3:6] = pStart[3:6]
+                    
+                    xyzrxryrzVT[i,0:3] =aMax * t[i] * gradient
+                    xyzrxryrzAT[i,0:3] = aMax * gradient
+                    
                     vT[i] = aMax * t[i]
                     aT[i] = aMax
                     
@@ -284,18 +297,25 @@ def traj_samplePose(pStart, pTarget, vMax, aMax, tDelta):
                     #Trapez konst
                     xyzrxryrzT[i,0:3] = xyzrxryrzTs1[0:3] + ((t[i] - tS1) * vMax) * gradient
                     xyzrxryrzT[i,3:6] = pStart[3:6]
+                    
+                    xyzrxryrzVT[i,0:3] = vMax * gradient
+                    
                     vT[i] = vMax
                     aT[i] = 0
                     
                 else:
                     #Trapez fallend
-                    xyzrxryrzT[i,0:3] = xyzrxryrzTs2[0:3] + ((vMax + (aMax * pDiff)/ vMax) * (t[i] - tS2)  - 0.5 * aMax * (t[i]**2 - tS2**2)) * gradient
+                    xyzrxryrzT[i,0:3] = xyzrxryrzTs2[0:3] + ((vMax + (aMax * pDiff)/ vMax) * (t[i] - tS2) * gradient  - 0.5 * aMax * (t[i]**2 - tS2**2)) * gradient
                     xyzrxryrzT[i,3:6] = pStart[3:6]
+                    
+                    xyzrxryrzVT[i,0:3] = (vMax + ((aMax * pDiff)/ vMax)) * gradient - aMax * t[i] * gradient
+                    xyzrxryrzAT[i,0:3] = - aMax * gradient
+                    
                     vT[i] = - aMax * t[i] + vMax + (aMax * pDiff) / vMax
                     aT[i] = - aMax
     
         
-    return[xyzrxryrzT, vT, aT, t]
+    return[xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, vT, aT, t]
     
     
 """
@@ -585,7 +605,7 @@ def plotTrajPoseFk(xyzrxryrzT, t):
     
     return 0
 
-def plotTrajPose(xyzrxryrzT, vTcPT, aTcpT, t):
+def plotTrajPose(xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, vTcPT, aTcpT, t):
     # plot
     fig1 = plt.figure().gca()
     try:
@@ -653,12 +673,46 @@ def plotTrajPose(xyzrxryrzT, vTcPT, aTcpT, t):
     plt.legend()
     #plt.show()
     
+    fig5 = plt.figure().gca()
+    try:
+        fig5.plot(t, xyzrxryrzVT[:,0], color='r', label='dX')
+        fig5.plot(t, xyzrxryrzVT[:,1], color='g', label='dY')
+        fig5.plot(t, xyzrxryrzVT[:,2], color='b', label='dZ')
+    except:
+        return 1
+        
+    fig5.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig5.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
+    plt.grid(True)
+    plt.title("Pose Geschwindigkeit XYZ")
+    plt.ylabel('XYZ in mm/s')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    #plt.show()
+    
+    fig6 = plt.figure().gca()
+    try:
+        fig6.plot(t, xyzrxryrzAT[:,0], color='r', label='ddX')
+        fig6.plot(t, xyzrxryrzAT[:,1], color='g', label='ddY')
+        fig6.plot(t, xyzrxryrzAT[:,2], color='b', label='ddZ')
+    except:
+        return 1
+        
+    fig6.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig6.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
+    plt.grid(True)
+    plt.title("Pose Beschleunigung XYZ")
+    plt.ylabel('XYZ in mm/s**2')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    #plt.show()
     return 0
 
-def plotTrajAxesIk(qT,  t):
+def plotTrajAxesIk(qT, vT,  t):
     
     c = np.array(['r','g','b','c','magenta','orange'])
     lq = np.array(['q0','q1','q2','q3','q4','q5'])
+    lqd = np.array(['qd0','qd1','qd2','qd3','qd4','qd5'])
 
     fig1 = plt.figure().gca()
     #plt.plot(t,qT,color=c, label=l)
@@ -673,6 +727,22 @@ def plotTrajAxesIk(qT,  t):
     plt.grid(True)
     plt.title("Gelenkwinkel")
     plt.ylabel('Gelenkwinkel in Rad')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    #plt.show()
+    
+    fig2 = plt.figure().gca()
+    try:
+        for axis in range(6):
+            fig2.plot(t, vT[:,axis], color=c[axis], label=lqd[axis])
+    except:
+        return axis
+    
+    fig2.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig2.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
+    plt.grid(True)
+    plt.title("Winkelgeschwindigkeit")
+    plt.ylabel('Winkelgeschwindigkeit in Rad/s')
     plt.xlabel('Zeit in s')
     plt.legend()
     #plt.show()
@@ -733,7 +803,7 @@ def writeCSV(qT, vT, aT, xyzrxryrzT, xyzrxryrzVT, t, filenameCSV):
     return 0
 
 
-def writeCSVTcp(qT, xyzrxryrzT, vTcpT, aTcpT, t, filenameCSV):
+def writeCSVTcp(qT, vT, xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, t, filenameCSV):
     #"exampleCsv.csv" # directory relative to script
     
     csv = open('csv/' + filenameCSV, "w")  #open File in write mode
@@ -742,7 +812,7 @@ def writeCSVTcp(qT, xyzrxryrzT, vTcpT, aTcpT, t, filenameCSV):
     
     #print("CSV: ",qT.shape)
     if(axNum == 6):
-        csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_TCP_pose_0 target_TCP_pose_1 target_TCP_pose_2 target_TCP_pose_3 target_TCP_pose_4 target_TCP_pose_5 target_TCP_v target_TCP_a\n")
+        csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_qd_0 target_qd_1 target_dq_2 target_qd_3 target_qd_4 target_qd_5 target_TCP_pose_0 target_TCP_pose_1 target_TCP_pose_2 target_TCP_pose_3 target_TCP_pose_4 target_TCP_pose_5 target_TCP_speed_0 target_TCP_speed_1 target_TCP_speed_2 target_TCP_speed_3 target_TCP_speed_4 target_TCP_speed_5 target_TCP_acc_0 target_TCP_acc_1 target_TCP_acc_2 target_TCP_acc_3 target_TCP_acc_4 target_TCP_acc_5\n")
     else:
         return 1
 
@@ -756,17 +826,23 @@ def writeCSVTcp(qT, xyzrxryrzT, vTcpT, aTcpT, t, filenameCSV):
         #2. q_X
         for axis in range(axNum):
             csv.write(str(qT[timestamp,axis]) + " ")
+            
+        #2. qd_X
+        for axis in range(axNum):
+            csv.write(str(vT[timestamp,axis]) + " ")
         
         #3. xyzrxryrz
         for para in range(6):
             csv.write(str(xyzrxryrzT[timestamp,para]) + " ")
             
-        #4. vTcp
-        csv.write(str(vTcpT[timestamp]) + " ")
+        #4. xyzrxryrzVT
+        for para in range(6):
+            csv.write(str(xyzrxryrzVT[timestamp,para]) + " ")
         
         
-        #5- aTcp
-        csv.write(str(aTcpT[timestamp]) + " ")
+        #5- xyzrxryrzaT
+        for para in range(6):
+            csv.write(str(xyzrxryrzAT[timestamp,para]) + " ")
         
             
         csv.write("\n")
@@ -962,7 +1038,29 @@ def plotCSVTcp(filenameCSV):
     #plt.show()
     plt.savefig('png/' + filename + '_q.png', dpi = 300)
     
+    
+    fig12 = plt.figure().gca()
+    try:
+        fig12.plot(r.timestamp, r.target_qd_0, color='r', label='qd0')
+        fig12.plot(r.timestamp, r.target_qd_1, color='g', label='qd1')
+        fig12.plot(r.timestamp, r.target_qd_2, color='b', label='qd2')
+        fig12.plot(r.timestamp, r.target_qd_3, color='c', label='qd3')
+        fig12.plot(r.timestamp, r.target_qd_4, color='magenta', label='qd4')
+        fig12.plot(r.timestamp, r.target_qd_5, color='orange', label='qd5')
+    except:
+        print("Singular")
         
+    fig12.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig12.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
+    plt.grid(True)
+    plt.title(filenameCSV + " - Winkelgeschwindigkeit")
+    plt.ylabel('Winkelgeschwindigkeit in Rad/s')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    #plt.show()
+    plt.savefig('png/' + filename + '_qd.png', dpi = 300)
+    
+    
     #Pose
     fig2 = plt.figure().gca()
     try:
@@ -976,7 +1074,7 @@ def plotCSVTcp(filenameCSV):
     fig2.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
     plt.title(filenameCSV + " - Pose XYZ")
-    plt.ylabel('XYZ in mm')
+    plt.ylabel('XYZ in m')
     plt.xlabel('Zeit in s')
     plt.legend()
     #plt.show()
@@ -1002,40 +1100,64 @@ def plotCSVTcp(filenameCSV):
     #plt.show()
     plt.savefig('png/' + filename + '_Pose_rxryrz.png', dpi = 300)
     
-    
+    #target_TCP_speed_X
     fig4 = plt.figure().gca()
     try:
-        fig4.plot(r.timestamp, r.target_TCP_v, color='r', label='vTcp')
+        fig4.plot(r.timestamp, r.target_TCP_speed_0, color='r', label='dX')
+        fig4.plot(r.timestamp, r.target_TCP_speed_1, color='g', label='dY')
+        fig4.plot(r.timestamp, r.target_TCP_speed_2, color='b', label='dZ')
     except:
-        return 4
+        return 2
         
     fig4.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
     fig4.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
-    plt.title(filenameCSV + " - Tcp Geschwindigkeit")
-    plt.ylabel('Tcp Geschwindigkeit in mm/s')
+    plt.title(filenameCSV + " - Pose Geschwindigkeit XYZ")
+    plt.ylabel('dXYZ in m/s')
     plt.xlabel('Zeit in s')
     plt.legend()
     #plt.show()
-    plt.savefig('png/' + filename + '_Tcp_v.png', dpi = 300)
+    plt.savefig('png/' + filename + '_Pose_Geschwindigkeit_XYZ.png', dpi = 300)
     
     
     
     fig5 = plt.figure().gca()
     try:
-        fig5.plot(r.timestamp, r.target_TCP_a, color='c', label='aTcp')
+        fig5.plot(r.timestamp, r.target_TCP_speed_3, color='c', label='drx')
+        fig5.plot(r.timestamp, r.target_TCP_speed_4, color='magenta', label='dry')
+        fig5.plot(r.timestamp, r.target_TCP_speed_5, color='orange', label='drz')
     except:
-        return 5
-        
+        return 3
+    
     fig5.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
     fig5.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
-    plt.title(filenameCSV + " - Tcp Beschleunigung")
-    plt.ylabel('Tcp Beschleunigung in mm / s**2')
+    plt.title(filenameCSV + " - Pose Geschwindigkeit rxryrz")
+    plt.ylabel('drxryrz in Rad/s')
     plt.xlabel('Zeit in s')
     plt.legend()
     #plt.show()
-    plt.savefig('png/' + filename + '_TCP_a.png', dpi = 300)
+    plt.savefig('png/' + filename + '_Pose_Geschwindigkeit_rxryrz.png', dpi = 300)
+    
+    
+    #target_TCP_acc_X
+    fig6 = plt.figure().gca()
+    try:
+        fig6.plot(r.timestamp, r.target_TCP_acc_0, color='r', label='ddX')
+        fig6.plot(r.timestamp, r.target_TCP_acc_1, color='g', label='ddY')
+        fig6.plot(r.timestamp, r.target_TCP_acc_2, color='b', label='ddZ')
+    except:
+        return 2
+        
+    fig6.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig6.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
+    plt.grid(True)
+    plt.title(filenameCSV + " - Pose Beschleunigung XYZ")
+    plt.ylabel('ddXYZ in m/s**2')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    #plt.show()
+    plt.savefig('png/' + filename + '_Pose_Beschleunigung_XYZ.png', dpi = 300)
     
     
     return 0

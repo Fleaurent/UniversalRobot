@@ -53,6 +53,23 @@ def vTcp(qT, vT, dh_para):
     
     return vTcpT
 
+"""
+Gelenkwinkelgeschwindigkeit(t) = TCP Geschwindigkeit(t) * inverseJakobimatrix(q(t)) 
+"""
+def vT(qT, xyzrxryrzVT, dh_para):
+    
+    vT = np.zeros((qT.shape[0],6))
+    
+    for t in range(qT.shape[0]):
+        Jt = jacobi_UR(qT[t], dh_para)
+        try:
+            Jtinv = np.linalg.inv(Jt)
+            vT[t] = np.dot(Jtinv,xyzrxryrzVT[t])
+        except:
+            vT[t] = np.zeros(6)
+                
+    
+    return vT
 
 def force(qT, rd, dh_para):
     

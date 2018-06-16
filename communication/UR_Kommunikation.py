@@ -122,6 +122,7 @@ v = 0.2
 t = 4
 
 qInit = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
+qInit = np.array([-0.4,-1.8,-1.6,-0.4,1.9,0])
 pHome = np.array([0.300,-0.200,0.400,2.4186,-2.4185,2.4185])
 pTarget = np.array([0.300,0.200,0.400,2.4186,-2.4185,2.4185])
 
@@ -152,6 +153,7 @@ v = 0.2
 t = 4
 
 qInit = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
+qInit = np.array([-0.5,-1.5,-1.9,0.4,2.1,0])
 pHome = np.array([0.200,-0.200,0.400,2.4186,-2.4185,2.4185])
 pTarget = np.array([0.200,0.200,0.400,2.4186,-2.4185,2.4185])
 
