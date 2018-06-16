@@ -11,9 +11,9 @@ np.set_printoptions(precision=3, suppress=True)
 tDelta = 1 / 125
 
 #Trajektiorien Verlauf berechnen und Plotten
-
-#Versuch 1: m
 """
+#Versuch 1: m
+
 #Parameter URSim
 dhParaUR3 = np.array([(np.deg2rad(90),  0,          0.1519,  0),
                       (0,               -0.24365,    0,      0),
@@ -47,8 +47,8 @@ tp.writeCSVTcp(qT, xyzrxryrzT, vTcpT, aTcpT, t, filenameCSV)
 
     
 #ToDo: inverse Kinematik + plot q, save as csv + png
-"""
-"""
+
+
 #7. movel x 400 mit a,v nahe Singularität: movel_x400_Singular
 pStart = np.array([0.200,-0.200,0.400,2.4186,-2.4185,2.4185])
 pTarget = np.array([0.200,0.200,0.400,2.4186,-2.4185,2.4185])
@@ -67,8 +67,8 @@ tp.plotTrajAxesIk(qT, t)
 
 filenameCSV = "robolib_movel_x400_Singular.csv"
 #tp.writeCSVTcp(qT, xyzrxryrzT, vTcpT, aTcpT, t, filenameCSV)
-"""
 
+"""
 #Versuch 2: mm
 #Parameter URSim
 dhParaUR3 = np.array([(np.deg2rad(90),  0,          151.9,  0),
@@ -90,10 +90,10 @@ pStart = np.array([300,-200,400,2.4186,-2.4185,2.4185])
 pTarget = np.array([300,200,400,2.4186,-2.4185,2.4185])
 
 [xyzrxryrzT, vTcpT, aTcpT, t] = tp.traj_samplePose(pStart, pTarget, vMax, aMax, tDelta)
-tp.plotTrajPose(xyzrxryrzT, vTcpT, aTcpT, t)
+#tp.plotTrajPose(xyzrxryrzT, vTcpT, aTcpT, t)
 
 qT = tp.traj_sampleAxesIk(xyzrxryrzT, dhParaUR3, sol)
-tp.plotTrajAxesIk(qT, t)
+#tp.plotTrajAxesIk(qT, t)
 
 filenameCSV = "robolib_movel_x400.csv"
 tp.writeCSVTcp(qT, xyzrxryrzT, vTcpT, aTcpT, t, filenameCSV)
@@ -104,10 +104,10 @@ pStart = np.array([200,-200,400,2.4186,-2.4185,2.4185])
 pTarget = np.array([200,200,400,2.4186,-2.4185,2.4185])
 
 [xyzrxryrzT, vTcpT, aTcpT, t] = tp.traj_samplePose(pStart, pTarget, vMax, aMax, tDelta)
-tp.plotTrajPose(xyzrxryrzT, vTcpT, aTcpT, t)
+#tp.plotTrajPose(xyzrxryrzT, vTcpT, aTcpT, t)
 
 qT = tp.traj_sampleAxesIk(xyzrxryrzT, dhParaUR3, sol)
-tp.plotTrajAxesIk(qT, t)
+#tp.plotTrajAxesIk(qT, t)
 
 filenameCSV = "robolib_movel_x400_Singular.csv"
 tp.writeCSVTcp(qT, xyzrxryrzT, vTcpT, aTcpT, t, filenameCSV)

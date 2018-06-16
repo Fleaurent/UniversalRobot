@@ -359,6 +359,7 @@ def traj_samplePoseFk(qT, dhPara):
     
     return xyzrxryrz
 
+
 def traj_sampleAxesIk(tcpT, dhParaUR3, sol):
     
     qT = np.zeros((tcpT.shape[0],6))
@@ -469,6 +470,8 @@ def traj_sampleAxesTime(qStart, qTarget, vMax, aMax, time, tDelta):
     aT = np.zeros([t.size,qStart.size])
     
     [vNew, aNew, tS1, tS2, tGes] = traj_TimegetVATimestamps(qStart, qTarget, vMax, aMax, time)
+    print(tS1, tS2, tGes)
+    
 
     for axis in range(qStart.size):
         [qT[:,axis], vT[:,axis], aT[:,axis], t] = traj_sample(qStart[axis], qTarget[axis], tS1[axis], tS2[axis], time, vNew[axis], aNew[axis], tDelta)
@@ -516,7 +519,7 @@ def plotTrajAxes(qT, vT, aT, t):
     #fig2.xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
     fig2.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
     fig2.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
-    plt.title("Winkelgeschindigkeit")
+    plt.title("Winkelgeschwindigkeit")
     plt.ylabel('Winkelgeschwindigkeit in Rad / s')
     plt.xlabel('Zeit in s')
     plt.legend()
@@ -629,7 +632,7 @@ def plotTrajPose(xyzrxryrzT, vTcPT, aTcpT, t):
     fig3.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
     fig3.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
-    plt.title("TCP Geschindigkeit")
+    plt.title("TCP Geschwindigkeit")
     plt.ylabel('Geschwindigkeit in mm/s')
     plt.xlabel('Zeit in s')
     plt.legend()
@@ -681,7 +684,7 @@ Teil 4: CSV Files
 """
 #nur Python 3.6: größe np.array Problem in 2.7
 #def writeCSV(qT, vT, aT, xyzrxryrz, t, filenameCSV):
-def writeCSV(qT, vT, aT, xyzrxryrzT, t, filenameCSV):
+def writeCSV(qT, vT, aT, xyzrxryrzT, xyzrxryrzVT, t, filenameCSV):
     #"exampleCsv.csv" # directory relative to script
     
     csv = open('csv/' + filenameCSV, "w")  #open File in write mode
@@ -692,7 +695,7 @@ def writeCSV(qT, vT, aT, xyzrxryrzT, t, filenameCSV):
     if(axNum == 1):
         csv.write("timestamp target_q_0 target_qd_0 target_qdd_0\n")
     elif(axNum == 6):
-        csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_qd_0 target_qd_1 target_qd_2 target_qd_3 target_qd_4 target_qd_5 target_qdd_0 target_qdd_1 target_qdd_2 target_qdd_3 target_qdd_4 target_qdd_5 actual_TCP_pose_0 actual_TCP_pose_1 actual_TCP_pose_2 actual_TCP_pose_3 actual_TCP_pose_4 actual_TCP_pose_5\n")
+        csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_qd_0 target_qd_1 target_qd_2 target_qd_3 target_qd_4 target_qd_5 target_qdd_0 target_qdd_1 target_qdd_2 target_qdd_3 target_qdd_4 target_qdd_5 target_TCP_pose_0 target_TCP_pose_1 target_TCP_pose_2 target_TCP_pose_3 target_TCP_pose_4 target_TCP_pose_5 target_TCP_speed_0 target_TCP_speed_1 target_TCP_speed_2 target_TCP_speed_3 target_TCP_speed_4 target_TCP_speed_5\n")
     else:
         return 1
 
@@ -716,9 +719,13 @@ def writeCSV(qT, vT, aT, xyzrxryrzT, t, filenameCSV):
             csv.write(str(aT[timestamp,axis]) + " ")
         
         
-        #5- actual_TCP_pose_X
+        #5- target_TCP_pose_X
         for para in range(6):
             csv.write(str(xyzrxryrzT[timestamp,para]) + " ")
+            
+        #6- target_TCP_speed_X
+        for para in range(6):
+            csv.write(str(xyzrxryrzVT[timestamp,para]) + " ")
         
             
         csv.write("\n")
@@ -735,7 +742,7 @@ def writeCSVTcp(qT, xyzrxryrzT, vTcpT, aTcpT, t, filenameCSV):
     
     #print("CSV: ",qT.shape)
     if(axNum == 6):
-        csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 actual_TCP_pose_0 actual_TCP_pose_1 actual_TCP_pose_2 actual_TCP_pose_3 actual_TCP_pose_4 actual_TCP_pose_5 actual_TCP_v actual_TCP_a\n")
+        csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_TCP_pose_0 target_TCP_pose_1 target_TCP_pose_2 target_TCP_pose_3 target_TCP_pose_4 target_TCP_pose_5 target_TCP_v target_TCP_a\n")
     else:
         return 1
 
@@ -797,7 +804,7 @@ def plotCSV(filenameCSV):
     plt.xlabel('Zeit in s')
     plt.legend()
     #plt.show()
-    plt.savefig('png/' + filename + '_q.png')
+    plt.savefig('png/' + filename + '_q.png', dpi = 300)
     
     
     fig2 = plt.figure().gca()
@@ -814,12 +821,12 @@ def plotCSV(filenameCSV):
     fig2.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
     fig2.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
     plt.grid(True)
-    plt.title(filenameCSV + " - Winkelgeschindigkeit")
+    plt.title(filenameCSV + " - Winkelgeschwindigkeit")
     plt.ylabel('Winkelgeschwindigkeit in Rad / s')
     plt.xlabel('Zeit in s')
     plt.legend()
     #plt.show()
-    plt.savefig('png/' + filename + '_qd.png')
+    plt.savefig('png/' + filename + '_qd.png', dpi = 300)
     
     
     fig3 = plt.figure().gca()
@@ -841,15 +848,15 @@ def plotCSV(filenameCSV):
     plt.xlabel('Zeit in s')
     plt.legend()
     #plt.show()
-    plt.savefig('png/' + filename + '_qdd.png')
+    plt.savefig('png/' + filename + '_qdd.png', dpi = 300)
     
     
     #Pose
     fig4 = plt.figure().gca()
     try:
-        fig4.plot(r.timestamp, r.actual_TCP_pose_0, color='r', label='X')
-        fig4.plot(r.timestamp, r.actual_TCP_pose_1, color='g', label='Y')
-        fig4.plot(r.timestamp, r.actual_TCP_pose_2, color='b', label='Z')
+        fig4.plot(r.timestamp, r.target_TCP_pose_0, color='r', label='X')
+        fig4.plot(r.timestamp, r.target_TCP_pose_1, color='g', label='Y')
+        fig4.plot(r.timestamp, r.target_TCP_pose_2, color='b', label='Z')
     except:
         return 4
         
@@ -861,15 +868,15 @@ def plotCSV(filenameCSV):
     plt.xlabel('Zeit in s')
     plt.legend()
     #plt.show()
-    plt.savefig('png/' + filename + '_Pose_XYZ.png')
+    plt.savefig('png/' + filename + '_Pose_XYZ.png', dpi = 300)
     
     
     
     fig5 = plt.figure().gca()
     try:
-        fig5.plot(r.timestamp, r.actual_TCP_pose_3, color='c', label='rx')
-        fig5.plot(r.timestamp, r.actual_TCP_pose_4, color='magenta', label='ry')
-        fig5.plot(r.timestamp, r.actual_TCP_pose_5, color='orange', label='rz')
+        fig5.plot(r.timestamp, r.target_TCP_pose_3, color='c', label='rx')
+        fig5.plot(r.timestamp, r.target_TCP_pose_4, color='magenta', label='ry')
+        fig5.plot(r.timestamp, r.target_TCP_pose_5, color='orange', label='rz')
     except:
         return 5
         
@@ -881,7 +888,47 @@ def plotCSV(filenameCSV):
     plt.xlabel('Zeit in s')
     plt.legend()
     #plt.show()
-    plt.savefig('png/' + filename + '_Pose_rxryrz.png')
+    plt.savefig('png/' + filename + '_Pose_rxryrz.png', dpi = 300)
+
+    #Pose speed
+    fig6 = plt.figure().gca()
+    try:
+        fig6.plot(r.timestamp, r.target_TCP_speed_0, color='r', label='dX')
+        fig6.plot(r.timestamp, r.target_TCP_speed_1, color='g', label='dY')
+        fig6.plot(r.timestamp, r.target_TCP_speed_2, color='b', label='dZ')
+    except:
+        return 4
+        
+    fig6.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig6.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
+    plt.grid(True)
+    plt.title(filenameCSV + " - Pose Geschwindigkeit XYZ")
+    plt.ylabel('XYZ in m/s')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    #plt.show()
+    plt.savefig('png/' + filename + '_Pose_Geschwindigkeit_XYZ.png', dpi = 300)
+    
+    
+    
+    fig7 = plt.figure().gca()
+    try:
+        fig7.plot(r.timestamp, r.target_TCP_speed_3, color='c', label='drx')
+        fig7.plot(r.timestamp, r.target_TCP_speed_4, color='magenta', label='dry')
+        fig7.plot(r.timestamp, r.target_TCP_speed_5, color='orange', label='drz')
+    except:
+        return 5
+        
+    fig7.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
+    fig7.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
+    plt.grid(True)
+    plt.title(filenameCSV + " - Pose Geschwindigkeit rxryrz")
+    plt.ylabel('rxryrz in Rad/s')
+    plt.xlabel('Zeit in s')
+    plt.legend()
+    #plt.show()
+    plt.savefig('png/' + filename + '_Pose_Geschwindigkeit_rxryrz.png', dpi = 300)
+        
     return 0
 
 
@@ -913,15 +960,15 @@ def plotCSVTcp(filenameCSV):
     plt.xlabel('Zeit in s')
     plt.legend()
     #plt.show()
-    plt.savefig('png/' + filename + '_q.png')
+    plt.savefig('png/' + filename + '_q.png', dpi = 300)
     
         
     #Pose
     fig2 = plt.figure().gca()
     try:
-        fig2.plot(r.timestamp, r.actual_TCP_pose_0, color='r', label='X')
-        fig2.plot(r.timestamp, r.actual_TCP_pose_1, color='g', label='Y')
-        fig2.plot(r.timestamp, r.actual_TCP_pose_2, color='b', label='Z')
+        fig2.plot(r.timestamp, r.target_TCP_pose_0, color='r', label='X')
+        fig2.plot(r.timestamp, r.target_TCP_pose_1, color='g', label='Y')
+        fig2.plot(r.timestamp, r.target_TCP_pose_2, color='b', label='Z')
     except:
         return 2
         
@@ -933,15 +980,15 @@ def plotCSVTcp(filenameCSV):
     plt.xlabel('Zeit in s')
     plt.legend()
     #plt.show()
-    plt.savefig('png/' + filename + '_Pose_XYZ.png')
+    plt.savefig('png/' + filename + '_Pose_XYZ.png', dpi = 300)
     
     
     
     fig3 = plt.figure().gca()
     try:
-        fig3.plot(r.timestamp, r.actual_TCP_pose_3, color='c', label='rx')
-        fig3.plot(r.timestamp, r.actual_TCP_pose_4, color='magenta', label='ry')
-        fig3.plot(r.timestamp, r.actual_TCP_pose_5, color='orange', label='rz')
+        fig3.plot(r.timestamp, r.target_TCP_pose_3, color='c', label='rx')
+        fig3.plot(r.timestamp, r.target_TCP_pose_4, color='magenta', label='ry')
+        fig3.plot(r.timestamp, r.target_TCP_pose_5, color='orange', label='rz')
     except:
         return 3
     
@@ -953,12 +1000,12 @@ def plotCSVTcp(filenameCSV):
     plt.xlabel('Zeit in s')
     plt.legend()
     #plt.show()
-    plt.savefig('png/' + filename + '_Pose_rxryrz.png')
+    plt.savefig('png/' + filename + '_Pose_rxryrz.png', dpi = 300)
     
     
     fig4 = plt.figure().gca()
     try:
-        fig4.plot(r.timestamp, r.actual_TCP_v, color='r', label='vTcp')
+        fig4.plot(r.timestamp, r.target_TCP_v, color='r', label='vTcp')
     except:
         return 4
         
@@ -970,13 +1017,13 @@ def plotCSVTcp(filenameCSV):
     plt.xlabel('Zeit in s')
     plt.legend()
     #plt.show()
-    plt.savefig('png/' + filename + '_Tcp_v.png')
+    plt.savefig('png/' + filename + '_Tcp_v.png', dpi = 300)
     
     
     
     fig5 = plt.figure().gca()
     try:
-        fig5.plot(r.timestamp, r.actual_TCP_a, color='c', label='aTcp')
+        fig5.plot(r.timestamp, r.target_TCP_a, color='c', label='aTcp')
     except:
         return 5
         
@@ -988,7 +1035,7 @@ def plotCSVTcp(filenameCSV):
     plt.xlabel('Zeit in s')
     plt.legend()
     #plt.show()
-    plt.savefig('png/' + filename + '_TCP_a.png')
+    plt.savefig('png/' + filename + '_TCP_a.png', dpi = 300)
     
     
     return 0

@@ -63,10 +63,7 @@ Test1 Jacobimatrix für Gelenkwinkel berechnen
 """
 q = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
-qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
-qTarget = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
-
-J = jc.jacobi_UR(dhParaUR3,q)
+J = jc.jacobi_UR(q, dhParaUR3)
 print(J)
 
 
@@ -75,20 +72,20 @@ Test2: Anwendung Jakobi für Geschwindigkeit Tcp für Trajektorie
 """
 #1. movej Achse1 30deg mit a,v --> movej_Dreieck
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
-qTarget = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
+qTarget = np.array([np.deg2rad(90),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
 [qT, vT, aT, t] = tp.traj_sampleAxes(qStart, qTarget, vMax, aMax, tDelta)
-#tp.plotTrajAxes(qT, vT, aT, t)
+tp.plotTrajAxes(qT, vT, aT, t)
 
-vTcpT = jc.vTcp(dhParaUR3, qT, vT)
+vTcpT = jc.vTcp(qT, vT, dhParaUR3)
 print(vTcpT.shape)
 jc.plotVTcp(vTcpT,t)
 
 rd = np.array([0,0,10,0,0,0])
-forceT = jc.force(dhParaUR3, qT, rd)
+forceT = jc.force(qT, rd, dhParaUR3)
 print(forceT.shape)
 jc.plotForce(forceT,t)
     
-singularT = jc.singular(dhParaUR3,qT)
+singularT = jc.singular(qT, dhParaUR3)
 print(singularT.shape)
 jc.plotSingular(singularT,t)

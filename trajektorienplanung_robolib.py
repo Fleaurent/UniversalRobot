@@ -8,6 +8,7 @@ Created on Sun Jun  3 11:36:47 2018
 import numpy as np
 import trajektorienplanung as tp
 import robolib3 as rl
+import jacobi as jc
 
 #Interpolationstakt
 tDelta = 1 / 125
@@ -66,63 +67,75 @@ qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),n
 qTarget = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
 [qT, vT, aT, t] = tp.traj_sampleAxes(qStart, qTarget, vMax, aMax, tDelta)
-tp.plotTrajAxes(qT, vT, aT, t)
+#tp.plotTrajAxes(qT, vT, aT, t)
 
 xyzrxryrzT = tp.traj_samplePoseFk(qT, dhParaUR3)
 #tp.plotTrajPoseFk(xyzrxryrzT, t)
 
+xyzrxryrzVT = jc.vTcp(qT, vT, dhParaUR3)
+#jc.plotVTcp(xyzrxryrzVT, t)
+
 filenameCSV = "robolib_movej_Dreieck.csv"
-#tp.writeCSV(qT, vT, aT, xyzrxryrzT, t, filenameCSV)
+tp.writeCSV(qT, vT, aT, xyzrxryrzT, xyzrxryrzVT, t, filenameCSV)
 
 
-"""
+
 #2. movej Achse1 90deg mit a,v --> movej_Trapez
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(90),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
 [qT, vT, aT, t] = tp.traj_sampleAxes(qStart, qTarget, vMax, aMax, tDelta)
-tp.plotTrajAxes(qT, vT, aT, t)
+#tp.plotTrajAxes(qT, vT, aT, t)
 
 xyzrxryrzT = tp.traj_samplePoseFk(qT, dhParaUR3)
-tp.plotTrajPoseFk(xyzrxryrzT, t)
+#tp.plotTrajPoseFk(xyzrxryrzT, t)
+
+xyzrxryrzVT = jc.vTcp(qT, vT, dhParaUR3)
+#jc.plotVTcp(xyzrxryrzVT, t)
 
 filenameCSV = "robolib_movej_Trapez.csv"
-tp.writeCSV(qT, vT, aT, xyzrxryrzT, t, filenameCSV)
-"""
+tp.writeCSV(qT, vT, aT, xyzrxryrzT, xyzrxryrzVT, t, filenameCSV)
 
-"""
+
+
 #3. movej Achse1 30deg in Zeit t --> movej_Dreieck_Zeit
 tGesVorgabe = 3
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
 [qT, vT, aT, t] = tp.traj_sampleAxesTime(qStart, qTarget, vMax, aMax, tGesVorgabe, tDelta)
-tp.plotTrajAxes(qT, vT, aT, t)
+#tp.plotTrajAxes(qT, vT, aT, t)
 
 xyzrxryrzT = tp.traj_samplePoseFk(qT, dhParaUR3)
-tp.plotTrajPoseFk(xyzrxryrzT, t)
+#tp.plotTrajPoseFk(xyzrxryrzT, t)
+
+xyzrxryrzVT = jc.vTcp(qT, vT, dhParaUR3)
+#jc.plotVTcp(xyzrxryrzVT, t)
 
 filenameCSV = "robolib_movej_Dreieck_Zeit.csv"
-tp.writeCSV(qT, vT, aT, xyzrxryrzT, t, filenameCSV)
-"""
+tp.writeCSV(qT, vT, aT, xyzrxryrzT, xyzrxryrzVT, t, filenameCSV)
 
-"""
+
+
 #4. movej q1 90deg in time t --> movej_Trapez_Zeit
 tGesVorgabe = 6
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(90),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
 [qT, vT, aT, t] = tp.traj_sampleAxesTime(qStart, qTarget, vMax, aMax, tGesVorgabe, tDelta)
-tp.plotTrajAxes(qT, vT, aT, t)
+#tp.plotTrajAxes(qT, vT, aT, t)
 
 xyzrxryrzT = tp.traj_samplePoseFk(qT, dhParaUR3)
-tp.plotTrajPoseFk(xyzrxryrzT, t)
+#tp.plotTrajPoseFk(xyzrxryrzT, t)
+
+xyzrxryrzVT = jc.vTcp(qT, vT, dhParaUR3)
+#jc.plotVTcp(xyzrxryrzVT, t)
 
 filenameCSV = "robolib_movej_Trapez_Zeit.csv"
-tp.writeCSV(qT, vT, aT, xyzrxryrzT, t, filenameCSV)
-"""
+tp.writeCSV(qT, vT, aT, xyzrxryrzT, xyzrxryrzVT, t, filenameCSV)
 
-"""
+
+
 #5. movej Achse1 90deg, Achse2 60deg, Achse3 30deg in time t --> movej_Synchron
 a = 1.0
 v = 0.8
@@ -131,36 +144,14 @@ qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),n
 qTarget = np.array([np.deg2rad(90),np.deg2rad(-30),np.deg2rad(-60),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 
 [qT, vT, aT, t] = tp.traj_sampleAxesTime(qStart, qTarget, vMax, aMax, tGesVorgabe, tDelta)
-tp.plotTrajAxes(qT, vT, aT, t)
+#tp.plotTrajAxes(qT, vT, aT, t)
 
 xyzrxryrzT = tp.traj_samplePoseFk(qT, dhParaUR3)
-tp.plotTrajPoseFk(xyzrxryrzT, t)
+#tp.plotTrajPoseFk(xyzrxryrzT, t)
+
+xyzrxryrzVT = jc.vTcp(qT, vT, dhParaUR3)
+#jc.plotVTcp(xyzrxryrzVT, t)
 
 filenameCSV = "robolib_movej_Synchron.csv"
-tp.writeCSV(qT, vT, aT, xyzrxryrzT, t,  filenameCSV)
-"""
+tp.writeCSV(qT, vT, aT, xyzrxryrzT, xyzrxryrzVT, t,  filenameCSV)
 
-"""
-#TODO --> trajektorienplanung_Pose.py
-#6. movel x 400 with a,v --> movel_x400
-a = 1.0
-v = 0.2
-
-pHome = np.array([0.300,-0.200,0.400,2.4186,-2.4185,2.4185])
-pTarget = np.array([0.300,0.200,0.400,2.4186,-2.4185,2.4185])
-
-filenameCSV = "robolib_movel_x400.csv"
-tp.writeCSV(qT, vT, aT, t, filenameCSV)
-
-
-
-#7. movel x 400 mit a,v nahe Singularität: movel_x400_Singular
-a = 1.0
-v = 0.2
-
-pHome = np.array([0.200,-0.200,0.400,2.4186,-2.4185,2.4185])
-pTarget = np.array([0.200,0.200,0.400,2.4186,-2.4185,2.4185])
-
-filenameCSV = "robolib_movel_x400_Singular.csv"
-tp.writeCSV(qT, vT, aT, t, filenameCSV)
-"""

@@ -100,16 +100,19 @@ tp.plotCSV(filenameRobo)
 #5. movej_Synchron
 filenameRobo = "robolib_movej_Synchron.csv"
 tp.plotCSV(filenameRobo)
+"""
 
 #6. movel_x400
 filenameRobo = "robolib_movel_x400.csv"
+#tp.plotCSV(filenameRobo)
 tp.plotCSVTcp(filenameRobo)
 
 #7. movel_x400_Singular
 filenameRobo = "robolib_movel_x400_Singular.csv"
+#tp.plotCSV(filenameRobo)
 tp.plotCSVTcp(filenameRobo)
 
-"""
+
 """
 Teil C: URSim Aufzeichnung
 """
@@ -133,22 +136,25 @@ tp.plotCSV(filenameRobo)
 #5. movej_Synchron
 filenameRobo = "ursim_movej_Synchron.csv"
 tp.plotCSV(filenameRobo)
+"""
 
 #6. movel_x400
 filenameRobo = "ursim_movel_x400.csv"
+#tp.plotCSV(filenameRobo)
 tp.plotCSVTcp(filenameRobo)
 
 #7. movel_x400_Singular
 filenameRobo = "ursim_movel_x400_Singular.csv"
+#tp.plotCSV(filenameRobo)
 tp.plotCSVTcp(filenameRobo)
 
 
-"""
+
 
 """
 Teil D: Roboteraufzeichnung
 """
-
+"""
 #1. movej_Dreieck
 filenameRobo = "robot_movej_Dreieck.csv"
 tp.plotCSV(filenameRobo)
@@ -170,15 +176,16 @@ tp.plotCSV(filenameRobo)
 #5. movej_Synchron
 filenameRobo = "robot_movej_Synchron.csv"
 tp.plotCSV(filenameRobo)
+"""
 
 #6. movel_x400
-
 filenameRobo = "robot_movel_x400.csv"
+#tp.plotCSV(filenameRobo)
 tp.plotCSVTcp(filenameRobo)
 
 
 #7. movel_x400_Singular
-
 filenameRobo = "robot_movel_x400_Singular.csv"
+#tp.plotCSV(filenameRobo)
 tp.plotCSVTcp(filenameRobo)
 
