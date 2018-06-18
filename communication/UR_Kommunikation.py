@@ -117,11 +117,11 @@ command = "movej([" + str(qTarget[0]) + "," + str(qTarget[1]) + "," + str(qTarge
 s.send(command.encode('ascii'))
 """
 
-"""
+
 #6. movel x 400 with a,v --> movel_x400
 a = 1.0
 v = 0.2
-t = 4
+
 
 #qInit = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qInit = np.array([np.deg2rad(-20.21),np.deg2rad(-107.27),np.deg2rad(-91.88),np.deg2rad(19.15),np.deg2rad(110.22),np.deg2rad(0.01)])
@@ -145,14 +145,14 @@ command = "movel(p[" + str(pTarget[0]) + "," + str(pTarget[1]) + "," + str(pTarg
 s.send(command.encode('ascii'))
 
 #movel_x400_Zeit
+#t = 4
 #command = "movel(p[" + str(pTarget[0]) + "," + str(pTarget[1]) + "," + str(pTarget[2]) +"," + str(pTarget[3]) +"," + str(pTarget[4]) +"," + str(pTarget[5]) +"], t= " + str(t) + ")\n"
+
+
 """
-
-
 #7. movel x 400 mit a,v nahe Singularität: movel_x400_Singular
 a = 1.0
 v = 0.2
-t = 4
 
 #qInit = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qInit = np.array([np.deg2rad(-30.51),np.deg2rad(-91.41),np.deg2rad(-110.87),np.deg2rad(22.28),np.deg2rad(120.52),np.deg2rad(0.01)])
@@ -176,8 +176,9 @@ command = "movel(p[" + str(pTarget[0]) + "," + str(pTarget[1]) + "," + str(pTarg
 s.send(command.encode('ascii'))
 
 #movel_x400_Singular_Zeit
+#t = 4
 #command = "movel(p[" + str(pTarget[0]) + "," + str(pTarget[1]) + "," + str(pTarget[2]) +"," + str(pTarget[3]) +"," + str(pTarget[4]) +"," + str(pTarget[5]) +"], t= " + str(t) + ")\n"
-
+"""
 
 
 

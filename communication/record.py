@@ -25,19 +25,25 @@
 import argparse
 import logging
 import sys
-#sys.path.append('..')
+sys.path.append('..')
 import rtde.rtde as rtde
 import rtde.rtde_config as rtde_config
 import rtde.csv_writer as csv_writer
 
 #parameters
 parser = argparse.ArgumentParser()
-parser.add_argument('--host', default="192.168.175.128", help='name of host to connect to (localhost)')
+
+#URSIM
+parser.add_argument('--host', default="192.168.182.255", help='name of host to connect to (localhost)')
+
+#ROBOT
+#parser.add_argument('--host', default="192.168.175.128", help='name of host to connect to (localhost)')
+
 parser.add_argument('--port', type=int, default=30004, help='port number (30004)')
 parser.add_argument('--samples', type=int, default=0, help='number of samples to record')
 parser.add_argument('--frequency', type=int, default=125, help='the sampling frequency in Herz')
 parser.add_argument('--config', default='record_configuration.xml', help='data configuration file to use (record_configuration.xml)')
-parser.add_argument('--output', default='robot_data1.csv', help='data output file to write to (robot_data1.csv)')
+parser.add_argument('--output', default='prakt_movel_x400.csv', help='data output file to write to (robot_data1.csv)')
 parser.add_argument("--verbose", help="increase output verbosity", action="store_true")
 args = parser.parse_args()
 
