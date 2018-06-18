@@ -5,6 +5,8 @@ URSim
 password: ur --> easybot
 IP: 192.168.175.128
 
+check robot TCP first: Installation --> TCP!!!
+
 Port 
 30001 --> Primary Client: URScript Commands 10Hz
 30002 --> Secondary Client: URScript Commands 10Hz
@@ -18,7 +20,7 @@ from time import sleep
 
 #1. Secondary Client Connection
 #URSIM
-#HOST = "192.168.175.128" # URSim IP
+HOST = "192.168.175.128" # URSim IP
 #HOST = "192.168.182.128" # URsim IP Prakt
 
 #ROBOT
@@ -31,7 +33,7 @@ PORT = 30002 # port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 
-
+"""
 #1. movej axis1 30deg with a,v --> movej_Dreieck
 a = 1.0
 v = 0.8
@@ -46,7 +48,7 @@ sleep(5)
 
 command = "movej([" + str(qTarget[0]) + "," + str(qTarget[1]) + "," + str(qTarget[2]) +"," + str(qTarget[3]) +"," + str(qTarget[4]) +"," + str(qTarget[5]) +"], a=" + str(a) + ", v=" + str(v) + ")\n"
 s.send(command.encode('ascii'))
-
+"""
 
 """
 #2. movej axis1 90deg with a,v --> movej_Trapez
@@ -121,8 +123,8 @@ a = 1.0
 v = 0.2
 t = 4
 
-qInit = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
-qInit = np.array([-0.4,-1.8,-1.6,-0.4,1.9,0])
+#qInit = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
+qInit = np.array([np.deg2rad(-20.21),np.deg2rad(-107.27),np.deg2rad(-91.88),np.deg2rad(19.15),np.deg2rad(110.22),np.deg2rad(0.01)])
 pHome = np.array([0.300,-0.200,0.400,2.4186,-2.4185,2.4185])
 pTarget = np.array([0.300,0.200,0.400,2.4186,-2.4185,2.4185])
 
@@ -130,13 +132,13 @@ pTarget = np.array([0.300,0.200,0.400,2.4186,-2.4185,2.4185])
 command = "movej([" + str(qInit[0]) + "," + str(qInit[1]) + "," + str(qInit[2]) +"," + str(qInit[3]) +"," + str(qInit[4]) +"," + str(qInit[5]) +"] )\n"
 s.send(command.encode('ascii'))
 
-sleep(3)
+sleep(5)
 
 #2. Start Position
 command = "movej(p[" + str(pHome[0]) + "," + str(pHome[1]) + "," + str(pHome[2]) +"," + str(pHome[3]) +"," + str(pHome[4]) +"," + str(pHome[5]) +"] )\n"
 s.send(command.encode('ascii'))
 
-sleep(5)
+sleep(2)
 
 #3. movel_x400
 command = "movel(p[" + str(pTarget[0]) + "," + str(pTarget[1]) + "," + str(pTarget[2]) +"," + str(pTarget[3]) +"," + str(pTarget[4]) +"," + str(pTarget[5]) +"], a=" + str(a) + ", v=" + str(v) + ")\n"
@@ -146,14 +148,14 @@ s.send(command.encode('ascii'))
 #command = "movel(p[" + str(pTarget[0]) + "," + str(pTarget[1]) + "," + str(pTarget[2]) +"," + str(pTarget[3]) +"," + str(pTarget[4]) +"," + str(pTarget[5]) +"], t= " + str(t) + ")\n"
 """
 
-"""
+
 #7. movel x 400 mit a,v nahe Singularität: movel_x400_Singular
 a = 1.0
 v = 0.2
 t = 4
 
-qInit = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
-qInit = np.array([-0.5,-1.5,-1.9,0.4,2.1,0])
+#qInit = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
+qInit = np.array([np.deg2rad(-30.51),np.deg2rad(-91.41),np.deg2rad(-110.87),np.deg2rad(22.28),np.deg2rad(120.52),np.deg2rad(0.01)])
 pHome = np.array([0.200,-0.200,0.400,2.4186,-2.4185,2.4185])
 pTarget = np.array([0.200,0.200,0.400,2.4186,-2.4185,2.4185])
 
@@ -161,13 +163,13 @@ pTarget = np.array([0.200,0.200,0.400,2.4186,-2.4185,2.4185])
 command = "movej([" + str(qInit[0]) + "," + str(qInit[1]) + "," + str(qInit[2]) +"," + str(qInit[3]) +"," + str(qInit[4]) +"," + str(qInit[5]) +"] )\n"
 s.send(command.encode('ascii'))
 
-sleep(3)
+sleep(5)
 
 #2. Start Position
 command = "movej(p[" + str(pHome[0]) + "," + str(pHome[1]) + "," + str(pHome[2]) +"," + str(pHome[3]) +"," + str(pHome[4]) +"," + str(pHome[5]) +"] )\n"
 s.send(command.encode('ascii'))
 
-sleep(5)
+sleep(2)
 
 #3. movel_x400_Singular
 command = "movel(p[" + str(pTarget[0]) + "," + str(pTarget[1]) + "," + str(pTarget[2]) +"," + str(pTarget[3]) +"," + str(pTarget[4]) +"," + str(pTarget[5]) +"], a=" + str(a) + ", v=" + str(v) + ")\n"
@@ -175,7 +177,7 @@ s.send(command.encode('ascii'))
 
 #movel_x400_Singular_Zeit
 #command = "movel(p[" + str(pTarget[0]) + "," + str(pTarget[1]) + "," + str(pTarget[2]) +"," + str(pTarget[3]) +"," + str(pTarget[4]) +"," + str(pTarget[5]) +"], t= " + str(t) + ")\n"
-"""
+
 
 
 

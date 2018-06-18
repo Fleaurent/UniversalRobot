@@ -708,6 +708,7 @@ def plotTrajPose(xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, vTcPT, aTcpT, t):
     #plt.show()
     return 0
 
+
 def plotTrajAxesIk(qT, vT,  t):
     
     c = np.array(['r','g','b','c','magenta','orange'])
@@ -1026,7 +1027,8 @@ def plotCSVTcp(filenameCSV):
         fig1.plot(r.timestamp, r.target_q_4, color='magenta', label='q4')
         fig1.plot(r.timestamp, r.target_q_5, color='orange', label='q5')
     except:
-        return 1
+        print("Singular target_q_0-5")
+        #return 1
         
     fig1.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
     fig1.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
@@ -1048,7 +1050,8 @@ def plotCSVTcp(filenameCSV):
         fig12.plot(r.timestamp, r.target_qd_4, color='magenta', label='qd4')
         fig12.plot(r.timestamp, r.target_qd_5, color='orange', label='qd5')
     except:
-        print("Singular")
+        print("Singular target_qd_0-5")
+        #return 12
         
     fig12.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
     fig12.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
@@ -1068,7 +1071,8 @@ def plotCSVTcp(filenameCSV):
         fig2.plot(r.timestamp, r.target_TCP_pose_1, color='g', label='Y')
         fig2.plot(r.timestamp, r.target_TCP_pose_2, color='b', label='Z')
     except:
-        return 2
+        print("Singular target_TCP_pose_0-2")
+       # return 2
         
     fig2.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
     fig2.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
@@ -1088,7 +1092,8 @@ def plotCSVTcp(filenameCSV):
         fig3.plot(r.timestamp, r.target_TCP_pose_4, color='magenta', label='ry')
         fig3.plot(r.timestamp, r.target_TCP_pose_5, color='orange', label='rz')
     except:
-        return 3
+        print("Singular target_TCP_pose_3-5")
+        #return 3
     
     fig3.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
     fig3.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
@@ -1107,7 +1112,8 @@ def plotCSVTcp(filenameCSV):
         fig4.plot(r.timestamp, r.target_TCP_speed_1, color='g', label='dY')
         fig4.plot(r.timestamp, r.target_TCP_speed_2, color='b', label='dZ')
     except:
-        return 2
+        print("Singular target_TCP_speed_0-2")
+        #return 4
         
     fig4.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
     fig4.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
@@ -1127,7 +1133,8 @@ def plotCSVTcp(filenameCSV):
         fig5.plot(r.timestamp, r.target_TCP_speed_4, color='magenta', label='dry')
         fig5.plot(r.timestamp, r.target_TCP_speed_5, color='orange', label='drz')
     except:
-        return 3
+        print("Singular target_TCP_speed_3-5")
+        #return 5
     
     fig5.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
     fig5.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
@@ -1147,7 +1154,8 @@ def plotCSVTcp(filenameCSV):
         fig6.plot(r.timestamp, r.target_TCP_acc_1, color='g', label='ddY')
         fig6.plot(r.timestamp, r.target_TCP_acc_2, color='b', label='ddZ')
     except:
-        return 2
+        print("Singular target_TCP_acc_X")
+        #return 6
         
     fig6.xaxis.set_major_locator(ticker.MultipleLocator(0.50))
     fig6.xaxis.set_minor_locator(ticker.MultipleLocator(0.25))
