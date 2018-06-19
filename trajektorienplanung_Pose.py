@@ -95,10 +95,10 @@ pTarget = np.array([300,200,400,2.4186,-2.4185,2.4185])
 
 qT = tp.traj_sampleAxesIk(xyzrxryrzT, dhParaUR3, sol)
 vT = jc.vT(xyzrxryrzT, xyzrxryrzVT, dhParaUR3)
-#tp.plotTrajAxesIk(qT, vT, t)
+tp.plotTrajAxesIk(qT, vT, t)
 
 filenameCSV = "robolib_movel_x400.csv"
-tp.writeCSVTcp(qT, vT, xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, t, filenameCSV)
+#tp.writeCSVTcp(qT, vT, xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, t, filenameCSV)
 
 
 #7. movel x 400 mit a,v nahe Singularität: movel_x400_Singular
@@ -113,7 +113,7 @@ vT = jc.vT(qT, xyzrxryrzT, dhParaUR3)
 #tp.plotTrajAxesIk(qT, t)
 
 filenameCSV = "robolib_movel_x400_Singular.csv"
-tp.writeCSVTcp(qT, vT, xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, t, filenameCSV)
+#tp.writeCSVTcp(qT, vT, xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, t, filenameCSV)
 
 """
 for sol in range(8):

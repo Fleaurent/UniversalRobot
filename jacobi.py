@@ -26,12 +26,13 @@ def jacobi_UR(q, dh_para):
     
     i=0
     for i in range(6):
-        T = rl.dh(dh_para[i,0], dh_para[i,1], dh_para[i,2], dh_para[i,3] + q[i])
-        T_0_i = np.dot(T_0_i, T)
-        #print(T_0_i)
         
         z_i = T_0_i[0:3, 2]
         p_i = T_0_i[0:3, 3]
+        
+        T = rl.dh(dh_para[i,0], dh_para[i,1], dh_para[i,2], dh_para[i,3] + q[i])
+        T_0_i = np.dot(T_0_i, T)
+        #print(T_0_i)
         
         r = p - p_i
         

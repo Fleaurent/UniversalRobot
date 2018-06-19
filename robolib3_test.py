@@ -149,7 +149,8 @@ print("\n6. Inverse kinematik")
 tcp = np.array([ 295.15, -112.35, 480.9, 2.4184, -2.4184, 2.4184])  #sol6
 #q = np.array([np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45),np.deg2rad(45)])
 #tcp = np.array([ 70.2, -170.59, -214.24, 2.066, -2.921, 1.461])
-tcp = np.array([200,-200,400,2.4186,-2.4185,2.4185])
+#tcp = np.array([200,-200,400,2.4186,-2.4185,2.4185])
+#tcp = np.array([-298.6,-112.35,313.65,2.2214,2.2214,0])
 
 qIk = np.array([0,0,0,0,0,0])
 sol = 0
