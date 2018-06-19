@@ -813,7 +813,7 @@ def writeCSVTcp(qT, vT, xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, t, filenameCSV):
     
     #print("CSV: ",qT.shape)
     if(axNum == 6):
-        csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_qd_0 target_qd_1 target_dq_2 target_qd_3 target_qd_4 target_qd_5 target_TCP_pose_0 target_TCP_pose_1 target_TCP_pose_2 target_TCP_pose_3 target_TCP_pose_4 target_TCP_pose_5 target_TCP_speed_0 target_TCP_speed_1 target_TCP_speed_2 target_TCP_speed_3 target_TCP_speed_4 target_TCP_speed_5 target_TCP_acc_0 target_TCP_acc_1 target_TCP_acc_2 target_TCP_acc_3 target_TCP_acc_4 target_TCP_acc_5\n")
+        csv.write("timestamp target_q_0 target_q_1 target_q_2 target_q_3 target_q_4 target_q_5 target_qd_0 target_qd_1 target_qd_2 target_qd_3 target_qd_4 target_qd_5 target_TCP_pose_0 target_TCP_pose_1 target_TCP_pose_2 target_TCP_pose_3 target_TCP_pose_4 target_TCP_pose_5 target_TCP_speed_0 target_TCP_speed_1 target_TCP_speed_2 target_TCP_speed_3 target_TCP_speed_4 target_TCP_speed_5 target_TCP_acc_0 target_TCP_acc_1 target_TCP_acc_2 target_TCP_acc_3 target_TCP_acc_4 target_TCP_acc_5\n")
     else:
         return 1
 
