@@ -21,7 +21,7 @@ def jacobi_UR(q, dh_para):
     T_0_i = np.eye(4)
     
     T_0_6 = rl.fk_ur(dh_para, q)
-    #print(T_0_6)
+
     p = T_0_6[0:3,3]
     
     i=0
@@ -32,7 +32,6 @@ def jacobi_UR(q, dh_para):
         
         T = rl.dh(dh_para[i,0], dh_para[i,1], dh_para[i,2], dh_para[i,3] + q[i])
         T_0_i = np.dot(T_0_i, T)
-        #print(T_0_i)
         
         r = p - p_i
         
@@ -68,13 +67,6 @@ def vT(qT, xyzrxryrzVT, dh_para):
         try:
             Jtinv = np.linalg.inv(Jt)
             vT[t] = np.dot(Jtinv,xyzrxryrzVT[t])
-            
-            if t == 100:
-                print(Jt)
-                print(Jtinv)
-                print(xyzrxryrzVT[t])
-                print(vT[t])
-                
         except:
             vT[t] = np.zeros(6)
                 
@@ -82,29 +74,11 @@ def vT(qT, xyzrxryrzVT, dh_para):
     return vT
 
 
-def force(qT, rd, dh_para):
-    
-    forceT = np.zeros((qT.shape[0],6))
-    
-    for i in range(qT.shape[0]):
-        J = jacobi_UR(qT[i], dh_para)
-        Jinv = np.linalg.inv(J)
-        forceT[i] = np.dot(Jinv, rd)
-        
-    return forceT
 
-
-def singular(qT, dh_para):
-    
-    singularT = np.zeros(qT.shape[0])
-    
-    for i in range(qT.shape[0]):
-        J = jacobi_UR(qT[i], dh_para)
-        singularT[i] = np.linalg.det(J)
-        
-    return singularT
-
-
+	
+"""
+plot
+"""
 def plotVTcp(vTcpT,t):
     
     # plot
@@ -209,3 +183,29 @@ def plotSingular(singularT,t):
     plt.legend()
     #plt.show()
     return  0
+	
+	
+"""
+Additional functions using jacobi
+"""
+def force(qT, rd, dh_para):
+    
+    forceT = np.zeros((qT.shape[0],6))
+    
+    for i in range(qT.shape[0]):
+        J = jacobi_UR(qT[i], dh_para)
+        Jinv = np.linalg.inv(J)
+        forceT[i] = np.dot(Jinv, rd)
+        
+    return forceT
+
+
+def singular(qT, dh_para):
+    
+    singularT = np.zeros(qT.shape[0])
+    
+    for i in range(qT.shape[0]):
+        J = jacobi_UR(qT[i], dh_para)
+        singularT[i] = np.linalg.det(J)
+        
+    return singularT

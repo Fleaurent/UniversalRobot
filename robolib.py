@@ -261,12 +261,12 @@ def fk_ur(dh_para, q):
     T_0_6 = np.eye(4)
     i = 0
     for dhSP in dh_para:
-        #print(dhSP)
+	
         T = dh(dhSP[0],dhSP[1],dhSP[2],dhSP[3] + q[i])
-        #print(T)
         T_0_6 = np.dot(T_0_6,T)
-        #print(T_0_6)
+
         i = i+1
+		
     return T_0_6
 
 
@@ -275,17 +275,11 @@ def ik_ur(dh_para, tcp, sol):
     Inverse Kinematics for UR type robots
     """
     T_0_6 = rotvec_2_T(tcp)
-    #T_0_6 = zyx_2_T(tcp)
-    
+
     # Achse 5 in 0
-    #O5_in_0 = np.dot(T_0_6, transl(0, 0, -dh_para[5, 2]))
-    #print(O5_in_0)
     O5_in_0 = np.dot(T_0_6, np.array([0, 0, -dh_para[5, 2], 1]))
-    #print(O5_in_0)
     
     # Winkel q1
-    #alpha1 = math.atan2(O5_in_0[1,3],O5_in_0[0,3])
-    #R = math.sqrt(O5_in_0[0,3]**2 + O5_in_0[1,3]**2)
     alpha1 = math.atan2(O5_in_0[1],O5_in_0[0])
     R = math.sqrt(O5_in_0[0]**2 + O5_in_0[1]**2)
     l4 = abs(dh_para[3, 2])
@@ -295,8 +289,7 @@ def ik_ur(dh_para, tcp, sol):
         q1 = alpha1 + alpha2 + np.pi / 2
     else:
         q1 = alpha1 - alpha2 + np.pi / 2
-    #print("q1+: ", alpha1 + alpha2 + np.pi / 2)
-    #print("q1-: ", alpha1 - alpha2 + np.pi / 2)
+
     
     # Winkel q5
     s1 = math.sin(q1)
@@ -307,15 +300,12 @@ def ik_ur(dh_para, tcp, sol):
     
     z = (x*s1 - y*c1 - l4) / l6
     if(z > 1):
-        #print("(x*s1 - y*c1 - l4) / l6 = ", z)
         z = 0.9999
-        #print("--> q5 = acos(1) = 0")
         
     q5 = math.acos(z)
     if sol & 1:
         q5 = -q5
     
-    #print("\nq5: ", q5)
     
     # Winkel q6
     T_0_1 = dh(dh_para[0, 0], dh_para[0, 1], dh_para[0, 2], q1)
@@ -323,19 +313,9 @@ def ik_ur(dh_para, tcp, sol):
     T_1_6 = np.dot(T_1_0, T_0_6)
     
     s5 = math.sin(q5)
-    #c5 = math.cos(q5)
+	
     q6 = math.atan2((-T_1_6[1,2]/s5),(T_1_6[0,2]/s5))
-    #print("q6",q6)
-    
-
-    #r11 = T_0_6[0,0]
-    #r21 = T_0_6[1,0]
-    #r12 = T_0_6[0,1]
-    #r22 = T_0_6[1,1]
-      
-    #q6 = math.atan2((-r21*s1 + r22*c1) / s5, (r11*s1 - r12*c1) / s5)
-    #print("\nq6: ", q6)
-    #q6 = np.deg2rad(45)
+	
     
     # Ebenes Problem mit drei parallelen Achsen
     T_0_1 = dh(dh_para[0, 0], dh_para[0, 1], dh_para[0, 2], q1)
@@ -347,40 +327,32 @@ def ik_ur(dh_para, tcp, sol):
     T_1_4 = np.dot(np.dot(T_1_0, T_0_6),T_6_4)
     # 90 Grad Rotation zwischen 4 und 5 kompensieren
     T_1_4 = np.dot(T_1_4, rotx(-np.pi / 2))
-    #print("T_1_4 ", T_1_4)
     
     x_S = T_1_4[0, 3]
     y_S = T_1_4[1, 3]
-    #z_S = T_1_4[2,3]
+
     l1 = abs(dh_para[1, 1])
     l2 = abs(dh_para[2, 1])
     
     
     # Winkel q3
-    #test = (x_S**2 + y_S**2 - l1**2 - l2**2) / (2 * l1 * l2)
-    #print("Value: ", test )
     try:
         q3 = math.acos((x_S**2 + y_S**2 - l1**2 - l2**2) / (2 * l1 * l2))
     except:
+		#Debug
         print((x_S**2 + y_S**2 - l1**2 - l2**2))
         print((2 * l1 * l2))
         return 0
-
-    #print((x_S**2 + y_S**2 - l1**2 - l2**2))
-    #print((2 * l1 * l2))
     
     if (sol & 2 == 0):
         q3 = q3
     else:
         q3 = -q3
-    
-    #print("\nq3: ", q3)
         
     
     # Winkel q2
     beta = math.atan2(y_S, x_S)
     psi = math.acos((x_S**2 + y_S**2 + (l1)**2 - (l2)**2) / (2 * (l1) * math.sqrt(x_S**2 + y_S**2)))
-    #psi = math.acos(0)
     
     if q3 > 0:
         q2 = beta - psi - np.pi
@@ -389,21 +361,15 @@ def ik_ur(dh_para, tcp, sol):
     if q2 < -np.pi:
         q2 = q2 + 2 * np.pi
     
-    #print("\nq2: ", q2)
     
     # Gesamtwinkel
     rotvec = T_2_rotvec(T_1_4)
-    #print("xyzrxryrz:",rotvec)
+
+	#rz
     q234 = rotvec[5]
     
-    #xyzrpy = T_2_rpy(T_1_4)
-    #print("xyzrpy:",xyzrpy)
-    #q234 = xyzrpy[5]
-        
     # Winkel q4
     q4 = q234 - q2 - q3
-    
-    #print("\nq4: ", q4)   
         
     return [q1, q2, q3, q4, q5, q6]
     
