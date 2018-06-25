@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import trajektorienplanung as tp
-import robolib3 as rl
+import robolib as rl
 
 """
 Berechnung Jakobimatrix(q) für Universal Robot

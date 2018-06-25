@@ -3,7 +3,7 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-import robolib3 as rl
+import robolib as rl
 import os
 
 
