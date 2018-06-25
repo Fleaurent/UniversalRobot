@@ -165,8 +165,8 @@ tp.writeCSV(qT, vT, aT, xyzrxryrzT, xyzrxryrzVT, t,  filenameCSV)
 """
 
 #6. movel x 400 with a,v --> movel_x400
-pStart = np.array([-0.300,-0.200,0.300,2.2214,2.2214,0])
-pTarget = np.array([-0.300,0.200,0.300,2.2214,2.2214,0])
+pStart = np.array([-300,-200,300,2.2214,2.2214,0])
+pTarget = np.array([-300,200,300,2.2214,2.2214,0])
 vMax = 200
 aMax = 1000
 
@@ -175,24 +175,24 @@ tp.plotTrajPose(xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, vTcpT, aTcpT, t)
 
 qT = tp.traj_sampleAxesIk(xyzrxryrzT, dhParaUR3, sol)
 vT = jc.vT(qT, xyzrxryrzVT, dhParaUR3)
-#tp.plotTrajAxesIk(qT, vT, t)
+tp.plotTrajAxesIk(qT, vT, t)
 
 filenameCSV = "robolib_movel_x400.csv"
 tp.writeCSVTcp(qT, vT, xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, t, filenameCSV)
 
 
 #7. movel x 400 mit a,v nahe Singularität: movel_x400_Singular
-pStart = np.array([-0.150,-0.200,0.300,2.2214,2.2214,0])
-pTarget = np.array([-0.150,0.200,0.300,2.2214,2.2214,0])
+pStart = np.array([-150,-200,300,2.2214,2.2214,0])
+pTarget = np.array([-150,200,300,2.2214,2.2214,0])
 vMax = 150
 aMax = 1000
 
 [xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, vTcpT, aTcpT, t] = tp.traj_samplePose(pStart, pTarget, vMax, aMax, tDelta)
-#tp.plotTrajPose(xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT,vTcpT, aTcpT, t)
+tp.plotTrajPose(xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT,vTcpT, aTcpT, t)
 
 qT = tp.traj_sampleAxesIk(xyzrxryrzT, dhParaUR3, sol)
 vT = jc.vT(qT, xyzrxryrzVT, dhParaUR3)
-#tp.plotTrajAxesIk(qT, vT, t)
+tp.plotTrajAxesIk(qT, vT, t)
 
 filenameCSV = "robolib_movel_x400_Singular.csv"
 tp.writeCSVTcp(qT, vT, xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, t, filenameCSV)
