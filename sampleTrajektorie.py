@@ -165,8 +165,8 @@ tp.writeCSV(qT, vT, aT, xyzrxryrzT, xyzrxryrzVT, t,  filenameCSV)
 """
 
 #6. movel x 400 with a,v --> movel_x400
-pStart = np.array([-300,-200,300,2.2214,2.2214,0])
-pTarget = np.array([-300,200,300,2.2214,2.2214,0])
+pStart = np.array([300,-200,350,2,-2,2])
+pTarget = np.array([300,200,350,2,-2,2])
 vMax = 200
 aMax = 1000
 
@@ -182,8 +182,8 @@ tp.writeCSVTcp(qT, vT, xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, t, filenameCSV)
 
 
 #7. movel x 400 mit a,v nahe Singularität: movel_x400_Singular
-pStart = np.array([-150,-200,300,2.2214,2.2214,0])
-pTarget = np.array([-150,200,300,2.2214,2.2214,0])
+pStart = np.array([200,-200,350,2,-2,2])
+pTarget = np.array([200,200,350,2,-2,2])
 vMax = 150
 aMax = 1000
 
