@@ -366,7 +366,8 @@ def traj_sampleAxesIk(xyzrxryrzT, dhParaUR3, sol):
     
     try:
         for i in range(xyzrxryrzT.shape[0]):
-            qT[i,:] = rl.ik_ur(dhParaUR3, xyzrxryrzT[i,:],sol)   
+            qT[i,:] = rl.ik_ur(dhParaUR3, xyzrxryrzT[i,:],sol) 
+            
     except:
         return 0
         

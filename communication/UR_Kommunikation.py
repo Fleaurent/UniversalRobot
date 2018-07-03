@@ -33,8 +33,9 @@ PORT = 30002 # port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 
-"""
+
 #1. movej axis1 30deg with a,v --> movej_Dreieck
+"""
 a = 1.0
 v = 0.8
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
@@ -50,8 +51,9 @@ command = "movej([" + str(qTarget[0]) + "," + str(qTarget[1]) + "," + str(qTarge
 s.send(command.encode('ascii'))
 """
 
-"""
+
 #2. movej axis1 90deg with a,v --> movej_Trapez
+"""
 a = 1.0
 v = 0.8
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
@@ -67,8 +69,9 @@ command = "movej([" + str(qTarget[0]) + "," + str(qTarget[1]) + "," + str(qTarge
 s.send(command.encode('ascii'))
 """
 
-"""
+
 #3. movej axis1 30deg in time t --> movej_Dreieck_Zeit
+"""
 t = 3
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
@@ -83,8 +86,9 @@ command = "movej([" + str(qTarget[0]) + "," + str(qTarget[1]) + "," + str(qTarge
 s.send(command.encode('ascii'))
 """
 
-"""
+
 #4. movej axis1 90deg in time t --> movej_Trapez_Zeit
+"""
 t = 6
 qStart = np.array([np.deg2rad(0),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qTarget = np.array([np.deg2rad(90),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
@@ -99,8 +103,9 @@ command = "movej([" + str(qTarget[0]) + "," + str(qTarget[1]) + "," + str(qTarge
 s.send(command.encode('ascii'))
 """
 
-"""
+
 #5. movej Achse1 90deg, Achse2 60deg, Achse3 30deg in time t --> movej_Synchron
+"""
 a = 1.0
 v = 0.8
 t = 6
@@ -119,13 +124,14 @@ s.send(command.encode('ascii'))
 
 
 #6. movel x 400 with a,v --> movel_x400
+"""
 a = 1.0
 v = 0.2
 
 
 #qInit = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qInit = np.array([np.deg2rad(-20.21),np.deg2rad(-107.27),np.deg2rad(-91.88),np.deg2rad(19.15),np.deg2rad(110.22),np.deg2rad(0.01)])
-pHome = np.array([0.300,-0.200,0.400,2.4186,-2.4185,2.4185])
+pStart = np.array([0.300,-0.200,0.400,2.4186,-2.4185,2.4185])
 pTarget = np.array([0.300,0.200,0.400,2.4186,-2.4185,2.4185])
 
 #1. Position near Start
@@ -135,7 +141,7 @@ s.send(command.encode('ascii'))
 sleep(5)
 
 #2. Start Position
-command = "movej(p[" + str(pHome[0]) + "," + str(pHome[1]) + "," + str(pHome[2]) +"," + str(pHome[3]) +"," + str(pHome[4]) +"," + str(pHome[5]) +"] )\n"
+command = "movej(p[" + str(pStart[0]) + "," + str(pStart[1]) + "," + str(pStart[2]) +"," + str(pStart[3]) +"," + str(pStart[4]) +"," + str(pStart[5]) +"] )\n"
 s.send(command.encode('ascii'))
 
 sleep(2)
@@ -147,16 +153,17 @@ s.send(command.encode('ascii'))
 #movel_x400_Zeit
 #t = 4
 #command = "movel(p[" + str(pTarget[0]) + "," + str(pTarget[1]) + "," + str(pTarget[2]) +"," + str(pTarget[3]) +"," + str(pTarget[4]) +"," + str(pTarget[5]) +"], t= " + str(t) + ")\n"
-
-
 """
+
+
 #7. movel x 400 mit a,v nahe Singularität: movel_x400_Singular
+"""
 a = 1.0
 v = 0.2
 
 #qInit = np.array([np.deg2rad(30),np.deg2rad(-90),np.deg2rad(-90),np.deg2rad(0),np.deg2rad(90),np.deg2rad(0)])
 qInit = np.array([np.deg2rad(-30.51),np.deg2rad(-91.41),np.deg2rad(-110.87),np.deg2rad(22.28),np.deg2rad(120.52),np.deg2rad(0.01)])
-pHome = np.array([0.200,-0.200,0.400,2.4186,-2.4185,2.4185])
+pStart = np.array([0.200,-0.200,0.400,2.4186,-2.4185,2.4185])
 pTarget = np.array([0.200,0.200,0.400,2.4186,-2.4185,2.4185])
 
 #1. Position near Start
@@ -166,7 +173,7 @@ s.send(command.encode('ascii'))
 sleep(5)
 
 #2. Start Position
-command = "movej(p[" + str(pHome[0]) + "," + str(pHome[1]) + "," + str(pHome[2]) +"," + str(pHome[3]) +"," + str(pHome[4]) +"," + str(pHome[5]) +"] )\n"
+command = "movej(p[" + str(pStart[0]) + "," + str(pStart[1]) + "," + str(pStart[2]) +"," + str(pStart[3]) +"," + str(pStart[4]) +"," + str(pStart[5]) +"] )\n"
 s.send(command.encode('ascii'))
 
 sleep(2)

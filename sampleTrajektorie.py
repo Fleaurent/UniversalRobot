@@ -14,24 +14,24 @@ import jacobi as jc
 tDelta = 1 / 125
 
 #Parameter URSim
-dhParaUR3 = np.array([(np.deg2rad(90),  0,          151.9,  0),
-                      (0,               -243.65,    0,      0),
-                      (0,               -213.25,    0,      0),
-                      (np.deg2rad(90),  0,          112.35, 0),
-                      (np.deg2rad(-90), 0,          85.35,  0),
-                      (0,               0,          81.9,   0)])
-
-#TCP Parameter in mm
-vMax = 200
-aMax = 1000
+dhParaUR3 = np.array([(np.deg2rad(90),  0,          0.1519,     0),
+                      (0,               -0.24365,   0,          0),
+                      (0,               -0.21325,   0,          0),
+                      (np.deg2rad(90),  0,          0.11235,    0),
+                      (np.deg2rad(-90), 0,          0.08535,    0),
+                      (0,               0,          0.0819,     0)])
 
 #Inverse Kinematik Achsenstellung
 sol = 6
-					  
+					
+#TCP Parameter
+#vMax = 0.2
+#aMax = 1.0
+ 
 #Achsen Parameter: alle Achsen gleiche Parameter
 #vMax = 0.8
 #aMax = 1.0
-
+ 
 vMaxA1 = 0.8
 aMaxA1 = 1.0
 qStartA1 = np.deg2rad(0)
@@ -66,7 +66,6 @@ vMax = np.array([vMaxA1,vMaxA2,vMaxA3,vMaxA4,vMaxA5,vMaxA6])
 aMax = np.array([aMaxA1,aMaxA2,aMaxA3,aMaxA4,aMaxA5,aMaxA6])
 qStart = np.array([qStartA1,qStartA2,qStartA3,qStartA4,qStartA5,qStartA6])
 qTarget = np.array([qTargetA1,qTargetA2,qTargetA3,qTargetA4,qTargetA5,qTargetA6])
-
 
 
 #1. movej Achse1 30deg mit a,v --> movej_Dreieck
@@ -164,9 +163,14 @@ tp.writeCSV(qT, vT, aT, xyzrxryrzT, xyzrxryrzVT, t,  filenameCSV)
 
 
 
+
+#TCP Parameter
+vMax = 0.2
+aMax = 1.0
+
 #6. movel x 400 with a,v --> movel_x400
-pStart = np.array([300,-200,400,2.4186,-2.4185,2.4185])
-pTarget = np.array([300,200,400,2.4186,-2.4185,2.4185])
+pStart = np.array([0.300,-0.200,0.400,2.4186,-2.4185,2.4185])
+pTarget = np.array([0.300,0.200,0.400,2.4186,-2.4185,2.4185])
 
 [xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, vTcpT, aTcpT, t] = tp.traj_samplePose(pStart, pTarget, vMax, aMax, tDelta)
 #tp.plotTrajPose(xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, vTcpT, aTcpT, t)
@@ -180,8 +184,8 @@ tp.writeCSVTcp(qT, vT, xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, t, filenameCSV)
 
 
 #7. movel x 400 mit a,v nahe Singularität: movel_x400_Singular
-pStart = np.array([200,-200,400,2.4186,-2.4185,2.4185])
-pTarget = np.array([200,200,400,2.4186,-2.4185,2.4185])
+pStart = np.array([0.200,-0.200,0.400,2.4186,-2.4185,2.4185])
+pTarget = np.array([0.200,0.200,0.400,2.4186,-2.4185,2.4185])
 
 [xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT, vTcpT, aTcpT, t] = tp.traj_samplePose(pStart, pTarget, vMax, aMax, tDelta)
 #tp.plotTrajPose(xyzrxryrzT, xyzrxryrzVT, xyzrxryrzAT,vTcpT, aTcpT, t)
